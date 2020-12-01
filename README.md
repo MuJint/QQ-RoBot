@@ -87,6 +87,7 @@ Qiushui-Bot是一个基于onebot协议的机器人/当然目前只写了部分�
   * 更改`config.yaml`配置，请根据自身需要更改，有`注释`
   * 注意如需使用人工智障对话，请配置`AiPath`的请求URL，同时启用`config.yaml`的`IsAi`
   * 人工智障使用，打开`AI`文件夹，安装`Python`环境，安装开源包`ChatterBot`，在当前文件夹中创建如下Python文件
+   * 安装Python环境请自行百度，安装ChatterBot也请自行百度
     ``` Python
       from flask import Flask, render_template, request, jsonify
       from chatterbot import ChatBot
