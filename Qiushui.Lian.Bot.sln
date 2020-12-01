@@ -5,10 +5,6 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qiushui.Lian.Bot", "Qiushui.Lian.Bot.csproj", "{7BDE6A63-59B3-4794-A208-6890EB4435E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sora", "..\Sora-master\Sora\Sora.csproj", "{C416FB7D-244A-4544-9C06-72DB84FB5D54}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "..\TestProject\TestProject.csproj", "{473AED16-0C94-4287-8E41-56CDC249A50B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{7BDE6A63-59B3-4794-A208-6890EB4435E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BDE6A63-59B3-4794-A208-6890EB4435E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BDE6A63-59B3-4794-A208-6890EB4435E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C416FB7D-244A-4544-9C06-72DB84FB5D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C416FB7D-244A-4544-9C06-72DB84FB5D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C416FB7D-244A-4544-9C06-72DB84FB5D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C416FB7D-244A-4544-9C06-72DB84FB5D54}.Release|Any CPU.Build.0 = Release|Any CPU
-		{473AED16-0C94-4287-8E41-56CDC249A50B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{473AED16-0C94-4287-8E41-56CDC249A50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{473AED16-0C94-4287-8E41-56CDC249A50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{473AED16-0C94-4287-8E41-56CDC249A50B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

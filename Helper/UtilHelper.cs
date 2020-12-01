@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Qiushui.Lian.Bot
 {
@@ -163,6 +165,18 @@ namespace Qiushui.Lian.Bot
             FieldInfo field = value.GetType().GetField(value.ToString());
 
             return Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is not DescriptionAttribute attribute ? value.ToString() : attribute.Description;
+        }
+
+        /// <summary>
+        /// unicode 转 gbk
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ObjectToGBK(this object obj)
+        {
+            //"你好吗？"
+            return new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(
+                  (string)obj, x => string.Empty + Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16))).Replace("\"", "");
         }
     }
 }

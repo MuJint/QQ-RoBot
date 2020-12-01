@@ -33,7 +33,6 @@ namespace Qiushui.Lian.Bot.ServerInterface
             //指令匹配初始化
             Command.KeywordResourseInit();
             Command.RegexResourseInit();
-            Command.PCRGuildBattlecmdResourseInit();
             //
             ConsoleLog.Info("Qiushui.Bot初始化", "初始化指令匹配集...");
             ConsoleLog.Info("Qiushui.Bot初始化", "启动反向WebSocket服务器...");
@@ -56,9 +55,15 @@ namespace Qiushui.Lian.Bot.ServerInterface
             //群聊事件
             server.Event.OnGroupMessage += GroupMessageEvent.GroupMessageParse;
             //私聊事件
-            //server.Event.OnPrivateMessage += PrivateMessageEvent.PrivateMessageParse;
+            server.Event.OnPrivateMessage += PrivateMessageEvent.PrivateMessageParse;
             //群聊戳一戳
-            //server.Event.OnGroupPoke += GroupPokeEvent.GroupPokeEventParse;
+            server.Event.OnGroupPoke += GroupPokeEvent.GroupPokeEventParse;
+            //好友申请事件
+            server.Event.OnFriendAdd += FriendAddEvent.FriendAddParse;
+            //群成员变更事件
+            server.Event.OnGroupMemberChange += GroupMemberChangeEvent.GroupMemberChangeParse;
+            //更多事件按需处理
+
             //关闭连接事件处理
             //server.ConnManager.OnCloseConnectionAsync += TimerEventParse.StopTimer;
             //server.ConnManager.OnHeartBeatTimeOut += TimerEventParse.StopTimer;

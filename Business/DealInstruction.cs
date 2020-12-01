@@ -1,10 +1,13 @@
 ﻿using Qiushui.Lian.Bot.Framework.IServices;
 using Qiushui.Lian.Bot.Framework.Services;
+using Qiushui.Lian.Bot.Helper;
 using Qiushui.Lian.Bot.Helper.ConfigModule;
 using Qiushui.Lian.Bot.Models;
 using Sora.Entities.CQCodes;
 using Sora.EventArgs.SoraEvent;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,12 +40,12 @@ namespace Qiushui.Lian.Bot.Business
         /// <param name="strContent"></param>
         /// <param name="isAt">是否艾特</param>
         /// <returns></returns>
-        internal static async Task<bool> SendMessageGroup(GroupMessageEventArgs eventArgs, string strContent, bool isAt = false)
+        internal static async ValueTask<bool> SendMessageGroup(GroupMessageEventArgs eventArgs, string strContent, bool isAt = false)
         {
             if (isAt)
-                await eventArgs.SourceGroup.SendGroupMessage(CQCode.CQAt(eventArgs.Sender.Id), strContent);
+                await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), strContent);
             else
-                await eventArgs.SourceGroup.SendGroupMessage(strContent);
+                await eventArgs.Reply(strContent);
             return false;
         }
 
@@ -52,7 +55,7 @@ namespace Qiushui.Lian.Bot.Business
         /// <param name="signLogs"></param>
         /// <param name="isUpdate">是否更新实体</param>
         /// <returns></returns>
-        internal async Task<bool> RequestLogsAsync(SignLogs signLogs, bool isUpdate = false)
+        internal async ValueTask<bool> RequestLogsAsync(SignLogs signLogs, bool isUpdate = false)
         {
             if (isUpdate)
             {
@@ -68,7 +71,7 @@ namespace Qiushui.Lian.Bot.Business
         /// <param name="signUser"></param>
         /// <param name="isUpdate">是否更新</param>
         /// <returns></returns>
-        internal async Task<bool> RequestSignAsync(SignUser signUser, bool isUpdate = false)
+        internal async ValueTask<bool> RequestSignAsync(SignUser signUser, bool isUpdate = false)
         {
             if (isUpdate)
             {
@@ -77,6 +80,27 @@ namespace Qiushui.Lian.Bot.Business
             else
                 return await signUserServices.Insert(signUser);
         }
+
+        /// <summary>
+        /// 人工智障请求
+        /// 未涉及到机器学习
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        internal async ValueTask<string> RequestAi(string str) => await HttpHelper.HttpGetAsync($"{_config.ConfigModel.AiPath}/{str}");
+
+        /// <summary>
+        /// 用户请求
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        internal async ValueTask<SignUser> RequestUsers(long uid) => await signUserServices.QueryById(t => t.QNumber.Equals(uid.ObjToString()));
+
+        /// <summary>
+        /// 用户列表请求
+        /// </summary>
+        /// <returns></returns>
+        internal async ValueTask<List<SignUser>> RequestListUsers() => await signUserServices.Query(t => t.Status == Status.Valid);
         #endregion
 
         #region 签到方法
@@ -87,7 +111,7 @@ namespace Qiushui.Lian.Bot.Business
         /// <returns></returns>
         public async ValueTask SignIn(GroupMessageEventArgs eventArgs)
         {
-            var isSign = await signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
+            var isSign = await RequestUsers(eventArgs.SenderInfo.UserId);
             if (isSign != null)
             {
                 if (isSign.LastModifyTime.DayOfYear == DateTime.Now.DayOfYear)
@@ -123,7 +147,7 @@ namespace Qiushui.Lian.Bot.Business
                     GroupId = eventArgs.SourceGroup.Id.ObjToString(),
                     NickName = eventArgs.SenderInfo.Nick,
                     QNumber = eventArgs.SenderInfo.UserId.ObjToString(),
-                    Rank= randRank
+                    Rank = randRank
                 });
                 await RequestLogsAsync(new SignLogs()
                 {
@@ -146,7 +170,7 @@ namespace Qiushui.Lian.Bot.Business
         {
             var isSign = await signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
             if (isSign != null)
-                await SendMessageGroup(eventArgs, $"{_config.ConfigModel.NickName}当前有{isSign.Rank}，继续努力吧~最后一次积分变更{isSign.LastModifyTime:yyyy-MM-dd HH:mm:ss}", true);
+                await SendMessageGroup(eventArgs, $"{_config.ConfigModel.NickName}当前有{isSign.Rank}分，继续努力吧~最后一次积分变更{isSign.LastModifyTime:yyyy-MM-dd HH:mm:ss}", true);
             else
                 await SendMessageGroup(eventArgs, $"没有找到任何记录噢~请先对{_config.ConfigModel.BotName}说签到吧", true);
         }
@@ -160,7 +184,7 @@ namespace Qiushui.Lian.Bot.Business
         /// <returns></returns>
         public async ValueTask Fenlai(GroupMessageEventArgs eventArgs)
         {
-            if(new Random().Next(1,100) is 6)
+            if (new Random().Next(1, 100) is 6)
             {
                 var isSign = await signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
                 if (isSign != null)
@@ -172,12 +196,13 @@ namespace Qiushui.Lian.Bot.Business
                     await RequestSignAsync(isSign, true);
                     await RequestLogsAsync(new SignLogs()
                     {
+                        CmdType = CmdType.BonusPoints,
                         LogContent = $"【分来指令送分】{randRank}分",
                         ModifyRank = randRank,
                         Uid = eventArgs.Sender.Id.ObjToString()
                     });
                     await SendMessageGroup(eventArgs, $"看{_config.ConfigModel.NickName}这么可爱，就送{_config.ConfigModel.NickName}{randRank}分吧~", true);
-                } 
+                }
             }
         }
         #endregion
@@ -191,11 +216,30 @@ namespace Qiushui.Lian.Bot.Business
         public async ValueTask Skill(GroupMessageEventArgs eventArgs)
         {
             var strSb = new StringBuilder();
-            strSb.Append($"-------【{_config.ConfigModel.BotName}】-------\n\t");
-            strSb.Append($"【开源地址】：https://github.com/MuJint/Qiushui-Bot.git \n\t");
-            strSb.Append($"【使用说明】：https://www.changqingmao.com/Article/43.html \n\t");
-            strSb.Append($"【作者】：于心 \n\t");
-            strSb.Append($"出于良心考虑，我不建议您通过任何方式进行商业用途，永远开源，不定时更新。");
+            strSb.Append($"[当前机器人]：{_config.ConfigModel.BotName}\r\n");
+            strSb.Append($"[开源地址]：https://github.com/MuJint/Qiushui-Bot.git \r\n");
+            strSb.Append($"[使用说明]：https://www.changqingmao.com/Article/43.html \r\n");
+            strSb.Append($"[作者]：于心\r\n");
+            strSb.Append($"出于良心考虑，我不建议您通过任何方式进行商业用途，永远开源，不定时更新。能帮忙点个小星星最好~爱你们");
+            await SendMessageGroup(eventArgs, strSb.ToString());
+        }
+        #endregion
+
+        #region 排行榜
+        /// <summary>
+        /// 排行榜
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <returns></returns>
+        public async ValueTask RankList(GroupMessageEventArgs eventArgs)
+        {
+            var uList = (await RequestListUsers()).OrderByDescending(t => t.Rank).Skip(0).Take(15);
+            var strSb = new StringBuilder();
+            strSb.Append($"QQ     Nick    Rank\r\n");
+            foreach (var item in uList)
+            {
+                strSb.Append($"{item.QNumber}     {item.NickName}    {item.Rank}\r\n");
+            }
             await SendMessageGroup(eventArgs, strSb.ToString());
         }
         #endregion

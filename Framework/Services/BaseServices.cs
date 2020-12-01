@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -21,6 +22,11 @@ namespace Qiushui.Lian.Bot.Framework
         public Task<bool> Insert(TEntity entity)
         {
             return _baseRepository.Insert(entity);
+        }
+
+        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> expression)
+        {
+            return _baseRepository.Query(expression);
         }
 
         public Task<TEntity> QueryById(object objId)

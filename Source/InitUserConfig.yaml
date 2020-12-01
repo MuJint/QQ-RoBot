@@ -1,7 +1,5 @@
 # 各模块的开关
 ModuleSwitch:
-  #B站动态订阅
-  Bili_Subscription: false
   #切噜语翻译
   Cheru: false
   #奇怪的娱乐功能 (随机禁言啥的)
@@ -18,11 +16,8 @@ ModuleSwitch:
   IsAI: true
   #随机色图
   Hso: true
-  #公会战管理
-  PCR_GuildManager: false
-  #公会排名查询
-  PCR_GuildRank: false
-
+  #复读模式
+  Reread: true
 # 随机色图设置
 HsoConfig:
   #色图源 Local/Lolicon/Yukari
@@ -55,4 +50,4 @@ ConfigModel:
   #小尾巴
   Tail: ~今天也是充满希望的一天
   #ai对话请求Url，建议默认值
-  AiPath: null
+  AiPath: https://aiqiushui.utools.club

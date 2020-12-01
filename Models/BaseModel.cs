@@ -10,6 +10,7 @@ namespace Qiushui.Lian.Bot.Models
         public int ID { get; set; }
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime LastModifyTime { get; set; } = DateTime.Now;
+        public Status Status { get; set; } = Status.Valid;
     }
 
     public enum Status

@@ -1,12 +1,19 @@
 ﻿using Qiushui.Bot.ChatModule.PcrUtils;
+using Qiushui.Lian.Bot.Business;
 using Qiushui.Lian.Bot.ChatModule.HsoModule;
 using Qiushui.Lian.Bot.ChatModule.LianModule;
 using Qiushui.Lian.Bot.Helper.ConfigModule;
 using Qiushui.Lian.Bot.Models;
 using Qiushui.Lian.Bot.Resource;
+using Sora.Entities;
+using Sora.Entities.CQCodes;
 using Sora.Enumeration.EventParamsType;
 using Sora.EventArgs.SoraEvent;
 using Sora.Tool;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Qiushui.Lian.Bot.ServerInterface
@@ -16,6 +23,8 @@ namespace Qiushui.Lian.Bot.ServerInterface
     /// </summary>
     internal class GroupMessageEvent
     {
+        static readonly List<string> RereadList = new List<string>();
+
         public static async ValueTask GroupMessageParse(object sender, GroupMessageEventArgs groupMessage)
         {
             //配置文件实例
@@ -23,30 +32,16 @@ namespace Qiushui.Lian.Bot.ServerInterface
             //读取配置文件
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
-                await groupMessage.SourceGroup.SendGroupMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
+                await groupMessage.Reply("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
                 ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
                 return;
             }
             if (!IsListenGroup(groupMessage.SourceGroup.Id, userConfig))
                 return;
-
-            //指令匹配
-            //#开头的指令(会战) -> 关键词 -> 正则
-            //会战管理
-            //if (Command.GetPCRGuildBattlecmdType(groupMessage.Message.RawText, out PCRGuildBattleCommand battleCommand))
-            //{
-            //    ConsoleLog.Info("PCR会战管理", $"获取到指令[{battleCommand}]");
-            //    //判断模块使能
-            //    if (userConfig.ModuleSwitch.PCR_GuildManager)
-            //    {
-            //        PcrGuildBattleChatHandle chatHandle = new PcrGuildBattleChatHandle(sender, groupMessage, battleCommand);
-            //        chatHandle.GetChat();
-            //    }
-            //    else
-            //    {
-            //        ConsoleLog.Warning("Qiushui.Bot会战管理", "会战功能未开启");
-            //    }
-            //}
+            await IsAIAsync(groupMessage, userConfig);
+            await Reread(groupMessage, userConfig);
+            await TriggerCute(groupMessage, userConfig);
+            await TriggerSpecial(groupMessage, userConfig);
 
             //聊天关键词
             if (Command.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
@@ -114,6 +109,146 @@ namespace Qiushui.Lian.Bot.ServerInterface
         /// <param name="groupId"></param>
         /// <returns></returns>
         private static bool IsListenGroup(long groupId, UserConfig userConfig) => userConfig?.ConfigModel?.GroupIds?.Contains(groupId.ToString()) ?? false;
+
+        /// <summary>
+        /// 处理ai
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <param name="userConfig"></param>
+        /// <returns></returns>
+        private static async ValueTask IsAIAsync(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        {
+            //[CQ:at,qq=503745803] 你好啊
+            try
+            {
+                var at = $"[CQ:at,qq={eventArgs.LoginUid}]";
+                if (eventArgs.Message.RawText.Contains(at) && userConfig.ModuleSwitch.IsAI)
+                {
+                    var service = new DealInstruction(userConfig);
+                    var json = await service.RequestAi(eventArgs.Message.RawText.Replace(at, "").Replace(" ", ""));
+                    await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), json.ObjectToGBK());
+                }
+            }
+            catch (Exception c)
+            {
+                await eventArgs.Reply(c.Message);
+            }
+        }
+
+        /// <summary>
+        /// 复读姬
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <param name="userConfig"></param>
+        /// <returns></returns>
+        private static async ValueTask Reread(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        {
+            if (!userConfig.ModuleSwitch.Reread)
+                return;
+            if (RereadList.Count < 1)
+            {
+                RereadList.Add(eventArgs.Message.RawText);
+                return;
+            }
+            //校验一致
+            if (RereadList.All(t => t.Equals(eventArgs.Message.RawText)))
+            {
+                await eventArgs.Repeat();
+            }
+            RereadList.Clear();
+        }
+
+
+        /// <summary>
+        /// 触发加分
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <param name="userConfig"></param>
+        /// <returns></returns>
+        private static async ValueTask TriggerCute(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        {
+            var service = new DealInstruction(userConfig);
+            if (new Random().Next(1, 100) is 66)
+            {
+                var user = await service.RequestUsers(eventArgs.SenderInfo.UserId);
+                var rank = new Random().Next(1, 10);
+                if (user == null)
+                {
+                    await eventArgs.Reply(CQCode.CQAt(eventArgs.SenderInfo.UserId), $"未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~");
+                }
+                else
+                {
+                    user.Rank += rank;
+                    user.LastModifyTime = DateTime.Now;
+                    await service.RequestSignAsync(user, true);
+                    await service.RequestLogsAsync(new SignLogs()
+                    {
+                        CmdType = CmdType.BonusPoints,
+                        LogContent = $"【可爱送分】{rank}",
+                        ModifyRank = rank,
+                        Uid = eventArgs.SenderInfo.UserId.ObjToString()
+                    });
+                    await eventArgs.Reply(CQCode.CQAt(eventArgs.SenderInfo.UserId), $"看{userConfig.ConfigModel.NickName}这么可爱，就奖励{userConfig.ConfigModel.NickName}{rank}分~");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 特殊事件
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <param name="userConfig"></param>
+        /// <returns></returns>
+        private static async ValueTask TriggerSpecial(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        {
+            var deTrigger = new Random().Next(1, 5000) is 666;
+            var trigger = new Random().Next(1, 5000) is 444;
+            var rank = new Random().Next(10, 20);
+            var service = new DealInstruction(userConfig);
+            var strSb = new StringBuilder();
+            if (deTrigger)
+            {
+                var uList = await service.RequestListUsers();
+                uList.ForEach(async (item) =>
+                {
+                    item.Rank -= rank;
+                    item.LastModifyTime = DateTime.Now;
+                    await service.RequestSignAsync(item, true);
+                });
+                strSb.Append($"【江湖传言】\r\n");
+                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}【{eventArgs.SenderInfo.Nick}】通过挖宝拾取道具：陨焰之盒 × 1\r\n");
+                strSb.Append($"就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分");
+                await service.RequestLogsAsync(new SignLogs()
+                {
+                    CmdType = CmdType.SpecialPointsDeducted,
+                    LogContent = $"就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分",
+                    Uid = eventArgs.LoginUid.ObjToString(),
+                    ModifyRank = rank
+                });
+                await eventArgs.Reply(strSb.ToString());
+            }
+            if (trigger)
+            {
+                var uList = await service.RequestListUsers();
+                uList.ForEach(async (item) =>
+                {
+                    item.Rank += rank;
+                    item.LastModifyTime = DateTime.Now;
+                    await service.RequestSignAsync(item, true);
+                });
+                strSb.Append($"【江湖传言】\r\n");
+                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}【{userConfig.ConfigModel.BotName}】通过挖宝拾取道具：陨焰之盒 × 1\r\n");
+                strSb.Append($"普天同庆！！！奖励所有{userConfig.ConfigModel.NickName}{rank}分");
+                await service.RequestLogsAsync(new SignLogs()
+                {
+                    CmdType = CmdType.SpecialBonusPoints,
+                    LogContent = $"普天同庆！！！奖励所有{userConfig.ConfigModel.NickName}{rank}分",
+                    Uid = eventArgs.LoginUid.ObjToString(),
+                    ModifyRank = rank
+                });
+                await eventArgs.Reply(strSb.ToString());
+            }
+        }
         #endregion
     }
 }

@@ -29,6 +29,10 @@ namespace Qiushui.Lian.Bot.Helper.ConfigModule
     internal class ModuleSwitch
     {
         /// <summary>
+        /// 复读模式
+        /// </summary>
+        public bool Reread { get; set; }
+        /// <summary>
         /// 打劫
         /// </summary>
         public bool Rob { get; set; }
@@ -49,18 +53,6 @@ namespace Qiushui.Lian.Bot.Helper.ConfigModule
         /// 娱乐模块
         /// </summary>
         public bool HaveFun { set; get; }
-        /// <summary>
-        /// 会战管理器模块
-        /// </summary>
-        public bool PCR_GuildManager { set; get; }
-        /// <summary>
-        /// 公会排名查询
-        /// </summary>
-        public bool PCR_GuildRank { set; get; }
-        /// <summary>
-        /// B站UP主动态订阅
-        /// </summary>
-        public bool Bili_Subscription { set; get; }
         /// <summary>
         /// 来点色图
         /// </summary>

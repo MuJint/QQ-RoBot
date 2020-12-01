@@ -52,6 +52,9 @@ namespace Qiushui.Lian.Bot.ChatModule.LianModule
                     case KeywordCommand.Skill:
                         await service.Skill(EventArgs);
                         break;
+                    case KeywordCommand.RankList:
+                        await service.RankList(EventArgs);
+                        break;
                 }
             }
         }

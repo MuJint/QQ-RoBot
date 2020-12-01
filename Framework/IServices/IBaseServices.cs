@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -6,6 +7,7 @@ namespace Qiushui.Lian.Bot.Framework
 {
     public interface IBaseServices<TEntity> where TEntity:class
     {
+        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> expression);
         Task<TEntity> QueryById(object objId);
         Task<TEntity> QueryById(Expression<Func<TEntity, bool>> expression);
         Task<bool> DeleteById(object objId);

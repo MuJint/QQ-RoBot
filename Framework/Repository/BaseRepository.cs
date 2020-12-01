@@ -1,6 +1,8 @@
 ﻿using LiteDB;
 using Qiushui.Lian.Bot.Framework.Repository.UnitOfWork;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -65,6 +67,15 @@ namespace Qiushui.Lian.Bot.Framework
             {
                 var table = _db.GetCollection<TEntity>();
                 return table.Update(entity);
+            });
+        }
+
+        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> expression)
+        {
+            return Task.Run(() =>
+            {
+                var table = _db.GetCollection<TEntity>();
+                return table.Find(expression).ToList();
             });
         }
     }
