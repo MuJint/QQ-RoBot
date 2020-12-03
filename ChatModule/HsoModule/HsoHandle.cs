@@ -139,11 +139,11 @@ namespace Qiushui.Lian.Bot.ChatModule.HsoModule
         {
             var strBulider = new StringBuilder();
             var tags = hsoResponse.Data.First().Tags;
-            strBulider.Append($"【画师】：{hsoResponse.Data.First().Author}\r\n");
-            strBulider.Append($"【标题】：{hsoResponse.Data.First().Title}\r\n");
-            strBulider.Append($"【Pid】：{hsoResponse.Data.First().Pid}\r\n");
-            strBulider.Append($"【画师ID】：{hsoResponse.Data.First().Uid}\r\n");
-            strBulider.Append($"【标签】：{string.Join(",", tags)}\r\n");
+            strBulider.Append($"[画师]：{hsoResponse.Data.First().Author}\r\n");
+            strBulider.Append($"[标题]：{hsoResponse.Data.First().Title}\r\n");
+            strBulider.Append($"[Pid]：{hsoResponse.Data.First().Pid}\r\n");
+            strBulider.Append($"[画师ID]：{hsoResponse.Data.First().Uid}\r\n");
+            strBulider.Append($"[标签]：{string.Join(",", tags)}\r\n");
             return strBulider.ToString();
         }
         #endregion

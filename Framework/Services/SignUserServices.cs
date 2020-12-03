@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Qiushui.Lian.Bot.Framework.Services
 {
-    class SignUserServices : BaseServices<SignUser>, ISignUserServices
+    public class SignUserServices : BaseServices<SignUser>, ISignUserServices
     {
         readonly ISignUserRepository _dal;
       

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Qiushui.Lian.Bot.Framework
 {
-    class BaseServices<TEntity> : IBaseServices<TEntity> where TEntity : class, new()
+    public class BaseServices<TEntity> : IBaseServices<TEntity> where TEntity : class, new()
     {
         IBaseRepository<TEntity> _baseRepository = new BaseRepository<TEntity>();
 

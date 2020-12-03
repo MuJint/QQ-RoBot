@@ -158,6 +158,21 @@ namespace Qiushui.Lian.Bot
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static long ObjectToLong(this object thisValue)
+        {
+            long reval = 0;
+            if (thisValue != null && thisValue != DBNull.Value && long.TryParse(thisValue.ToString(), out reval))
+            {
+                return reval;
+            }
+            return reval;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static string GetDescription(this Enum value)

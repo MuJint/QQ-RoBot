@@ -37,5 +37,20 @@ namespace Qiushui.Lian.Bot.Models
         /// </summary>
         [Description("特殊加分")]
         SpecialBonusPoints = 5,
+        /// <summary>
+        /// 通过赠送获取积分
+        /// </summary>
+        [Description("通过赠送获取积分")]
+        Giving = 6,
+        /// <summary>
+        /// 通过抢劫获取积分
+        /// </summary>
+        [Description("通过抢劫获取积分")]
+        Rob =7,
+        /// <summary>
+        /// 通过抢劫反杀获取积分
+        /// </summary>
+        [Description("通过抢劫反杀获取积分")]
+        DeRob =8,
     }
 }

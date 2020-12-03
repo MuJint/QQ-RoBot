@@ -117,6 +117,21 @@ namespace Qiushui.Lian.Bot.Models
         /// 全体扣分
         /// </summary>
         [Description("全体扣分")]
-        AllDeductPoint
+        AllDeductPoint,
+        /// <summary>
+        /// 个人记录
+        /// </summary>
+        [Description("积分记录 个人积分")]      
+        LogsRecord,
+        /// <summary>
+        /// 添加数据密码
+        /// </summary>
+        [Description("添加数据密码")]
+        AddKeys,
+        /// <summary>
+        /// 添加词库
+        /// </summary>
+        [Description("添加词库")]
+        AddThesaurus,
     }
 }

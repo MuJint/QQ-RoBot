@@ -18,7 +18,7 @@ namespace Qiushui.Lian.Bot.ServerInterface
                     await eventArgs.SourceGroup.SendGroupMessage($"{userInfo.userInfo.Nick}离开了");
                     break;
                 case Sora.Enumeration.EventParamsType.MemberChangeType.Kick:
-                    await eventArgs.SourceGroup.SendGroupMessage($"【{userInfo.userInfo.Nick}】被【{@operator.userInfo.Nick}】强行请离了");
+                    await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]被[{@operator.userInfo.Nick}]强行请离了");
                     break;
                 case Sora.Enumeration.EventParamsType.MemberChangeType.KickMe:
                     break;

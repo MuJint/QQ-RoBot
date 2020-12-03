@@ -5,7 +5,6 @@ using Qiushui.Lian.Bot.ChatModule.LianModule;
 using Qiushui.Lian.Bot.Helper.ConfigModule;
 using Qiushui.Lian.Bot.Models;
 using Qiushui.Lian.Bot.Resource;
-using Sora.Entities;
 using Sora.Entities.CQCodes;
 using Sora.Enumeration.EventParamsType;
 using Sora.EventArgs.SoraEvent;
@@ -184,7 +183,7 @@ namespace Qiushui.Lian.Bot.ServerInterface
                     await service.RequestLogsAsync(new SignLogs()
                     {
                         CmdType = CmdType.BonusPoints,
-                        LogContent = $"【可爱送分】{rank}",
+                        LogContent = $"[可爱]指令赠送{rank}分",
                         ModifyRank = rank,
                         Uid = eventArgs.SenderInfo.UserId.ObjToString()
                     });
@@ -215,13 +214,13 @@ namespace Qiushui.Lian.Bot.ServerInterface
                     item.LastModifyTime = DateTime.Now;
                     await service.RequestSignAsync(item, true);
                 });
-                strSb.Append($"【江湖传言】\r\n");
-                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}【{eventArgs.SenderInfo.Nick}】通过挖宝拾取道具：陨焰之盒 × 1\r\n");
+                strSb.Append($"[江湖传言]\r\n");
+                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}[{eventArgs.SenderInfo.Nick}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
                 strSb.Append($"就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分");
                 await service.RequestLogsAsync(new SignLogs()
                 {
                     CmdType = CmdType.SpecialPointsDeducted,
-                    LogContent = $"就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分",
+                    LogContent = $"[{eventArgs.SenderInfo.Nick}]就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分",
                     Uid = eventArgs.LoginUid.ObjToString(),
                     ModifyRank = rank
                 });
@@ -236,8 +235,8 @@ namespace Qiushui.Lian.Bot.ServerInterface
                     item.LastModifyTime = DateTime.Now;
                     await service.RequestSignAsync(item, true);
                 });
-                strSb.Append($"【江湖传言】\r\n");
-                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}【{userConfig.ConfigModel.BotName}】通过挖宝拾取道具：陨焰之盒 × 1\r\n");
+                strSb.Append($"[江湖传言]\r\n");
+                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}[{userConfig.ConfigModel.BotName}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
                 strSb.Append($"普天同庆！！！奖励所有{userConfig.ConfigModel.NickName}{rank}分");
                 await service.RequestLogsAsync(new SignLogs()
                 {

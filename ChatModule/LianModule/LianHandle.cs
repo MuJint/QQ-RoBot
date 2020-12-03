@@ -55,6 +55,54 @@ namespace Qiushui.Lian.Bot.ChatModule.LianModule
                     case KeywordCommand.RankList:
                         await service.RankList(EventArgs);
                         break;
+                    case KeywordCommand.SpecialEvent:
+                        await service.SpecialEvent(EventArgs);
+                        break;
+                    case KeywordCommand.LogsRecord:
+                        await service.LogsRecord(EventArgs);
+                        break;
+                    case KeywordCommand.Giving:
+                        await service.Giving(EventArgs);
+                        break;
+                    case KeywordCommand.Morning:
+                        await service.Morning(EventArgs);
+                        break;
+                    case KeywordCommand.Night:
+                        await service.Night(EventArgs);
+                        break;
+                    case KeywordCommand.BonusPoint:
+                        await service.BonusPoint(EventArgs);
+                        break;
+                    case KeywordCommand.DeductPoint:
+                        await service.DeductPoint(EventArgs);
+                        break;
+                    case KeywordCommand.AllBonusPoint:
+                        await service.AllBonusPoint(EventArgs);
+                        break;
+                    case KeywordCommand.AllDeductPoint:
+                        await service.AllDeductPoint(EventArgs);
+                        break;
+                    case KeywordCommand.RedTea:
+                        await service.RedTea(EventArgs);
+                        break;
+                    case KeywordCommand.Raffle:
+                        await service.Raffle(EventArgs);
+                        break;
+                    case KeywordCommand.Rob:
+                        await service.Rob(EventArgs);
+                        break;
+                    case KeywordCommand.Rescur:
+                        await service.Rescur(EventArgs);
+                        break;
+                    case KeywordCommand.Lian:
+                        await service.Lian(EventArgs);
+                        break;
+                    case KeywordCommand.AddKeys:
+                        await service.AddKeys(EventArgs);
+                        break;
+                    case KeywordCommand.AddThesaurus:
+                        await service.AddThesaurus(EventArgs);
+                        break;
                 }
             }
         }

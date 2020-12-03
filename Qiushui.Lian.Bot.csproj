@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sora-master\Sora\Sora.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Source\InitRes.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
