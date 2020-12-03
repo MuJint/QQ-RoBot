@@ -22,8 +22,6 @@ namespace Qiushui.Lian.Bot.ServerInterface
     /// </summary>
     internal class GroupMessageEvent
     {
-        static readonly List<string> RereadList = new List<string>();
-
         public static async ValueTask GroupMessageParse(object sender, GroupMessageEventArgs groupMessage)
         {
             //配置文件实例
@@ -144,17 +142,8 @@ namespace Qiushui.Lian.Bot.ServerInterface
         {
             if (!userConfig.ModuleSwitch.Reread)
                 return;
-            if (RereadList.Count < 1)
-            {
-                RereadList.Add(eventArgs.Message.RawText);
-                return;
-            }
-            //校验一致
-            if (RereadList.All(t => t.Equals(eventArgs.Message.RawText)))
-            {
+            if (new Random().Next(1, 10) is 6)
                 await eventArgs.Repeat();
-            }
-            RereadList.Clear();
         }
 
 

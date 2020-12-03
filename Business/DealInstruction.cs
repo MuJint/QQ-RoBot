@@ -117,7 +117,7 @@ namespace Qiushui.Lian.Bot.Business
             var isSign = await RequestUsers(eventArgs.SenderInfo.UserId);
             if (isSign != null)
             {
-                var signLog = (await signLogsServices.Query(t => t.LogContent.Contains("[签到]成功"))).OrderByDescending(t => t.LastModifyTime).FirstOrDefault() ?? new SignLogs();
+                var signLog = (await signLogsServices.Query(t => t.CmdType == CmdType.SignIn)).OrderByDescending(t => t.LastModifyTime)?.FirstOrDefault() ?? new SignLogs();
                 if (signLog.LastModifyTime.DayOfYear == DateTime.Now.DayOfYear && signLog.ModifyRank > 0)
                 {
                     if (TriggerPunish)
