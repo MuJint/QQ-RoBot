@@ -2,6 +2,7 @@
 using Qiushui.Lian.Bot.Business;
 using Qiushui.Lian.Bot.ChatModule.HsoModule;
 using Qiushui.Lian.Bot.ChatModule.LianModule;
+using Qiushui.Lian.Bot.Helper;
 using Qiushui.Lian.Bot.Helper.ConfigModule;
 using Qiushui.Lian.Bot.Models;
 using Qiushui.Lian.Bot.Resource;
@@ -140,10 +141,30 @@ namespace Qiushui.Lian.Bot.ServerInterface
         /// <returns></returns>
         private static async ValueTask Reread(GroupMessageEventArgs eventArgs, UserConfig userConfig)
         {
+            //两条一致信息复读，随机数等于6复读
             if (!userConfig.ModuleSwitch.Reread)
                 return;
-            if (new Random().Next(1, 10) is 6)
+            if (new Random().Next(1, 66) is 6)
                 await eventArgs.Repeat();
+            else
+            {
+                var dicCache = StaticModel.GetDic;
+                if (dicCache.ContainsKey(eventArgs.SourceGroup.Id))
+                {
+                    dicCache.TryGetValue(eventArgs.SourceGroup.Id, out var dicResult);
+                    if (dicResult.Count <= 2 && dicResult.All(t => t.Equals(eventArgs.Message.RawText)))
+                        await eventArgs.Repeat();   //复读，两条一致信息
+                    if (dicResult.Count <= 2)
+                        dicCache.Remove(eventArgs.SourceGroup.Id);
+                    else
+                    {
+                        dicResult.Add(eventArgs.Message.RawText);
+                        dicCache[eventArgs.SourceGroup.Id] = dicResult;
+                    }
+                }
+                else
+                    dicCache.Add(eventArgs.SourceGroup.Id, new List<string>() { eventArgs.Message.RawText });
+            }
         }
 
 

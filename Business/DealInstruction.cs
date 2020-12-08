@@ -117,7 +117,7 @@ namespace Qiushui.Lian.Bot.Business
             var isSign = await RequestUsers(eventArgs.SenderInfo.UserId);
             if (isSign != null)
             {
-                var signLog = (await signLogsServices.Query(t => t.CmdType == CmdType.SignIn)).OrderByDescending(t => t.LastModifyTime)?.FirstOrDefault() ?? new SignLogs();
+                var signLog = (await signLogsServices.Query(t => t.CmdType == CmdType.SignIn && t.Uid.Equals(eventArgs.SenderInfo.UserId.ObjToString()))).OrderByDescending(t => t.LastModifyTime)?.FirstOrDefault() ?? new SignLogs();
                 if (signLog.LastModifyTime.DayOfYear == DateTime.Now.DayOfYear && signLog.ModifyRank > 0)
                 {
                     if (TriggerPunish)
@@ -387,7 +387,7 @@ namespace Qiushui.Lian.Bot.Business
                             ModifyRank = 2,
                             Uid = eventArgs.Sender.Id.ObjToString()
                         });
-                        await SendMessageGroup(eventArgs, $"{_config.ConfigModel.NickName}是第{mornLogs.Count}个说早安的人噢~爱你，奖励2分", true);
+                        await SendMessageGroup(eventArgs, $"{_config.ConfigModel.NickName}是第{mornLogs.Count + 1}个说早安的人噢~爱你，奖励2分", true);
                     }
                 }
             }
@@ -807,8 +807,13 @@ namespace Qiushui.Lian.Bot.Business
         /// <returns></returns>
         public async ValueTask Lian(GroupMessageEventArgs eventArgs)
         {
-            var chatList = await lianChatServices.Query(t => t.Status == Status.Valid);
-            await SendMessageGroup(eventArgs, chatList[new Random().Next(0, chatList.Count - 1)].Content);
+            var chatList = await lianChatServices.Query(t => t.Status == Status.Valid) ?? new List<LianChat>();
+            if (chatList == null || chatList.Count <= 0)
+            {
+                await SendMessageGroup(eventArgs, $"你康康我啊？我就那么不受待见吗");
+            }
+            else
+                await SendMessageGroup(eventArgs, chatList[new Random().Next(chatList.Count)].Content);
         }
         #endregion
 
