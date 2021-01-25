@@ -4,14 +4,14 @@
     "E:\\Demo\\Bot\\TestProject\\TestProject.csproj": {}
   },
   "projects": {
-    "E:\\Demo\\Bot\\Qiushui.Lian.Bot\\Qiushui.Lian.Bot.csproj": {
-      "version": "1.0.0",
+    "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj": {
+      "version": "1.0.1",
       "restore": {
-        "projectUniqueName": "E:\\Demo\\Bot\\Qiushui.Lian.Bot\\Qiushui.Lian.Bot.csproj",
-        "projectName": "Qiushui.Lian.Bot",
-        "projectPath": "E:\\Demo\\Bot\\Qiushui.Lian.Bot\\Qiushui.Lian.Bot.csproj",
+        "projectUniqueName": "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj",
+        "projectName": "Qiushui.Bot",
+        "projectPath": "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj",
         "packagesPath": "C:\\Users\\changqing\\.nuget\\packages\\",
-        "outputPath": "E:\\Demo\\Bot\\Qiushui.Lian.Bot\\obj\\",
+        "outputPath": "E:\\Demo\\Bot\\Qiushui.Bot\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -173,8 +173,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "E:\\Demo\\Bot\\Qiushui.Lian.Bot\\Qiushui.Lian.Bot.csproj": {
-                "projectPath": "E:\\Demo\\Bot\\Qiushui.Lian.Bot\\Qiushui.Lian.Bot.csproj"
+              "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj": {
+                "projectPath": "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj"
               }
             }
           }

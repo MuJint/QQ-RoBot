@@ -171,7 +171,7 @@ namespace Sora.Tool
             {
                 StartInfo =
                 {
-                    FileName = AppDomain.CurrentDomain.BaseDirectory + "Qiushui.Lian.Bot.exe",
+                    FileName = AppDomain.CurrentDomain.BaseDirectory + "Qiushui.Bot.exe",
                     UseShellExecute = false
                 }
             }.Start();

@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Qiushui.Lian.Bot.Framework.IServices;
-using Qiushui.Lian.Bot.Framework.Services;
+using Qiushui.Bot.Framework.IServices;
+using Qiushui.Bot.Framework.Services;
 using System;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;

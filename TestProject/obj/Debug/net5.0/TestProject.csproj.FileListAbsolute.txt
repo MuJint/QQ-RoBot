@@ -1,5 +1,4 @@
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\testhost.dll
-E:\Demo\Bot\TestProject\bin\Debug\net5.0\Qiushui.Lian.Bot.exe
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
@@ -109,9 +108,7 @@ E:\Demo\Bot\TestProject\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\Microsof
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp2.0\System.Drawing.Common.dll
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.Drawing.Common.dll
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-E:\Demo\Bot\TestProject\bin\Debug\net5.0\Qiushui.Lian.Bot.dll
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\Sora.dll
-E:\Demo\Bot\TestProject\bin\Debug\net5.0\Qiushui.Lian.Bot.pdb
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\Sora.pdb
 E:\Demo\Bot\TestProject\bin\Debug\net5.0\Sora.xml
 E:\Demo\Bot\TestProject\obj\Debug\net5.0\TestProject.csprojAssemblyReference.cache
@@ -124,3 +121,6 @@ E:\Demo\Bot\TestProject\obj\Debug\net5.0\TestProject.dll
 E:\Demo\Bot\TestProject\obj\Debug\net5.0\ref\TestProject.dll
 E:\Demo\Bot\TestProject\obj\Debug\net5.0\TestProject.pdb
 E:\Demo\Bot\TestProject\obj\Debug\net5.0\TestProject.genruntimeconfig.cache
+E:\Demo\Bot\TestProject\bin\Debug\net5.0\Qiushui.Bot.exe
+E:\Demo\Bot\TestProject\bin\Debug\net5.0\Qiushui.Bot.dll
+E:\Demo\Bot\TestProject\bin\Debug\net5.0\Qiushui.Bot.pdb
