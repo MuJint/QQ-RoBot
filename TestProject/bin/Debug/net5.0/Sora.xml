@@ -1,0 +1,4524 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Sora</name>
+    </assembly>
+    <members>
+        <member name="T:Sora.Entities.Base.BaseModel">
+            <summary>
+            数据模型基类
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Base.BaseModel.SoraApi">
+            <summary>
+            API执行实例
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Base.SoraApi">
+            <summary>
+            Sora API执行实例
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Base.SoraApi.ConnectionGuid">
+            <summary>
+            当前实例对应的链接GUID
+            用于调用API
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.#ctor(System.Guid)">
+            <summary>
+            初始化Api实例
+            </summary>
+            <param name="connectionGuid"></param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SendPrivateMessage(System.Int64,System.Object[])">
+            <summary>
+            发送私聊消息
+            </summary>
+            <param name="userId">发送目标用户id</param>
+            <param name="message">消息</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SendPrivateMessage(System.Int64,System.Collections.Generic.List{Sora.Entities.CQCodes.CQCode})">
+            <summary>
+            发送群聊消息
+            </summary>
+            <param name="userId">发送目标群id</param>
+            <param name="message">
+            <para>消息</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SendGroupMessage(System.Int64,System.Object[])">
+            <summary>
+            发送群聊消息
+            </summary>
+            <param name="groupId">发送目标群id</param>
+            <param name="message">
+            <para>消息</para>
+            <para>可以为<see cref="T:System.String"/>/<see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SendGroupMessage(System.Int64,System.Collections.Generic.List{Sora.Entities.CQCodes.CQCode})">
+            <summary>
+            发送群聊消息
+            </summary>
+            <param name="groupId">发送目标群id</param>
+            <param name="message">
+            <para>消息</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.RecallMessage(System.Int32)">
+            <summary>
+            撤回消息
+            </summary>
+            <param name="messageId">消息ID</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetForwardMessage(System.String)">
+            <summary>
+            获取合并转发消息
+            </summary>
+            <param name="forwardId"></param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="nodeArray"/> 消息节点列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SendGroupForwardMsg(System.Int64,System.Collections.Generic.List{Sora.Entities.CQCodes.CQCodeModel.Node})">
+            <summary>
+            发送合并转发(群)
+            但好像不能用的样子
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="nodeList">
+            节点(<see cref="T:Sora.Entities.CQCodes.CQCodeModel.Node"/>)消息段列表
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetImage(System.String)">
+            <summary>
+            获取图片信息
+            </summary>
+            <param name="cacheFileName">缓存文件名</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="size"/> 文件大小(Byte)</para>
+            <para><see langword="fileName"/> 文件名</para>
+            <para><see langword="url"/> 文件链接</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetMessages(System.Int32)">
+            <summary>
+            <para>获取群消息</para>
+            <para>只能获取纯文本信息</para>
+            </summary>
+            <param name="messageId"></param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Message"/> 消息内容</para>
+            <para><see cref="T:Sora.Entities.User"/> 发送者</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SetGroupCard(System.Int64,System.Int64,System.String)">
+            <summary>
+            设置群名片
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">用户id</param>
+            <param name="card">
+            <para>新名片</para>
+            <para>当值为 <see langword="null"/> 或 <see cref="T:System.String"/>.<see langword="Empty"/> 时为清空名片</para>
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SetGroupMemberSpecialTitle(System.Int64,System.Int64,System.String)">
+            <summary>
+            设置群成员专属头衔
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">用户id</param>
+            <param name="specialTitle">专属头衔(为空时清空)</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.KickGroupMember(System.Int64,System.Int64,System.Boolean)">
+            <summary>
+            群组踢人
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">用户id</param>
+            <param name="rejectRequest">拒绝此人的加群请求</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.EnableGroupMemberMute(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            设置群组成员禁言
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">用户id</param>
+            <param name="duration">
+            <para>禁言时长(s)</para>
+            <para>至少60s</para>
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.DisableGroupMemberMute(System.Int64,System.Int64)">
+            <summary>
+            解除群组成员禁言
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">用户id</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.EnableGroupMute(System.Int64)">
+            <summary>
+            群组全员禁言
+            </summary>
+            <param name="groupId">群号</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.DisableGroupMute(System.Int64)">
+            <summary>
+            解除群组全员禁言
+            </summary>
+            <param name="groupId">群号</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.EnableGroupAdmin(System.Int64,System.Int64)">
+            <summary>
+            设置群管理员
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">成员id</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.DisableGroupAdmin(System.Int64,System.Int64)">
+            <summary>
+            取消群管理员
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">成员id</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.LeaveGroup(System.Int64)">
+            <summary>
+            退出群
+            </summary>
+            <param name="groupId">群号</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.DismissGroup(System.Int64)">
+            <summary>
+            解散群
+            </summary>
+            <param name="groupId">群号</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SetGroupName(System.Int64,System.String)">
+            <summary>
+            设置群名
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="newName">新群名</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SetGroupPortrait(System.Int64,System.String,System.Boolean)">
+            <summary>
+            设置群头像
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="imageFile">图片名/绝对路径/URL/base64</param>
+            <param name="useCache">是否使用缓存</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupSystemMsg">
+            <summary>
+            获取群组系统消息
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="joinList"/> 进群消息列表</para>
+            <para><see langword="invitedList"/> 邀请消息列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupFileSysInfo(System.Int64)">
+            <summary>
+            获取群文件系统信息
+            </summary>
+            <param name="groupId">群号</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupFileSysInfo"/> 文件系统信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupRootFiles(System.Int64)">
+            <summary>
+            获取群根目录文件列表
+            </summary>
+            <param name="groupId">群号</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="groupFiles"/> 文件列表</para>
+            <para><see langword="groupFolders"/> 文件夹列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupFilesByFolder(System.Int64,System.String)">
+            <summary>
+            获取群根目录文件列表
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="foldId">文件夹ID</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="groupFiles"/> 文件列表</para>
+            <para><see langword="groupFolders"/> 文件夹列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupFileUrl(System.Int64,System.String,System.Int32)">
+            <summary>
+            获取群文件资源链接
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="fileId">文件ID</param>
+            <param name="busid">文件类型</param>
+            <returns>文件链接</returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetLoginUserName">
+            <summary>
+            <para>获取登陆QQ的名字</para>
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="nick"/> 账号昵称</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetFriendList">
+            <summary>
+            获取好友列表
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="friendList"/> 好友列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupList">
+            <summary>
+            获取群组列表
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="groupList"/> 群组列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupMemberList(System.Int64)">
+            <summary>
+            获取群成员列表
+            </summary>
+            <param name="groupId"></param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/> 群成员列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupInfo(System.Int64,System.Boolean)">
+            <summary>
+            获取群信息
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="useCache">是否使用缓存</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupInfo"/> 群信息列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroupMemberInfo(System.Int64,System.Int64,System.Boolean)">
+            <summary>
+            获取群成员信息
+            </summary>
+            <param name="groupId">群号</param>
+            <param name="userId">用户ID</param>
+            <param name="useCache">是否使用缓存</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupMemberInfo"/> 群成员信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetUserInfo(System.Int64,System.Boolean)">
+            <summary>
+            获取用户信息
+            </summary>
+            <param name="userId">用户ID</param>
+            <param name="useCache"></param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.UserInfo"/> 群成员信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetClientInfo">
+            <summary>
+            获取连接客户端版本信息
+            </summary>
+            <returns>
+            <para>客户端类型</para>
+            <para><see langword="ver"/>客户端版本号</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.CanSendImage">
+            <summary>
+            检查是否可以发送图片
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="canSend"/> 是否能发送</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.CanSendRecord">
+            <summary>
+            检查是否可以发送语音
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="canSend"/> 是否能发送</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetStatus">
+            <summary>
+            获取客户端状态
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="online"/> 客户端是否在线</para>
+            <para><see langword="good"/> 客户端是否正常运行</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.RebootClient(System.Int32)">
+            <summary>
+            重启客户端
+            对go无效
+            </summary>
+            <param name="delay">延迟(ms)</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SetFriendAddRequest(System.String,System.Boolean,System.String)">
+            <summary>
+            处理加好友请求
+            </summary>
+            <param name="flag">请求flag</param>
+            <param name="approve">是否同意</param>
+            <param name="remark">好友备注</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.SetGroupAddRequest(System.String,Sora.Enumeration.EventParamsType.GroupRequestType,System.Boolean,System.String)">
+            <summary>
+            处理加群请求/邀请
+            </summary>
+            <param name="flag">请求flag</param>
+            <param name="requestType">请求类型</param>
+            <param name="approve">是否同意</param>
+            <param name="reason">拒绝理由</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetWordSlices(System.String)">
+            <summary>
+            获取中文分词
+            </summary>
+            <param name="text">内容</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="wordList"/> 分词列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetUser(System.Int64)">
+            <summary>
+            获取用户实例
+            </summary>
+            <param name="userId">用户id</param>
+        </member>
+        <member name="M:Sora.Entities.Base.SoraApi.GetGroup(System.Int64)">
+            <summary>
+            获取群实例
+            </summary>
+            <param name="groupId">群id</param>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCode">
+            <summary>
+            CQ码类
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCode.Function">
+            <summary>
+            CQ码类型
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCode.CQData">
+            <summary>
+            CQ码数据实例
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.#ctor(Sora.Enumeration.CQFunction,System.Object)">
+            <summary>
+            构造CQ码实例
+            </summary>
+            <param name="cqFunction">CQ码类型</param>
+            <param name="dataObj"></param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQText(System.String)">
+            <summary>
+            纯文本
+            </summary>
+            <param name="msg">文本消息</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQAt(System.Int64)">
+            <summary>
+            At CQ码
+            </summary>
+            <param name="uid">用户uid</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQAtAll">
+            <summary>
+            At全体 CQ码
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQFace(System.Int32)">
+            <summary>
+            表情CQ码
+            </summary>
+            <param name="id">表情 ID</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQRecord(System.String,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            语音CQ码
+            </summary>
+            <param name="data">文件名/绝对路径/URL/base64</param>
+            <param name="isMagic">是否为变声</param>
+            <param name="useCache">是否使用已缓存的文件</param>
+            <param name="useProxy">是否通过代理下载文件</param>
+            <param name="timeout">超时时间，默认为<see langword="null"/>(不超时)</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQImage(System.String,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            图片CQ码
+            </summary>
+            <param name="data">图片名/绝对路径/URL/base64</param>
+            <param name="isFlash">是否为闪照，默认为<see langword="false"/></param>
+            <param name="useCache">通过URL发送时有效,是否使用已缓存的文件</param>
+            <param name="useProxy">通过URL发送时有效,是否通过代理下载文件</param>
+            <param name="timeout">通过URL发送时有效,超时时间，默认为<see langword="null"/>(不超时)</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQShowImage(System.String,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            秀图CQ码
+            </summary>
+            <param name="data">图片名/绝对路径/URL/base64</param>
+            <param name="useCache">通过URL发送时有效,是否使用已缓存的文件</param>
+            <param name="useProxy">通过URL发送时有效,是否通过代理下载文件</param>
+            <param name="timeout">通过URL发送时有效,超时时间，默认为<see langword="null"/>(不超时)</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQVideo(System.String,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            视频CQ码
+            </summary>
+            <param name="data">视频名/绝对路径/URL/base64</param>
+            <param name="useCache">是否使用已缓存的文件</param>
+            <param name="useProxy">是否通过代理下载文件</param>
+            <param name="timeout">超时时间，默认为<see langword="null"/>(不超时)</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQMusic(Sora.Enumeration.EventParamsType.MusicShareType,System.Int64)">
+            <summary>
+            音乐CQ码
+            </summary>
+            <param name="musicType">音乐分享类型</param>
+            <param name="musicId">音乐Id</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQCustomMusic(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            自定义音乐分享CQ码
+            </summary>
+            <param name="url">跳转URL</param>
+            <param name="musicUrl">音乐URL</param>
+            <param name="title">标题</param>
+            <param name="content">内容描述[可选]</param>
+            <param name="coverImageUrl">分享内容图片[可选]</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQShare(System.String,System.String,System.String,System.String)">
+            <summary>
+            链接分享
+            </summary>
+            <param name="url">URL</param>
+            <param name="title">标题</param>
+            <param name="content">可选，内容描述</param>
+            <param name="imageUrl">可选，图片 URL</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQReply(System.Int32)">
+            <summary>
+            回复
+            </summary>
+            <param name="id">消息id</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQPoke(System.Int64)">
+            <summary>
+            群成员戳一戳
+            只支持Go-CQHttp
+            </summary>
+            <param name="uid">ID</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQRedbag(System.String)">
+            <summary>
+            接收红包
+            </summary>
+            <param name="title">祝福语/口令</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQGift(System.Int32,System.Int64)">
+            <summary>
+            发送免费礼物
+            </summary>
+            <param name="giftId">礼物id</param>
+            <param name="target">目标uid</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQXml(System.String)">
+            <summary>
+            XML 特殊消息
+            </summary>
+            <param name="content">xml文本</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQJson(System.String,System.Boolean)">
+            <summary>
+            JSON 特殊消息
+            </summary>
+            <param name="content">JSON 文本</param>
+            <param name="richText">富文本内容</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQJson(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            JSON 特殊消息
+            </summary>
+            <param name="content">JObject实例</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQCardImage(System.String,System.String,System.String,System.Int64,System.Int64,System.Int64,System.Int64)">
+            <summary>
+            装逼大图
+            </summary>
+            <param name="imageFile">图片名/绝对路径/URL/base64</param>
+            <param name="source">来源名称</param>
+            <param name="iconUrl">来源图标 URL</param>
+            <param name="minWidth">最小 Width</param>
+            <param name="minHeight">最小 Height</param>
+            <param name="maxWidth">最大 Width</param>
+            <param name="maxHeight">最大 Height</param>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQTTS(System.String)">
+            <summary>
+            语音转文字（TTS）CQ码
+            </summary>
+            <param name="messageStr">要转换的文本信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.CQIlleage">
+            <summary>
+            空CQ码
+            <para>当存在非法参数时CQ码将被本函数重置</para>
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.GetCqCodeDataType(Sora.Entities.CQCodes.CQCode)">
+            <summary>
+            获取CQ码数据格式类型
+            用于将object转换为可读结构体
+            </summary>
+            <param name="cqCode"></param>
+            <returns>
+            数据结构体类型
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCode.ParseDataStr(System.String)">
+            <summary>
+            处理传入数据
+            </summary>
+            <param name="dataStr">数据字符串</param>
+            <returns>
+            <para><see langword="retStr"/>处理后数据字符串</para>
+            <para><see langword="isMatch"/>是否为合法数据字符串</para>
+            </returns>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.At">
+            <summary>
+            At某人
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.At.Traget">
+            <summary>
+            At目标UID
+            为<see langword="null"/>时为At全体
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.CardImage">
+            <summary>
+            装逼大图
+            仅支持Go
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.ImageFile">
+            <summary>
+            文件名/绝对路径/URL/base64
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.MinWidth">
+            <summary>
+            最小width
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.MinHeight">
+            <summary>
+            最小height
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.MaxWidth">
+            <summary>
+            最大width
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.MaxHeight">
+            <summary>
+            最大height
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.Source">
+            <summary>
+            来源名称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CardImage.Icon">
+            <summary>
+            来源图标url
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Code">
+            <summary>
+            <para>Xml与Json集合</para>
+            <para>可能为<see cref="T:Sora.Enumeration.CQFunction"/>.<see langword="Json"/>或<see cref="T:Sora.Enumeration.CQFunction"/>.<see langword="Xml"/></para>
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Code.Content">
+            <summary>
+            内容
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Code.Resid">
+            <summary>
+            是否走富文本通道
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.CustomMusic">
+            <summary>
+            自定义音乐分享
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CustomMusic.Url">
+            <summary>
+            跳转URL
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CustomMusic.MusicUrl">
+            <summary>
+            音乐URL
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CustomMusic.Title">
+            <summary>
+            标题
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CustomMusic.Content">
+            <summary>
+            内容描述[可选]
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.CustomMusic.CoverImageUrl">
+            <summary>
+            分享内容图片[可选]
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Face">
+            <summary>
+            QQ 表情
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Face.Id">
+            <summary>
+            纯文本内容
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Forward">
+            <summary>
+            合并转发/合并转发节点
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Forward.MessageId">
+            <summary>
+            转发消息ID
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Gift">
+            <summary>
+            礼物
+            仅支持Go
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Gift.Target">
+            <summary>
+            接收目标
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Gift.GiftType">
+            <summary>
+            礼物类型
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Image">
+            <summary>
+            图片
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Image.ImgFile">
+            <summary>
+            文件名/绝对路径/URL/base64
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Image.ImgType">
+            <summary>
+            图片类型
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Image.Url">
+            <summary>
+            图片链接
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Image.UseCache">
+            <summary>
+            只在通过网络 URL 发送时有效，表示是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Image.UseProxy">
+            <summary>
+            只在通过网络 URL 发送时有效，表示是否通过代理下载文件
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Image.Timeout">
+            <summary>
+            只在通过网络 URL 发送时有效（s）
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Music">
+            <summary>
+            音乐分享
+            仅发送
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Music.MusicType">
+            <summary>
+            音乐分享类型
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Music.MusicId">
+            <summary>
+            歌曲 ID
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Node">
+            <summary>
+            自定义合并转发节点
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Node.Sender">
+            <summary>
+            发送者昵称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Node.Time">
+            <summary>
+            发送事件戳
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Node.MessageList">
+            <summary>
+            原始消息内容
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Node.CQCodeMsgList">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Node.NodeSender">
+            <summary>
+            节点消息发送者
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Node.NodeSender.Nick">
+            <summary>
+            发送者昵称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Node.NodeSender.Uid">
+            <summary>
+            UID
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.NodeArray">
+            <summary>
+            转发消息的列表
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.NodeArray.NodeMsgList">
+            <summary>
+            消息节点列表
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.CQCodes.CQCodeModel.NodeArray.ParseNode">
+            <summary>
+            处理消息节点的消息为CQCode
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Poke">
+            <summary>
+            <para>群成员戳一戳</para>
+            <para>仅发送</para>
+            <para>仅支持Go</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Poke.Uid">
+            <summary>
+            需要戳的成员
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Record">
+            <summary>
+            语音消息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Record.RecordFile">
+            <summary>
+            文件名/绝对路径/URL/base64
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Record.Magic">
+            <summary>
+            表示变声
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Record.Url">
+            <summary>
+            语音 URL
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Record.Cache">
+            <summary>
+            是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Record.Proxy">
+            <summary>
+            是否使用代理
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Record.Timeout">
+            <summary>
+            是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Redbag">
+            <summary>
+            接收红包
+            仅支持Go
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Redbag.Title">
+            <summary>
+            祝福语/口令
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Reply">
+            <summary>
+            回复
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Reply.Traget">
+            <summary>
+            At目标UID
+            为<see langword="null"/>时为At全体
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Share">
+            <summary>
+            链接分享
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Share.Url">
+            <summary>
+            URL
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Share.Title">
+            <summary>
+            标题
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Share.Content">
+            <summary>
+            可选，内容描述
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Share.ImageUrl">
+            <summary>
+            可选，图片 URL
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Text">
+            <summary>
+            纯文本
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Text.Content">
+            <summary>
+            纯文本内容
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.CQCodes.CQCodeModel.Video">
+            <summary>
+            短视频
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Video.VideoFile">
+            <summary>
+            视频文件名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Video.Url">
+            <summary>
+            视频 URL
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Video.Cache">
+            <summary>
+            是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Video.Proxy">
+            <summary>
+            是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.CQCodes.CQCodeModel.Video.Timeout">
+            <summary>
+            是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Group">
+            <summary>
+            群组实例
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Group.Id">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Group.#ctor(System.Guid,System.Int64)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器连接标识</param>
+            <param name="gid">群号</param>
+        </member>
+        <member name="M:Sora.Entities.Group.SendGroupMessage(System.Object[])">
+            <summary>
+            发送群消息
+            </summary>
+            <param name="message">
+            <para>消息</para>
+            <para>可以为<see cref="T:System.String"/>/<see cref="T:Sora.Entities.CQCodes.CQCode"/></para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.SendGroupMessage(System.Collections.Generic.List{Sora.Entities.CQCodes.CQCode})">
+            <summary>
+            发送群消息
+            </summary>
+            <param name="message">
+            <para>消息</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupInfo(System.Boolean)">
+            <summary>
+            获取群信息
+            </summary>
+            <param name="useCache">是否使用缓存</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupInfo"/> 群信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupMemberList">
+            <summary>
+            获取群成员列表
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/> 群成员列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupMemberInfo(System.Int64,System.Boolean)">
+            <summary>
+            获取群成员信息
+            </summary>
+            <param name="userId">用户ID</param>
+            <param name="useCache">是否使用缓存</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupMemberInfo"/> 群成员信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.SendGroupForwardMsg(System.Collections.Generic.List{Sora.Entities.CQCodes.CQCodeModel.Node})">
+            <summary>
+            发送合并转发(群)
+            但好像不能用的样子
+            </summary>
+            <param name="nodeList">
+            节点(<see cref="T:Sora.Entities.CQCodes.CQCodeModel.Node"/>)消息段列表
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupFileSysInfo">
+            <summary>
+            获取群文件系统信息
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupFileSysInfo"/> 文件系统信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupRootFiles">
+            <summary>
+            获取群根目录文件列表
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="groupFiles"/> 文件列表</para>
+            <para><see langword="groupFolders"/> 文件夹列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupFilesByFolder(System.String)">
+            <summary>
+            获取群根目录文件列表
+            </summary>
+            <param name="foldId">文件夹ID</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="groupFiles"/> 文件列表</para>
+            <para><see langword="groupFolders"/> 文件夹列表</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Group.GetGroupFileUrl(System.String,System.Int32)">
+            <summary>
+            获取群文件资源链接
+            </summary>
+            <param name="fileId">文件ID</param>
+            <param name="busid">文件类型</param>
+            <returns>文件链接</returns>
+        </member>
+        <member name="M:Sora.Entities.Group.EnableGroupMemberMute(System.Int64,System.Int64)">
+            <summary>
+            设置群组成员禁言
+            </summary>
+            <param name="userId">用户id</param>
+            <param name="duration">
+            <para>禁言时长(s)</para>
+            <para>至少60s</para>
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Group.DisableGroupMemberMute(System.Int64)">
+            <summary>
+            解除群组成员禁言
+            </summary>
+            <param name="userId">用户id</param>
+        </member>
+        <member name="M:Sora.Entities.Group.EnableGroupMute">
+            <summary>
+            群组全员禁言
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Group.DisableGroupMute">
+            <summary>
+            解除群组全员禁言
+            </summary>s
+        </member>
+        <member name="M:Sora.Entities.Group.SetGroupMemberSpecialTitle(System.Int64,System.String)">
+            <summary>
+            设置群成员专属头衔
+            </summary>
+            <param name="userId">用户id</param>
+            <param name="specialTitle">
+            <para>专属头衔</para>
+            <para>当值为 <see langword="null"/> 或 <see cref="T:System.String"/>.<see langword="Empty"/> 时为清空名片</para>
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Group.SetGroupCard(System.Int64,System.String)">
+            <summary>
+            设置群名片
+            </summary>
+            <param name="userId">用户id</param>
+            <param name="card">
+            <para>新名片</para>
+            <para>当值为 <see langword="null"/> 或 <see cref="T:System.String"/>.<see langword="Empty"/> 时为清空名片</para>
+            </param>
+        </member>
+        <member name="M:Sora.Entities.Group.EnableGroupAdmin(System.Int64)">
+            <summary>
+            设置群管理员
+            </summary>
+            <param name="userId">成员id</param>
+        </member>
+        <member name="M:Sora.Entities.Group.DisableGroupAdmin(System.Int64)">
+            <summary>
+            取消群管理员
+            </summary>
+            <param name="userId">成员id</param>
+        </member>
+        <member name="M:Sora.Entities.Group.LeaveGroup">
+            <summary>
+            退出群
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Group.DismissGroup">
+            <summary>
+            解散群
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Group.KickGroupMember(System.Int64,System.Boolean)">
+            <summary>
+            群组踢人
+            </summary>
+            <param name="userId">用户id</param>
+            <param name="rejectRequest">拒绝此人的加群请求</param>
+        </member>
+        <member name="M:Sora.Entities.Group.SetGroupName(System.String)">
+            <summary>
+            设置群名
+            </summary>
+            <param name="newName">新群名</param>
+        </member>
+        <member name="M:Sora.Entities.Group.SetGroupPortrait(System.String,System.Boolean)">
+            <summary>
+            设置群头像
+            </summary>
+            <param name="imageFile">图片名/绝对路径/URL/base64</param>
+            <param name="useCache">是否使用缓存</param>
+        </member>
+        <member name="M:Sora.Entities.Group.op_Implicit(Sora.Entities.Group)~System.Int64">
+            <summary>
+            定义将 <see cref="T:Sora.Entities.Group"/> 对象转换为 <see cref="T:System.Int64"/>
+            </summary>
+            <param name="value">转换的 <see cref="T:Sora.Entities.Group"/> 对象</param>
+        </member>
+        <member name="T:Sora.Entities.Info.FriendInfo">
+            <summary>
+            好友信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.FriendInfo.Remark">
+            <summary>
+            好友备注
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.FriendInfo.Nick">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.FriendInfo.UserId">
+            <summary>
+            好友ID
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupFileInfo">
+            <summary>
+            群文件信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.Id">
+            <summary>
+            文件ID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.Name">
+            <summary>
+            文件名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.BusId">
+            <summary>
+            文件类型ID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.Size">
+            <summary>
+            文件大小
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.UploadTime">
+            <summary>
+            上传时间
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.DeadTime">
+            <summary>
+            <para>过期时间</para>
+            <para>永久文件为0</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.ModifyTime">
+            <summary>
+            修改时间
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.DownloadCount">
+            <summary>
+            下载次数
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.UploadUserId">
+            <summary>
+            上传者UID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileInfo.UploadUserName">
+            <summary>
+            上传者名
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupFileSysInfo">
+            <summary>
+            群文件系统信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileSysInfo.FileCount">
+            <summary>
+            文件总数
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileSysInfo.FileLimit">
+            <summary>
+            文件数量上限
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileSysInfo.UsedSpace">
+            <summary>
+            已使用空间(Byte)
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFileSysInfo.TotalSpace">
+            <summary>
+            总空间(Byte)
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupFolderInfo">
+            <summary>
+            群文件夹信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFolderInfo.Id">
+            <summary>
+            文件夹ID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFolderInfo.Name">
+            <summary>
+            文件夹名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFolderInfo.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFolderInfo.CreatorUserId">
+            <summary>
+            创建者UID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFolderInfo.CreatorUserName">
+            <summary>
+            创建者名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupFolderInfo.FileCount">
+            <summary>
+            子文件数量
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupInfo">
+            <summary>
+            群信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupInfo.GroupName">
+            <summary>
+            群名称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupInfo.MemberCount">
+            <summary>
+            成员数
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupInfo.MaxMemberCount">
+            <summary>
+            最大成员数（群容量）
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupInfo.GroupId">
+            <summary>
+            群组ID
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupMemberInfo">
+            <summary>
+            群成员信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.UserId">
+            <summary>
+            成员UID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Nick">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Card">
+            <summary>
+            群名片／备注
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Age">
+            <summary>
+            年龄
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Area">
+            <summary>
+            地区
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.JoinTime">
+            <summary>
+            加群时间戳
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.LastSentTime">
+            <summary>
+            最后发言时间戳
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Level">
+            <summary>
+            成员等级
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Role">
+            <summary>
+            角色(权限等级)
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Unfriendly">
+            <summary>
+            是否不良记录成员
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.Title">
+            <summary>
+            专属头衔
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.TitleExpireTime">
+            <summary>
+            专属头衔过期时间戳
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupMemberInfo.CardChangeable">
+            <summary>
+            是否允许修改群名片
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupRequestInfo">
+            <summary>
+            <para>群组请求信息</para>
+            <para>通过获取群系统消息API获得</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.ID">
+            <summary>
+            请求ID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.UserID">
+            <summary>
+            请求源UID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.UserNick">
+            <summary>
+            请求源用户名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.Message">
+            <summary>
+            <para>验证消息</para>
+            <para>当信息类型为邀请列表时此字段为空</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.GroupId">
+            <summary>
+            请求源群号
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.GroupName">
+            <summary>
+            请求源群名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.Checked">
+            <summary>
+            请求是否已经被处理
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupRequestInfo.ActorUserId">
+            <summary>
+            <para>处理者UID</para>
+            <para>未处理时为0</para>
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.GroupSenderInfo">
+            <summary>
+            群组消息发送者
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.UserId">
+            <summary>
+            发送者 QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Nick">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Card">
+            <summary>
+            群名片/备注
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Age">
+            <summary>
+            年龄
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Area">
+            <summary>
+            地区
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Level">
+            <summary>
+            成员等级
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Role">
+            <summary>
+            角色(权限等级)
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.GroupSenderInfo.Title">
+            <summary>
+            专属头衔
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.OfflineFileInfo">
+            <summary>
+            离线文件信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.OfflineFileInfo.Name">
+            <summary>
+            文件名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.OfflineFileInfo.Size">
+            <summary>
+            文件大小
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.OfflineFileInfo.Url">
+            <summary>
+            文件链接
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.PrivateSenderInfo">
+            <summary>
+            私聊消息发送者
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.PrivateSenderInfo.UserId">
+            <summary>
+            发送者 QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.PrivateSenderInfo.Nick">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.PrivateSenderInfo.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.PrivateSenderInfo.Age">
+            <summary>
+            年龄
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.UploadFileInfo">
+            <summary>
+            上传文件的信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UploadFileInfo.FileId">
+            <summary>
+            文件 ID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UploadFileInfo.Name">
+            <summary>
+            文件名
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UploadFileInfo.Size">
+            <summary>
+            文件大小(Byte)
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UploadFileInfo.Busid">
+            <summary>
+            未知字段
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Info.UserInfo">
+            <summary>
+            用户信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UserInfo.UserId">
+            <summary>
+            用户id
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UserInfo.Nick">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UserInfo.Age">
+            <summary>
+            年龄
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UserInfo.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UserInfo.Level">
+            <summary>
+            等级
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Info.UserInfo.LoginDays">
+            <summary>
+            登陆天数
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.Message">
+            <summary>
+            消息实例
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Message.MessageId">
+            <summary>
+            消息ID
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Message.RawText">
+            <summary>
+            纯文本信息
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Message.MessageList">
+            <summary>
+            消息段列表
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Message.Time">
+            <summary>
+            消息时间戳
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.Message.Font">
+            <summary>
+            消息字体id
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Message.RecallMessage">
+            <summary>
+            撤回本条消息
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.Message.GetAllAtList">
+            <summary>
+            获取所有At的UID
+            </summary>
+            <returns>
+            <para>At的uid列表</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/>(T=<see cref="T:System.Int64"/>)</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Message.GetRecordUrl">
+            <summary>
+            获取语音URL
+            仅在消息为语音时有效
+            </summary>
+            <returns>语音文件url</returns>
+        </member>
+        <member name="M:Sora.Entities.Message.GetAllImage">
+            <summary>
+            获取所有图片信息
+            </summary>
+            <returns>
+            <para>图片信息结构体列表</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/>(T=<see cref="T:Sora.Entities.CQCodes.CQCodeModel.Image"/>)</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.Message.ToString">
+            <summary>
+            <para>转纯文本信息</para>
+            <para>注意：CQ码会被转换为onebot的string消息段格式</para>
+            </summary>
+        </member>
+        <member name="T:Sora.Entities.User">
+            <summary>
+            用户类
+            </summary>
+        </member>
+        <member name="P:Sora.Entities.User.Id">
+            <summary>
+            当前实例的用户ID
+            </summary>
+        </member>
+        <member name="M:Sora.Entities.User.#ctor(System.Guid,System.Int64)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器连接标识</param>
+            <param name="uid">用户ID</param>
+        </member>
+        <member name="M:Sora.Entities.User.SendPrivateMessage(System.Object[])">
+            <summary>
+            发送私聊消息
+            </summary>
+            <param name="message">
+            <para>消息</para>
+            <para>可以为<see cref="T:System.String"/>/<see cref="T:Sora.Entities.CQCodes.CQCode"/>/<see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+        </member>
+        <member name="M:Sora.Entities.User.SendPrivateMessage(System.Collections.Generic.List{Sora.Entities.CQCodes.CQCode})">
+            <summary>
+            发送群消息
+            </summary>
+            <param name="message">
+            <para>消息</para>
+            <para><see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 消息ID</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.User.GetUserInfo(System.Boolean)">
+            <summary>
+            获取用户信息
+            </summary>
+            <param name="useCache"></param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.UserInfo"/> 群成员信息</para>
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.User.CQCodeAt">
+            <summary>
+            获取At的CQ码
+            </summary>
+            <returns>
+            <see cref="T:Sora.Entities.CQCodes.CQCode"/> AT
+            </returns>
+        </member>
+        <member name="M:Sora.Entities.User.op_Implicit(Sora.Entities.User)~System.Int64">
+            <summary>
+            定义将 <see cref="T:Sora.Entities.User"/> 对象转换为 <see cref="T:System.Int64"/>
+            </summary>
+            <param name="value">转换的 <see cref="T:Sora.Entities.User"/> 对象</param>
+        </member>
+        <member name="M:Sora.Entities.User.op_Implicit(Sora.Entities.User)~System.String">
+            <summary>
+            定义将 <see cref="T:Sora.Entities.User"/> 对象转换为 <see cref="T:System.String"/>
+            </summary>
+            <param name="value">转换的 <see cref="T:Sora.Entities.User"/> 对象</param>
+        </member>
+        <member name="T:Sora.Enumeration.ApiEnum.APIStatusType">
+            <summary>
+            API返回值
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIStatusType.OK">
+            <summary>
+            API执行成功
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIStatusType.Failed">
+            <summary>
+            API执行失败
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIStatusType.NotFound">
+            <summary>
+            404
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIStatusType.Error">
+            <summary>
+            API执行发生内部错误
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIStatusType.Failed_">
+            <summary>
+            API执行失败
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIStatusType.TimeOut">
+            <summary>
+            API超时
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SendMsg">
+            <summary>
+            发送消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetLoginInfo">
+            <summary>
+            获取登录号信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetVersion">
+            <summary>
+            获取版本信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.RecallMsg">
+            <summary>
+            撤回消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetFriendList">
+            <summary>
+            获取好友列表
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupList">
+            <summary>
+            获取群列表
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupInfo">
+            <summary>
+            获取群成员信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupMemberInfo">
+            <summary>
+            获取群成员信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetStrangerInfo">
+            <summary>
+            获取陌生人信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupMemberList">
+            <summary>
+            获取群成员列表
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetFriendAddRequest">
+            <summary>
+            处理加好友请求
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupAddRequest">
+            <summary>
+            处理加群请求/邀请
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupCard">
+            <summary>
+            设置群名片
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupSpecialTitle">
+            <summary>
+            设置群组专属头衔
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupKick">
+            <summary>
+            群组T人
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupBan">
+            <summary>
+            群组单人禁言
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupWholeBan">
+            <summary>
+            群全体禁言
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupAdmin">
+            <summary>
+            设置群管理员
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupLeave">
+            <summary>
+            群退出
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.CanSendImage">
+            <summary>
+            是否可以发送图片
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.CanSendRecord">
+            <summary>
+            是否可以发送语音
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetStatus">
+            <summary>
+            获取插件运行状态
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.Restart">
+            <summary>
+            重启客户端
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetImage">
+            <summary>
+            获取图片信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetMessage">
+            <summary>
+            获取消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupName">
+            <summary>
+            设置群名
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetForwardMessage">
+            <summary>
+            获取合并转发消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SendGroupForwardMsg">
+            <summary>
+            发送合并转发(群)
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.SetGroupPortrait">
+            <summary>
+            设置群头像
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupSystemMsg">
+            <summary>
+            获取群系统消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetWordSlices">
+            <summary>
+            获取中文分词
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupFileSystemInfo">
+            <summary>
+            获取群文件系统信息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupRootFiles">
+            <summary>
+            获取群根目录文件列表
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupFilesByFolder">
+            <summary>
+            获取群子目录文件列表
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.ApiEnum.APIType.GetGroupFileUrl">
+            <summary>
+            获取群文件资源链接
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.CQFunction">
+            <summary>
+            消息段类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Unknown">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Text">
+            <summary>
+            纯文本
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Face">
+            <summary>
+            QQ 表情
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Image">
+            <summary>
+            图片
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Record">
+            <summary>
+            语音
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Video">
+            <summary>
+            短视频
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Music">
+            <summary>	
+            <para>音乐分享</para>	
+            <para>只能发送</para>	
+            </summary>	
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.At">
+            <summary>
+            @某人
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Share">
+            <summary>
+            链接分享
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Reply">
+            <summary>
+            回复
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Forward">
+            <summary>
+            <para>合并转发</para>
+            <para>只能接收</para>
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Poke">
+            <summary>
+            群戳一戳
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Node">
+            <summary>
+            <para>合并转发节点</para>
+            <para>也可能是自定义节点</para>
+            <para>只能发送</para>
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Xml">
+            <summary>
+            XML 消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Json">
+            <summary>
+            JSON 消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.RedBag">
+            <summary>
+            接收红包
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.Gift">
+            <summary>
+            免费礼物发送
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.CardImage">
+            <summary>
+            装逼大图
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.CQFunction.TTS">
+            <summary>
+            文本转语音
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.AdminChangeType">
+            <summary>
+            管理员变动类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.AdminChangeType.Set">
+            <summary>
+            设置
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.AdminChangeType.UnSet">
+            <summary>
+            取消
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.GroupRequestType">
+            <summary>
+            群申请类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.GroupRequestType.Add">
+            <summary>
+            加群申请
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.GroupRequestType.Invite">
+            <summary>
+            加群邀请
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.HonorType">
+            <summary>
+            荣誉类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.HonorType.Talkative">
+            <summary>
+            龙王
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.HonorType.Performer">
+            <summary>
+            群聊之火
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.HonorType.Emotion">
+            <summary>
+            快乐源泉
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.MemberChangeType">
+            <summary>
+            群成员变动类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberChangeType.Leave">
+            <summary>
+            主动退群
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberChangeType.Kick">
+            <summary>
+            成员被踢
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberChangeType.KickMe">
+            <summary>
+            登录号被踢
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberChangeType.Approve">
+            <summary>
+            管理员同意入群
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberChangeType.Invite">
+            <summary>
+            管理员邀请入群
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.MemberRoleType">
+            <summary>
+            成员权限等级
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberRoleType.Member">
+            <summary>
+            成员
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberRoleType.Admin">
+            <summary>
+            管理员
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MemberRoleType.Owner">
+            <summary>
+            群主
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.MessageType">
+            <summary>
+            消息类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MessageType.Private">
+            <summary>
+            私聊消息
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MessageType.Group">
+            <summary>
+            群消息
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.MusicShareType">
+            <summary>
+            音乐分享类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MusicShareType.Netease">
+            <summary>
+            网易云音乐
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MusicShareType.QQMusic">
+            <summary>
+            QQ 音乐
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MusicShareType.Xiami">
+            <summary>
+            虾米音乐
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.MuteActionType">
+            <summary>
+            禁言操作类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MuteActionType.Enable">
+            <summary>
+            开启
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.MuteActionType.Disable">
+            <summary>
+            解除
+            </summary>
+        </member>
+        <member name="T:Sora.Enumeration.EventParamsType.RequestType">
+            <summary>
+            请求类型
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.RequestType.Group">
+            <summary>
+            群组请求
+            </summary>
+        </member>
+        <member name="F:Sora.Enumeration.EventParamsType.RequestType.Friend">
+            <summary>
+            好友请求
+            </summary>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs">
+            <summary>
+            入群申请
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.Sender">
+            <summary>
+            请求发送者实例
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.SourceGroup">
+            <summary>
+            请求发送到的群组实例
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.Comment">
+            <summary>
+            验证信息
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.RequsetFlag">
+            <summary>
+            当前请求的 flag 标识
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.SubType">
+            <summary>
+            请求子类型
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.RequestEvent.ApiGroupRequestEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="groupRequestArgs">加群申请事件参数</param>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.Accept">
+            <summary>
+            同意当前申请
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.AddGroupRequestEventArgs.Reject(System.String)">
+            <summary>
+            拒绝当前申请
+            </summary>
+            <param name="reason">原因</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.BaseSoraEventArgs">
+            <summary>
+            框架事件基类
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.BaseSoraEventArgs.SoraApi">
+            <summary>
+            当前事件的API执行实例
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.BaseSoraEventArgs.EventName">
+            <summary>
+            当前事件名
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.BaseSoraEventArgs.Time">
+            <summary>
+            事件产生时间
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.BaseSoraEventArgs.LoginUid">
+            <summary>
+            接收当前事件的机器人UID
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.BaseSoraEventArgs.TimeStamp">
+            <summary>
+            事件产生时间戳
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.BaseSoraEventArgs.#ctor(System.Guid,System.String,System.Int64,System.Int64)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="loginUid">当前使用的QQ号</param>
+            <param name="time">连接时间</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.ConnectEventArgs">
+            <summary>
+            客户端连接事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.ConnectEventArgs.ClientType">
+            <summary>
+            连接客户端类型
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.ConnectEventArgs.ClientVersionCode">
+            <summary>
+            连接客户端版本号
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.ConnectEventArgs.#ctor(System.Guid,System.String,System.Int64,System.String,System.String,System.Int64)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="loginUid">当前使用的QQ号</param>
+            <param name="clientType">当前客户端类型</param>
+            <param name="clientVersion">当前客户端版本</param>
+            <param name="time">连接时间</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.FileUploadEventArgs">
+            <summary>
+            群文件上传事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FileUploadEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FileUploadEventArgs.Sender">
+            <summary>
+            上传者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FileUploadEventArgs.FileInfo">
+            <summary>
+            上传文件的信息
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.FileUploadEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiFileUploadEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="fileUploadArgs">文件上传事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.FriendAddEventArgs">
+            <summary>
+            好友添加事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FriendAddEventArgs.NewFriend">
+            <summary>
+            新好友
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.FriendAddEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiFriendAddEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="friendAddArgs">好友添加事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.FriendRecallEventArgs">
+            <summary>
+            好友消息撤回事件
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FriendRecallEventArgs.Sender">
+            <summary>
+            消息发送者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FriendRecallEventArgs.MessageId">
+            <summary>
+            被撤回的消息ID
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.FriendRecallEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiFriendRecallEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="friendRecallArgs">私聊消息撤回事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.FriendRequestEventArgs">
+            <summary>
+            好友请求事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FriendRequestEventArgs.Sender">
+            <summary>
+            请求发送者实例
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FriendRequestEventArgs.Comment">
+            <summary>
+            验证信息
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.FriendRequestEventArgs.RequsetFlag">
+            <summary>
+            当前请求的flag标识
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.FriendRequestEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.RequestEvent.ApiFriendRequestEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="friendRequestArgs">好友申请事件参数</param>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.FriendRequestEventArgs.Accept(System.String)">
+            <summary>
+            同意当前申请
+            </summary>
+            <param name="remark">设置备注</param>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.FriendRequestEventArgs.Reject">
+            <summary>
+            拒绝当前申请
+            </summary>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupAdminChangeEventArgs">
+            <summary>
+            管理员变动事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupAdminChangeEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupAdminChangeEventArgs.Sender">
+            <summary>
+            上传者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupAdminChangeEventArgs.SubType">
+            <summary>
+            动作类型
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupAdminChangeEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiAdminChangeEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="adminChangeArgs">管理员变动事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupCardUpdateEventArgs">
+            <summary>
+            成员名片变更事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupCardUpdateEventArgs.User">
+            <summary>
+            名片改变的成员
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupCardUpdateEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupCardUpdateEventArgs.NewCard">
+            <summary>
+            新名片
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupCardUpdateEventArgs.OldCard">
+            <summary>
+            旧名片
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupCardUpdateEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiGroupCardUpdateEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="groupCardUpdateArgs">群名片更新事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupMemberChangeEventArgs">
+            <summary>
+            群成员数量变更事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMemberChangeEventArgs.ChangedUser">
+            <summary>
+            变更成员
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMemberChangeEventArgs.Operator">
+            <summary>
+            执行者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMemberChangeEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMemberChangeEventArgs.SubType">
+            <summary>
+            事件子类型
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMemberChangeEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMemberChangeEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="groupMemberChangeArgs">群成员数量变更参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupMessageEventArgs">
+            <summary>
+            群消息事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.Message">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.IsAnonymousMessage">
+            <summary>
+            是否来源于匿名群成员
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.Sender">
+            <summary>
+            消息发送者实例
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.SenderInfo">
+            <summary>
+            发送者信息
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.SourceGroup">
+            <summary>
+            消息来源群组实例
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.MessageEvent.ApiGroupMsgEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="groupMsgArgs">群消息事件参数</param>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.Reply(System.Object[])">
+            <summary>
+            快速回复
+            </summary>
+            <param name="message">
+            <para>消息</para>
+            <para>可以为<see cref="T:System.String"/>/<see cref="T:Sora.Entities.CQCodes.CQCode"/>/<see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 发送消息的id</para>
+            </returns>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.Repeat">
+            <summary>
+            没什么用的复读功能
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 发送消息的id</para>
+            </returns>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.RecallSourceMessage">
+            <summary>
+            撤回发送者消息
+            只有在管理员以上权限才有效
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMessageEventArgs.GetSenderMemberInfo(System.Boolean)">
+            <summary>
+            获取发送者群成员信息
+            </summary>
+            <param name="useCache">是否使用缓存</param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see cref="T:Sora.Entities.Info.GroupMemberInfo"/> 群成员信息</para>
+            </returns>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupMuteEventArgs">
+            <summary>
+            群禁言事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMuteEventArgs.User">
+            <summary>
+            被执行成员
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMuteEventArgs.Operator">
+            <summary>
+            执行者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMuteEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupMuteEventArgs.Duration">
+            <summary>
+            禁言时长(s)
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupMuteEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMuteEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="groupMuteArgs">群禁言事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupPokeEventArgs">
+            <summary>
+            群戳一戳事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupPokeEventArgs.SendUser">
+            <summary>
+            发送者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupPokeEventArgs.TargetUser">
+            <summary>
+            被戳者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupPokeEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupPokeEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiPokeOrLuckyEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="pokeEventArgs">戳一戳事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.GroupRecallEventArgs">
+            <summary>
+            群消息撤回事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupRecallEventArgs.MessageSender">
+            <summary>
+            消息发送者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupRecallEventArgs.Operator">
+            <summary>
+            撤回执行者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupRecallEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.GroupRecallEventArgs.MessageId">
+            <summary>
+            被撤消息ID
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.GroupRecallEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiGroupRecallEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="groupRecallArgs">群聊撤回事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.HonorEventArgs">
+            <summary>
+            授予荣誉事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.HonorEventArgs.TargetUser">
+            <summary>
+            荣誉获得者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.HonorEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.HonorEventArgs.Honor">
+            <summary>
+            荣誉类型
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.HonorEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiHonorEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="honorEventArgs">荣誉变更事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.LuckyKingEventArgs">
+            <summary>
+            红包运气王事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.LuckyKingEventArgs.SendUser">
+            <summary>
+            红包发送者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.LuckyKingEventArgs.TargetUser">
+            <summary>
+            运气王
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.LuckyKingEventArgs.SourceGroup">
+            <summary>
+            消息源群
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.LuckyKingEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiPokeOrLuckyEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="luckyKingEventArgs">运气王事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.OfflineFileEventArgs">
+            <summary>
+            接收到离线文件事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.OfflineFileEventArgs.Sender">
+            <summary>
+            文件发送者
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.OfflineFileEventArgs.OfflineFileInfo">
+            <summary>
+            离线文件信息
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.OfflineFileEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.NoticeEvent.ApiOfflineFileEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="offlineFileArgs">离线文件事件参数</param>
+        </member>
+        <member name="T:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs">
+            <summary>
+            私聊消息事件参数
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs.Message">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs.Sender">
+            <summary>
+            消息发送者实例
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs.SenderInfo">
+            <summary>
+            发送者信息
+            </summary>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs.#ctor(System.Guid,System.String,Sora.Server.OnebotEvent.MessageEvent.ApiPrivateMsgEventArgs)">
+            <summary>
+            初始化
+            </summary>
+            <param name="connectionGuid">服务器链接标识</param>
+            <param name="eventName">事件名</param>
+            <param name="privateMsgArgs">私聊消息事件参数</param>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs.Reply(System.Object[])">
+            <summary>
+            快速回复
+            </summary>
+            <param name="message">
+            <para>消息</para>
+            <para>可以为<see cref="T:System.String"/>/<see cref="T:Sora.Entities.CQCodes.CQCode"/>/<see cref="T:System.Collections.Generic.List`1"/>(T = <see cref="T:Sora.Entities.CQCodes.CQCode"/>)</para>
+            <para>其他类型的消息会被强制转换为纯文本</para>
+            </param>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 发送消息的id</para>
+            </returns>
+        </member>
+        <member name="M:Sora.EventArgs.SoraEvent.PrivateMessageEventArgs.Repeat">
+            <summary>
+            没什么用的复读功能
+            </summary>
+            <returns>
+            <para><see cref="T:Sora.Enumeration.ApiEnum.APIStatusType"/> API执行状态</para>
+            <para><see langword="messageId"/> 发送消息的id</para>
+            </returns>
+        </member>
+        <member name="T:Sora.EventArgs.WSSeverEvent.ConnectionEventArgs">
+            <summary>
+            服务器连接事件
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.WSSeverEvent.ConnectionEventArgs.Role">
+            <summary>
+            客户端类型
+            </summary>
+        </member>
+        <member name="P:Sora.EventArgs.WSSeverEvent.ConnectionEventArgs.SelfId">
+            <summary>
+            机器人登录账号UID
+            </summary>
+        </member>
+        <member name="T:Sora.Exceptions.SoraServerIsRuningException">
+            <summary>
+            服务器已经在运行错误
+            </summary>
+        </member>
+        <member name="P:Sora.Exceptions.SoraServerIsRuningException.SelfId">
+            <summary>
+            当前连接的账号id
+            </summary>
+        </member>
+        <member name="M:Sora.Exceptions.SoraServerIsRuningException.#ctor">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:Sora.Exceptions.SoraServerIsRuningException.#ctor(System.String)">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:Sora.Exceptions.SoraServerIsRuningException.#ctor(System.String,System.Exception)">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:Sora.Exceptions.SoraServerIsRuningException.#ctor(System.String,System.Int64,System.Exception)">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="T:Sora.Server.ApiMessageParse.ApiMessage">
+            <summary>
+            Onebot消息段
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ApiMessageParse.ApiMessage.MsgType">
+            <summary>
+            消息段类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ApiMessageParse.ApiMessage.RawData">
+            <summary>
+            消息段JSON
+            </summary>
+        </member>
+        <member name="M:Sora.Server.ApiMessageParse.MessageParse.ParseMessageElement(Sora.Server.ApiMessageParse.ApiMessage)">
+            <summary>
+            处理接收到的消息段
+            </summary>
+            <param name="message">消息段</param>
+            <returns>消息段列表</returns>
+        </member>
+        <member name="M:Sora.Server.ApiMessageParse.MessageParse.ParseMessageList(System.Collections.Generic.List{Sora.Server.ApiMessageParse.ApiMessage})">
+            <summary>
+            处理消息段数组
+            </summary>
+            <param name="messages">消息段数组</param>
+        </member>
+        <member name="T:Sora.Server.ConnectionManager">
+            <summary>
+            服务器连接管理器
+            管理服务器链接和心跳包
+            </summary>
+        </member>
+        <member name="T:Sora.Server.ConnectionManager.SoraConnectionInfo">
+            <summary>
+            用于存储链接信息和心跳时间的结构体
+            </summary>
+        </member>
+        <member name="F:Sora.Server.ConnectionManager.ConnectionList">
+            <summary>
+            静态链接表
+            </summary>
+        </member>
+        <member name="T:Sora.Server.ConnectionManager.ServerAsyncCallBackHandler`1">
+            <summary>
+            服务器事件回调
+            </summary>
+            <typeparam name="TEventArgs">事件参数</typeparam>
+            <param name="sender">Bot Id</param>
+            <param name="eventArgs">事件参数</param>
+            <returns></returns>
+        </member>
+        <member name="E:Sora.Server.ConnectionManager.OnOpenConnectionAsync">
+            <summary>
+            打开连接回调
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ConnectionManager.OnCloseConnectionAsync">
+            <summary>
+            关闭连接回调
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ConnectionManager.OnHeartBeatTimeOut">
+            <summary>
+            心跳包超时回调
+            </summary>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.AddConnection(System.Guid,Fleck.IWebSocketConnection,System.String)">
+            <summary>
+            添加服务器连接记录
+            </summary>
+            <param name="connectionGuid">连接标识</param>
+            <param name="connectionInfo">连接信息</param>
+            <param name="selfId">机器人UID</param>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.RemoveConnection(System.Guid)">
+            <summary>
+            移除服务器连接记录
+            </summary>
+            <param name="connectionGuid">连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.ConnectionExitis(System.Guid)">
+            <summary>
+            检查是否存在连接
+            </summary>
+            <param name="connectionGuid">连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.HeartBeatCheck(System.Object)">
+            <summary>
+            心跳包超时检查
+            </summary>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.HeartBeatUpdate(System.Guid)">
+            <summary>
+            刷新心跳包记录
+            </summary>
+            <param name="connectionGuid">连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.OpenConnection(System.String,System.String,Fleck.IWebSocketConnection)">
+            <summary>
+            服务器链接开启事件
+            </summary>
+            <param name="role">通道标识</param>
+            <param name="selfId">事件源</param>
+            <param name="socket">连接</param>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.CloseConnection(System.String,System.String,Fleck.IWebSocketConnection)">
+            <summary>
+            服务器链接关闭事件
+            </summary>
+            <param name="role">通道标识</param>
+            <param name="selfId">事件源</param>
+            <param name="socket">连接信息</param>
+        </member>
+        <member name="M:Sora.Server.ConnectionManager.HeartBeatTimeOutEvent(System.Int64,Fleck.IWebSocketConnectionInfo)">
+            <summary>
+            心跳包超时事件
+            </summary>
+            <param name="sender">连接信息</param>
+            <param name="selfId">事件源</param>
+        </member>
+        <member name="T:Sora.Server.Converter.EnumDescriptionConverter">
+            <summary>
+            用于Enum和Description特性互相转换的Json转换器
+            </summary>
+        </member>
+        <member name="M:Sora.Server.Converter.EnumDescriptionConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            序列化时执行的转换
+            获取枚举的描述值
+            </summary>
+        </member>
+        <member name="M:Sora.Server.Converter.EnumDescriptionConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            序列化时执行的转换
+            通过Description获取枚举值
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.BaseApiEventArgs">
+            <summary>
+            OneBot事件基类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.BaseApiEventArgs.Time">
+            <summary>
+            事件发生的时间戳
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.BaseApiEventArgs.SelfID">
+            <summary>
+            收到事件的机器人 QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.BaseApiEventArgs.PostType">
+            <summary>
+            事件类型
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.MessageEvent.ApiGroupMsgEventArgs">
+            <summary>
+            群组消息事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.ApiGroupMsgEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.ApiGroupMsgEventArgs.Anonymous">
+            <summary>
+            匿名信息
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.ApiGroupMsgEventArgs.SenderInfo">
+            <summary>
+            发送人信息
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.MessageEvent.ApiPrivateMsgEventArgs">
+            <summary>
+            私聊消息事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.ApiPrivateMsgEventArgs.SenderInfo">
+            <summary>
+            发送人信息
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs">
+            <summary>
+            消息事件基类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.MessageType">
+            <summary>
+            消息类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.SubType">
+            <summary>
+            消息子类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.MessageId">
+            <summary>
+            消息 ID
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.UserId">
+            <summary>
+            发送者 QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.MessageList">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.RawMessage">
+            <summary>
+            原始消息内容
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MessageEvent.BaseMessageEventArgs.Font">
+            <summary>
+            字体
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.MetaEvent.ApiHeartBeatEventArgs">
+            <summary>
+            心跳包
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MetaEvent.ApiHeartBeatEventArgs.Status">
+            <summary>
+            状态信息
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MetaEvent.ApiHeartBeatEventArgs.Interval">
+            <summary>
+            到下次心跳的间隔，单位毫秒
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.MetaEvent.ApiLifeCycleEventArgs">
+            <summary>
+            生命周期事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MetaEvent.ApiLifeCycleEventArgs.SubType">
+            <summary>
+            <para>事件子类型</para>
+            <para>当前版本只可能为<see langword="connect"/></para>
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.MetaEvent.BaseMetaEventArgs">
+            <summary>
+            元事件基类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.MetaEvent.BaseMetaEventArgs.MetaEventType">
+            <summary>
+            元事件类型
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiAdminChangeEventArgs">
+            <summary>
+            群管理员变动事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiAdminChangeEventArgs.SubType">
+            <summary>
+            事件子类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiAdminChangeEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiFileUploadEventArgs">
+            <summary>
+            群文件上传事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiFileUploadEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiFileUploadEventArgs.Upload">
+            <summary>
+            上传的文件信息
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiFriendAddEventArgs">
+            <summary>
+            好友添加事件
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiFriendRecallEventArgs">
+            <summary>
+            好友消息撤回
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiFriendRecallEventArgs.MessageId">
+            <summary>
+            被撤回的消息 ID
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupCardUpdateEventArgs">
+            <summary>
+            Go扩展事件
+            群成员名片变更事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupCardUpdateEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupCardUpdateEventArgs.NewCard">
+            <summary>
+            新名片
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupCardUpdateEventArgs.OldCard">
+            <summary>
+            旧名片
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMemberChangeEventArgs">
+            <summary>
+            群成员变动事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMemberChangeEventArgs.SubType">
+            <summary>
+            事件子类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMemberChangeEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMemberChangeEventArgs.OperatorId">
+            <summary>
+            操作者 QQ 号
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMuteEventArgs">
+            <summary>
+            群禁言事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMuteEventArgs.ActionType">
+            <summary>
+            事件子类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMuteEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMuteEventArgs.OperatorId">
+            <summary>
+            操作者 UID
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupMuteEventArgs.Duration">
+            <summary>
+            禁言时长(s)
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupRecallEventArgs">
+            <summary>
+            群消息撤回事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupRecallEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupRecallEventArgs.OperatorId">
+            <summary>
+            操作者 QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiGroupRecallEventArgs.MessageId">
+            <summary>
+            被撤回的消息 ID
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiHonorEventArgs">
+            <summary>
+            群成员荣誉变更事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiHonorEventArgs.HonorType">
+            <summary>
+            荣誉类型
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiOfflineFileEventArgs">
+            <summary>
+            离线文件事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiOfflineFileEventArgs.Info">
+            <summary>
+            离线文件信息
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.ApiPokeOrLuckyEventArgs">
+            <summary>
+            戳一戳或运气王事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.ApiPokeOrLuckyEventArgs.TargetId">
+            <summary>
+            目标UID
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.BaseNoticeEventArgs">
+            <summary>
+            消息事件基类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.BaseNoticeEventArgs.NoticeType">
+            <summary>
+            消息类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.BaseNoticeEventArgs.UserId">
+            <summary>
+            操作对象UID
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.NoticeEvent.BaseNotifyEventArgs">
+            <summary>
+            群内通知类事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.NoticeEvent.BaseNotifyEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.RequestEvent.ApiFriendRequestEventArgs">
+            <summary>
+            好友邀请事件
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.RequestEvent.ApiGroupRequestEventArgs">
+            <summary>
+            群聊邀请/入群请求事件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.RequestEvent.ApiGroupRequestEventArgs.GroupRequestType">
+            <summary>
+            请求子类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.RequestEvent.ApiGroupRequestEventArgs.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="T:Sora.Server.OnebotEvent.RequestEvent.BaseRequestEvent">
+            <summary>
+            请求事件基类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.RequestEvent.BaseRequestEvent.RequestType">
+            <summary>
+            请求类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.RequestEvent.BaseRequestEvent.UserId">
+            <summary>
+            发送请求的 QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.RequestEvent.BaseRequestEvent.Comment">
+            <summary>
+            验证信息
+            </summary>
+        </member>
+        <member name="P:Sora.Server.OnebotEvent.RequestEvent.BaseRequestEvent.Flag">
+            <summary>
+            请求 flag
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.ApiRequest">
+            <summary>
+            API请求类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.ApiRequest.ApiType">
+            <summary>
+            API请求类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.ApiRequest.Echo">
+            <summary>
+            请求标识符
+            会自动生成初始值不需要设置
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.ApiRequest.ApiParams">
+            <summary>
+            API参数对象
+            不需要参数时不需要设置
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.GetGroupInfoParams">
+            <summary>
+            获取群成员信息请求参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetGroupInfoParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetGroupInfoParams.NoCache">
+            <summary>
+            是否不使用缓存
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.GetGroupMemberInfoParams">
+            <summary>
+            获取群成员信息参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetGroupMemberInfoParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetGroupMemberInfoParams.Uid">
+            <summary>
+            QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetGroupMemberInfoParams.NoCache">
+            <summary>
+            是否不使用缓存
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.GetStrangerInfoParams">
+            <summary>
+            获取陌生人信息请求参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetStrangerInfoParams.Uid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.GetStrangerInfoParams.NoCache">
+            <summary>
+            是否不使用缓存
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SendMessageParams">
+            <summary>
+            发送消息调用参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SendMessageParams.MessageType">
+            <summary>
+            消息类型 群/私聊
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SendMessageParams.UserId">
+            <summary>
+            用户id
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SendMessageParams.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SendMessageParams.Message">
+            <summary>
+            消息段数组
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SendMessageParams.AutoEscape">
+            <summary>
+            是否忽略CQ码
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetFriendAddRequestParams">
+            <summary>
+            处理加好友请求参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetFriendAddRequestParams.Flag">
+            <summary>
+            请求flag
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetFriendAddRequestParams.Approve">
+            <summary>
+            是否同意
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetFriendAddRequestParams.Remark">
+            <summary>
+            好友备注
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupAddRequestParams">
+            <summary>
+            处理加群请求/邀请参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAddRequestParams.Flag">
+            <summary>
+            请求flag
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAddRequestParams.GroupRequestType">
+            <summary>
+            请求类型
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAddRequestParams.Approve">
+            <summary>
+            是否同意
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAddRequestParams.Reason">
+            <summary>
+            拒绝理由（仅在拒绝时有效）
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupAdminParams">
+            <summary>
+            设置群管理员参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAdminParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAdminParams.Uid">
+            <summary>
+            QQ 号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupAdminParams.Enable">
+            <summary>
+            设置或取消
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupBanParams">
+            <summary>
+            群组单人禁言参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupBanParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupBanParams.Uid">
+            <summary>
+            成员UID
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupBanParams.Duration">
+            <summary>
+            禁言时长(秒)
+            0为取消
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupCardParams">
+            <summary>
+            设置群名片参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupCardParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupCardParams.Uid">
+            <summary>
+            成员UID
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupCardParams.Card">
+            <summary>
+            群名片内容
+            空字符串表示删除
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupKickParams">
+            <summary>
+            群踢人参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupKickParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupKickParams.Uid">
+            <summary>
+            成员UID
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupKickParams.RejectAddRequest">
+            <summary>
+            拒绝此人的加群请求
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupLeaveParams">
+            <summary>
+            群退出请求参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupLeaveParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupLeaveParams.Dismiss">
+            <summary>
+            是否解散
+            仅在bot为群主时有效
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupSpecialTitleParams">
+            <summary>
+            设置群成员头衔参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupSpecialTitleParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupSpecialTitleParams.Uid">
+            <summary>
+            成员UID
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupSpecialTitleParams.Title">
+            <summary>
+            专属头衔
+            空字符串表示删除
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupSpecialTitleParams.Duration">
+            <summary>
+            专属头衔有效期(秒)
+            无效字段
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.ApiParams.SetGroupWholeBanParams">
+            <summary>
+            群组全员禁言参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupWholeBanParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.ApiParams.SetGroupWholeBanParams.Enable">
+            <summary>
+            是否禁言
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.GoApiParams.GetForwardParams">
+            <summary>
+            获取合并转发消息
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.GetForwardParams.MessageId">
+            <summary>
+            消息id
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.GoApiParams.GetImageParams">
+            <summary>
+            获取图片信息
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.GoApiParams.SendGroupForwardMsgParams">
+            <summary>
+            发送合并转发(群)参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SendGroupForwardMsgParams.GroupId">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SendGroupForwardMsgParams.NodeMsgList">
+            <summary>
+            消息节点列表
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.GoApiParams.SetGroupNameParams">
+            <summary>
+            设置群名参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SetGroupNameParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SetGroupNameParams.GroupName">
+            <summary>
+            群名
+            </summary>
+        </member>
+        <member name="T:Sora.Server.Params.GoApiParams.SetGroupPortraitParams">
+            <summary>
+            设置群头像参数
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SetGroupPortraitParams.Gid">
+            <summary>
+            群号
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SetGroupPortraitParams.ImageFile">
+            <summary>
+            图片文件
+            </summary>
+        </member>
+        <member name="P:Sora.Server.Params.GoApiParams.SetGroupPortraitParams.UseCache">
+            <summary>
+            是否使用已缓存的文件
+            </summary>
+        </member>
+        <member name="T:Sora.Server.ServerConfig">
+            <summary>
+            <para>服务器配置类</para>
+            <para>所有设置项都有默认值一般不需要配置</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.Location">
+            <summary>
+            反向服务器监听地址
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.Port">
+            <summary>
+            反向服务器端口
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.AccessToken">
+            <summary>
+            鉴权Token
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.ApiPath">
+            <summary>
+            API请求路径
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.EventPath">
+            <summary>
+            Event请求路径
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.UniversalPath">
+            <summary>
+            Universal请求路径
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.HeartBeatTimeOut">
+            <summary>
+            <para>心跳包超时设置(秒)</para>
+            <para>此值请不要小于或等于客户端心跳包的发送间隔</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerConfig.ApiTimeOut">
+            <summary>
+            <para>客户端API调用超时设置(毫秒)</para>
+            <para>默认为1000无需修改</para>
+            </summary>
+        </member>
+        <member name="P:Sora.Server.ServerInterface.ApiInterface.TimeOut">
+            <summary>
+            API超时时间
+            </summary>
+        </member>
+        <member name="T:Sora.Server.ServerInterface.ApiInterface.ApiResponse">
+            <summary>
+            暂存数据结构定义
+            </summary>
+        </member>
+        <member name="F:Sora.Server.ServerInterface.ApiInterface.RequestList">
+            <summary>
+            API请求暂存表
+            </summary>
+        </member>
+        <member name="F:Sora.Server.ServerInterface.ApiInterface.ApiSubject">
+            <summary>
+            API响应被观察者
+            </summary>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SendPrivateMessage(System.Guid,System.Int64,System.Collections.Generic.List{Sora.Entities.CQCodes.CQCode})">
+            <summary>
+            发送私聊消息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="target">发送目标uid</param>
+            <param name="messages">发送的信息</param>
+            <returns>
+            message id
+            </returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SendGroupMessage(System.Guid,System.Int64,System.Collections.Generic.List{Sora.Entities.CQCodes.CQCode})">
+            <summary>
+            发送群聊消息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="target">发送目标gid</param>
+            <param name="messages">发送的信息</param>
+            <returns>
+            ApiResponseCollection
+            </returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetLoginInfo(System.Guid)">
+            <summary>
+            获取登陆账号信息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <returns>ApiResponseCollection</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetClientInfo(System.Guid)">
+            <summary>
+            获取版本信息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetFriendList(System.Guid)">
+            <summary>
+            获取好友列表
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <returns>好友信息列表</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupList(System.Guid)">
+            <summary>
+            获取群组列表
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <returns>群组信息列表</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupMemberList(System.Guid,System.Int64)">
+            <summary>
+            获取群成员列表
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupInfo(System.Guid,System.Int64,System.Boolean)">
+            <summary>
+            获取群信息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="useCache">是否使用缓存</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupMemberInfo(System.Guid,System.Int64,System.Int64,System.Boolean)">
+            <summary>
+            获取群成员信息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="uid">用户ID</param>
+            <param name="useCache">是否使用缓存</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetUserInfo(System.Guid,System.Int64,System.Boolean)">
+            <summary>
+            获取用户信息
+            可以为好友或陌生人
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="uid">用户ID</param>
+            <param name="useCache"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.CanSendImage(System.Guid)">
+            <summary>
+            检查是否可以发送图片
+            </summary>
+            <param name="connection">服务器连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.CanSendRecord(System.Guid)">
+            <summary>
+            检查是否可以发送语音
+            </summary>
+            <param name="connection">服务器连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetStatus(System.Guid)">
+            <summary>
+            获取客户端状态
+            </summary>
+            <param name="connection">服务器连接标识</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetImage(System.Guid,System.String)">
+            <summary>
+            获取图片信息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="cacheFileName">缓存文件名</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetMessage(System.Guid,System.Int32)">
+            <summary>
+            获取消息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="msgId">消息ID</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetWordSlices(System.Guid,System.String)">
+            <summary>
+            获取中文分词
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="text">内容</param>
+            <returns>词组列表</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetForwardMessage(System.Guid,System.String)">
+            <summary>
+            获取合并转发消息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="msgId">合并转发 ID</param>
+            <returns>ApiResponseCollection</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupSystemMsg(System.Guid)">
+            <summary>
+            获取群系统消息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <returns>消息列表</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupFileSysInfo(System.Int64,System.Guid)">
+            <summary>
+            获取群文件系统信息
+            </summary>
+            <param name="gid">群号</param>
+            <param name="connection">连接标识</param>
+            <returns>文件系统信息</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupRootFiles(System.Int64,System.Guid)">
+            <summary>
+            获取群根目录文件列表
+            </summary>
+            <param name="gid">群号</param>
+            <param name="connection">连接标识</param>
+            <returns>文件列表/文件夹列表</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupFilesByFolder(System.Int64,System.String,System.Guid)">
+            <summary>
+            获取群子目录文件列表
+            </summary>
+            <param name="gid">群号</param>
+            <param name="folderID">文件夹ID</param>
+            <param name="connection">连接标识</param>
+            <returns>文件列表/文件夹列表</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetGroupFileUrl(System.Int64,System.String,System.Int32,System.Guid)">
+            <summary>
+            获取群文件资源链接
+            </summary>
+            <param name="gid">群号</param>
+            <param name="fileId">文件ID</param>
+            <param name="busId">文件类型</param>
+            <param name="connection">连接标识</param>
+            <returns>资源链接</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.RecallMsg(System.Guid,System.Int32)">
+            <summary>
+            撤回消息
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="msgId">消息id</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetFriendAddRequest(System.Guid,System.String,System.Boolean,System.String)">
+            <summary>
+            处理加好友请求
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="flag">请求flag</param>
+            <param name="approve">是否同意</param>
+            <param name="remark">好友备注</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupAddRequest(System.Guid,System.String,Sora.Enumeration.EventParamsType.GroupRequestType,System.Boolean,System.String)">
+            <summary>
+            处理加群请求/邀请
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="flag">请求flag</param>
+            <param name="requestType">请求类型</param>
+            <param name="approve">是否同意</param>
+            <param name="reason">好友备注</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupCard(System.Guid,System.Int64,System.Int64,System.String)">
+            <summary>
+            设置群名片
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="uid">用户id</param>
+            <param name="card">新名片</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupSpecialTitle(System.Guid,System.Int64,System.Int64,System.String)">
+            <summary>
+            设置群组专属头衔
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="uid">用户id</param>
+            <param name="title">头衔</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupKick(System.Guid,System.Int64,System.Int64,System.Boolean)">
+            <summary>
+            群组踢人
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="uid">用户id</param>
+            <param name="rejectRequest">拒绝此人的加群请求</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupBan(System.Guid,System.Int64,System.Int64,System.Int64)">
+            <summary>
+            群组单人禁言
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="uid">用户id</param>
+            <param name="duration">禁言时长(s)</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupWholeBan(System.Guid,System.Int64,System.Boolean)">
+            <summary>
+            群组全员禁言
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="enable">是否禁言</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupAdmin(System.Guid,System.Int64,System.Int64,System.Boolean)">
+            <summary>
+            设置群管理员
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="uid">成员id</param>
+            <param name="gid">群号</param>
+            <param name="enable">设置或取消</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupLeave(System.Guid,System.Int64,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="connection"></param>
+            <param name="gid"></param>
+            <param name="dismiss"></param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.Restart(System.Guid,System.Int32)">
+            <summary>
+            重启客户端
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="delay">延迟(ms)</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SendGroupForwardMsg(System.Guid,System.Int64,System.Collections.Generic.List{Sora.Entities.CQCodes.CQCodeModel.Node})">
+            <summary>
+            发送合并转发(群)
+            但好像不能用的样子
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="msgList">消息段数组</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupName(System.Guid,System.Int64,System.String)">
+            <summary>
+            设置群名
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="name">新群名</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SetGroupPortrait(System.Guid,System.Int64,System.String,System.Boolean)">
+            <summary>
+            设置群头像
+            </summary>
+            <param name="connection">服务器连接标识</param>
+            <param name="gid">群号</param>
+            <param name="file">图片文件</param>
+            <param name="useCache">是否使用缓存</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetResponse(System.Guid,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取到API响应
+            </summary>
+            <param name="echo">标识符</param>
+            <param name="response">响应json</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SendApiMessage(Sora.Server.Params.ApiParams.ApiRequest,System.Guid)">
+            <summary>
+            向API客户端发送请求数据
+            </summary>
+            <param name="apiRequest">请求信息</param>
+            <param name="connectionGuid">服务器连接标识符</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.SendApiRequest(Sora.Server.Params.ApiParams.ApiRequest,System.Guid)">
+            <summary>
+            向API客户端发送请求数据
+            </summary>
+            <param name="apiRequest">请求信息</param>
+            <param name="connectionGuid">服务器连接标识符</param>
+            <returns>API返回</returns>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.ApiInterface.GetBaseRetCode(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取API状态返回值
+            所有API回调请求都会返回状态值
+            </summary>
+            <param name="msg">消息JSON</param>
+        </member>
+        <member name="T:Sora.Server.ServerInterface.EventInterface">
+            <summary>
+            Onebot事件接口
+            判断和分发基类事件
+            </summary>
+        </member>
+        <member name="T:Sora.Server.ServerInterface.EventInterface.EventAsyncCallBackHandler`1">
+            <summary>
+            Onebot事件回调
+            </summary>
+            <typeparam name="TEventArgs">事件参数</typeparam>
+            <param name="sender">产生事件的客户端</param>
+            <param name="eventArgs">事件参数</param>
+            <returns></returns>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnClientConnect">
+            <summary>
+            客户端链接完成事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupMessage">
+            <summary>
+            群聊事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnPrivateMessage">
+            <summary>
+            私聊事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupRequest">
+            <summary>
+            群申请事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnFriendRequest">
+            <summary>
+            好友申请事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnFileUpload">
+            <summary>
+            群文件上传事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupAdminChange">
+            <summary>
+            管理员变动事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupMemberChange">
+            <summary>
+            群成员变动事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupMemberMute">
+            <summary>
+            群成员禁言事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnFriendAdd">
+            <summary>
+            好友添加事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupRecall">
+            <summary>
+            群聊撤回事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnFriendRecall">
+            <summary>
+            好友撤回事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupCardUpdate">
+            <summary>
+            群名片变更事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnGroupPoke">
+            <summary>
+            群内戳一戳事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnLuckyKingEvent">
+            <summary>
+            运气王事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnHonorEvent">
+            <summary>
+            群成员荣誉变更事件
+            </summary>
+        </member>
+        <member name="E:Sora.Server.ServerInterface.EventInterface.OnOfflineFileEvent">
+            <summary>
+            离线文件事件
+            </summary>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.Adapter(Newtonsoft.Json.Linq.JObject,System.Guid)">
+            <summary>
+            事件分发
+            </summary>
+            <param name="messageJson">消息json对象</param>
+            <param name="connection">客户端链接接口</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.MetaAdapter(Newtonsoft.Json.Linq.JObject,System.Guid)">
+            <summary>
+            元事件处理和分发
+            </summary>
+            <param name="messageJson">消息</param>
+            <param name="connection">连接GUID</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.MessageAdapter(Newtonsoft.Json.Linq.JObject,System.Guid)">
+            <summary>
+            消息事件处理和分发
+            </summary>
+            <param name="messageJson">消息</param>
+            <param name="connection">连接GUID</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.RequestAdapter(Newtonsoft.Json.Linq.JObject,System.Guid)">
+            <summary>
+            请求事件处理和分发
+            </summary>
+            <param name="messageJson">消息</param>
+            <param name="connection">连接GUID</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.NoticeAdapter(Newtonsoft.Json.Linq.JObject,System.Guid)">
+            <summary>
+            通知事件处理和分发
+            </summary>
+            <param name="messageJson">消息</param>
+            <param name="connection">连接GUID</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.GetBaseEventType(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取上报事件类型
+            </summary>
+            <param name="messageJson">消息Json对象</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.GetMetaEventType(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取元事件类型
+            </summary>
+            <param name="messageJson">消息Json对象</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.GetMessageType(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取消息事件类型
+            </summary>
+            <param name="messageJson">消息Json对象</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.GetRequestType(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取请求事件类型
+            </summary>
+            <param name="messageJson">消息Json对象</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.GetNoticeType(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取通知事件类型
+            </summary>
+            <param name="messageJson">消息Json对象</param>
+        </member>
+        <member name="M:Sora.Server.ServerInterface.EventInterface.GetNotifyType(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取通知事件子类型
+            </summary>
+            <param name="messageJson"></param>
+        </member>
+        <member name="T:Sora.Server.SoraWSServer">
+            <summary>
+            Sora服务器实例
+            </summary>
+        </member>
+        <member name="P:Sora.Server.SoraWSServer.Config">
+            <summary>
+            服务器配置类
+            </summary>
+        </member>
+        <member name="P:Sora.Server.SoraWSServer.Server">
+            <summary>
+            WS服务器
+            </summary>
+        </member>
+        <member name="P:Sora.Server.SoraWSServer.HeartBeatTimer">
+            <summary>
+            心跳包检查计时器
+            </summary>
+        </member>
+        <member name="P:Sora.Server.SoraWSServer.Event">
+            <summary>
+            事件接口
+            </summary>
+        </member>
+        <member name="P:Sora.Server.SoraWSServer.ConnManager">
+            <summary>
+            服务器连接管理器
+            </summary>
+        </member>
+        <member name="F:Sora.Server.SoraWSServer.serverReady">
+            <summary>
+            服务器已准备启动标识
+            </summary>
+        </member>
+        <member name="F:Sora.Server.SoraWSServer.serverExitis">
+            <summary>
+            当前进程服务器已存在的标识
+            </summary>
+        </member>
+        <member name="M:Sora.Server.SoraWSServer.#cctor">
+            <summary>
+            静态构造函数
+            用于初始化静态处理资源
+            </summary>
+        </member>
+        <member name="M:Sora.Server.SoraWSServer.#ctor(Sora.Server.ServerConfig)">
+            <summary>
+            创建一个反向WS服务端
+            </summary>
+            <param name="config">服务器配置</param>
+        </member>
+        <member name="M:Sora.Server.SoraWSServer.StartServer">
+            <summary>
+            启动WS服务端
+            </summary>
+        </member>
+        <member name="M:Sora.Server.SoraWSServer.Finalize">
+            <summary>
+            GC析构函数
+            </summary>
+        </member>
+        <member name="M:Sora.Server.SoraWSServer.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:Sora.Server.SoraWSServer.PortInUse(System.UInt32)">
+            <summary>
+            检查端口占用
+            </summary>
+            <param name="port">端口号</param>
+        </member>
+        <member name="T:Sora.Tool.ConsoleLog">
+            <summary>
+            <para>控制台格式化Log类</para>
+            <para>用于输出格式化Log</para>
+            </summary>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.SetLogLevel(Fleck.LogLevel)">
+            <summary>
+            设置日志等级
+            </summary>
+            <param name="level">LogLevel</param>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.SetNoLog">
+            <summary>
+            禁用log
+            </summary>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.ErrorLogBuilder(System.Exception)">
+            <summary>
+            生成格式化的错误Log文本
+            </summary>
+            <param name="e">错误</param>
+            <returns>格式化Log</returns>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.Info(System.Object,System.Object)">
+            <summary>
+            向控制台发送Info信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.Warning(System.Object,System.Object)">
+            <summary>
+            向控制台发送Warning信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.Error(System.Object,System.Object)">
+            <summary>
+            向控制台发送Error信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.Fatal(System.Object,System.Object)">
+            <summary>
+            向控制台发送Fatal信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.Debug(System.Object,System.Object)">
+            <summary>
+            向控制台发送Debug信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="message">信息内容</param>
+        </member>
+        <member name="M:Sora.Tool.ConsoleLog.UnhandledExceptionLog(System.UnhandledExceptionEventArgs)">
+            <summary>
+            全局错误Log
+            </summary>
+            <param name="args">UnhandledExceptionEventArgs</param>
+        </member>
+        <member name="T:Sora.Tool.Utils">
+            <summary>
+            工具类
+            </summary>
+        </member>
+        <member name="M:Sora.Tool.Utils.GetNowTimeStamp">
+            <summary>
+            获取当前时间戳
+            时间戳单位(秒)
+            </summary>
+        </member>
+        <member name="M:Sora.Tool.Utils.DateTimeToTimeStamp(System.DateTime)">
+            <summary>
+            将DateTime转换为时间戳(s)
+            </summary>
+        </member>
+        <member name="M:Sora.Tool.Utils.TimeStampToDateTime(System.Int64)">
+            <summary>
+            将时间戳(s)转换为DateTime
+            </summary>
+        </member>
+    </members>
+</doc>
