@@ -26,7 +26,7 @@ namespace Qiushui.Bot.ServerInterface
                 config.LoadGlobalConfig(out GlobalConfig globalConfig, false);
 
 
-                ConsoleLog.SetLogLevel(Fleck.LogLevel.Debug);
+                ConsoleLog.SetLogLevel(Fleck.LogLevel.Info);
                 //显示Log等级
                 ConsoleLog.Debug("Log Level", globalConfig.LogLevel);
 
@@ -65,6 +65,8 @@ namespace Qiushui.Bot.ServerInterface
                 server.Event.OnFriendAdd += FriendAddEvent.FriendAddParse;
                 //群成员变更事件
                 server.Event.OnGroupMemberChange += GroupMemberChangeEvent.GroupMemberChangeParse;
+                //群撤回消息事件
+                server.Event.OnGroupRecall += GroupRecallEvent.GroupRecallParse;
                 //更多事件按需处理
 
                 //关闭连接事件处理

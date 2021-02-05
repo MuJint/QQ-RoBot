@@ -18,7 +18,7 @@ namespace Qiushui.Bot.Resource
         /// <summary>
         /// 正则匹配模式字典
         /// </summary>
-        private static readonly Dictionary<RegexCommand,List<Regex>> RegexList = 
+        private static readonly Dictionary<RegexCommand, List<Regex>> RegexList =
             new Dictionary<RegexCommand, List<Regex>>();
         #endregion
 
@@ -33,14 +33,14 @@ namespace Qiushui.Bot.Resource
             foreach (FieldInfo fieldInfo in fieldInfos)
             {
                 //跳过不是枚举类型的属性
-                if(fieldInfo.FieldType != typeof(KeywordCommand)) continue;
+                if (fieldInfo.FieldType != typeof(KeywordCommand)) continue;
                 DescriptionAttribute descAttr = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false).First() as DescriptionAttribute;
                 //生成正则表达式列表
                 List<Regex> regexes = (descAttr?.Description ?? "").Split(" ")
                                                                    .Select(keyStr => new Regex($"({keyStr})+"))
                                                                    .ToList();
                 //添加到匹配列表
-                KeywordList.Add((KeywordCommand) (fieldInfo.GetValue(null) ?? -1), regexes);
+                KeywordList.Add((KeywordCommand)(fieldInfo.GetValue(null) ?? -1), regexes);
             }
         }
 
@@ -54,14 +54,14 @@ namespace Qiushui.Bot.Resource
             foreach (FieldInfo fieldInfo in fieldInfos)
             {
                 //跳过不是枚举类型的属性
-                if(fieldInfo.FieldType != typeof(RegexCommand)) continue;
+                if (fieldInfo.FieldType != typeof(RegexCommand)) continue;
                 DescriptionAttribute descAttr = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false).First() as DescriptionAttribute;
                 //生成正则表达式列表
                 List<Regex> regexes = (descAttr?.Description ?? "").Split(" ")
                                                                    .Select(regexStr => new Regex(regexStr))
                                                                    .ToList();
                 //添加到匹配列表
-                RegexList.Add((RegexCommand) (fieldInfo.GetValue(null) ?? -1), regexes);
+                RegexList.Add((RegexCommand)(fieldInfo.GetValue(null) ?? -1), regexes);
             }
         }
         #endregion
@@ -81,12 +81,20 @@ namespace Qiushui.Bot.Resource
                 .ToList();
             if (!matchResult.Any())
             {
-                commandType = (KeywordCommand) (-1);
+                commandType = (KeywordCommand)(-1);
                 return false;
             }
             else
             {
-                commandType = matchResult.First();
+                //匹配到多种结果，优先返回近似较高的一类，否则返回第一个匹配值
+                try
+                {
+                    commandType = matchResult.First(t => rawString.StartsWith(t.GetDescription()));
+                }
+                catch (System.Exception)
+                {
+                    commandType = matchResult.First();
+                }
                 return true;
             }
         }
@@ -105,7 +113,7 @@ namespace Qiushui.Bot.Resource
                 .ToList();
             if (!matchResult.Any())
             {
-                commandType = (RegexCommand) (-1);
+                commandType = (RegexCommand)(-1);
                 return false;
             }
             else

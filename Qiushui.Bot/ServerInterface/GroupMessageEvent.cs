@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Qiushui.Bot.ServerInterface
 {
@@ -40,7 +41,7 @@ namespace Qiushui.Bot.ServerInterface
             await Reread(groupMessage, userConfig);
             await TriggerCute(groupMessage, userConfig);
             await TriggerSpecial(groupMessage, userConfig);
-
+            await StartTimer(groupMessage);
             //聊天关键词
             if (Command.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
             {
@@ -52,7 +53,6 @@ namespace Qiushui.Bot.ServerInterface
                         {
                             HsoHandle hso = new HsoHandle(sender, groupMessage);
                             hso.GetChat();
-                            int.Parse("55fsjkljlfsd");
                         }
                         break;
                     default:
@@ -258,6 +258,25 @@ namespace Qiushui.Bot.ServerInterface
                 });
                 await eventArgs.Reply(strSb.ToString());
             }
+        }
+
+
+        private static async ValueTask StartTimer(GroupMessageEventArgs eventArgs)
+        {
+            if (DateTime.Now.Hour is 9 && DateTime.Now.DayOfWeek is DayOfWeek.Monday)
+            {
+                var dicCache = StaticModel.GetSystemLog;
+                if (dicCache.Count <= 0)
+                {
+                    dicCache.Add(eventArgs.SourceGroup.Id, true);
+                    await eventArgs.Reply($"-------公告-------\r\n由于服务器发生不可逆转的致命错误\r\n导致十二月三号至今二月二号的数据全部丢失\r\n补偿措施已签到列表成员全体每日最高分4*61天\r\n放心我们已经杀了一只阿橘祭天，尽量避免此类事情发生。");
+                }
+                if (dicCache.ContainsKey(eventArgs.SourceGroup.Id))
+                    return;
+            }
+            //new Timer(async (obj) => {
+
+            //}, null, 0, 1000 * 60 * 30);
         }
         #endregion
     }

@@ -451,9 +451,9 @@ namespace Qiushui.Bot.Business
                     var rank = eventArgs.Message.RawText.Split("[CQ:at,qq=")[1].Split("]")[1].ObjToString().Replace(" ", "").ObjToInt();
                     //校验是否在列表
                     var (apiStatus, groupMemberList) = await eventArgs.SourceGroup.SoraApi.GetGroupMemberList(eventArgs.SourceGroup.Id);
-                    if (groupMemberList.Any(t => t.UserId == obj) && rank > 0)
+                    var objUser = await RequestUsers(obj);
+                    if (groupMemberList.Any(t => t.UserId == obj) && rank > 0 && objUser is not null)
                     {
-                        var objUser = await RequestUsers(obj);
                         objUser.Rank += rank;
                         objUser.LastModifyTime = DateTime.Now;
                         await RequestSignAsync(objUser, true);
@@ -464,7 +464,7 @@ namespace Qiushui.Bot.Business
                             Uid = obj.ObjToString(),
                             LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]加分{rank}"
                         });
-                        await SendMessageGroup(eventArgs, $"{_config.ConfigModel.BotName}已经成功为{_config.ConfigModel.BotName}[{objUser.NickName}]加分", true);
+                        await SendMessageGroup(eventArgs, $"{_config.ConfigModel.BotName}已经成功为{_config.ConfigModel.NickName}[{objUser.NickName}]加分", true);
                     }
                     else
                         await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]操作失败，检索不到该成员或分数错误", true);
@@ -495,9 +495,9 @@ namespace Qiushui.Bot.Business
                     var rank = eventArgs.Message.RawText.Split("[CQ:at,qq=")[1].Split("]")[1].ObjToString().Replace(" ", "").ObjToInt();
                     //校验是否在列表
                     var (apiStatus, groupMemberList) = await eventArgs.SourceGroup.SoraApi.GetGroupMemberList(eventArgs.SourceGroup.Id);
-                    if (groupMemberList.Any(t => t.UserId == obj) && rank > 0)
+                    var objUser = await RequestUsers(obj);
+                    if (groupMemberList.Any(t => t.UserId == obj) && rank > 0 && objUser is not null && objUser.Rank > rank)
                     {
-                        var objUser = await RequestUsers(obj);
                         objUser.Rank -= rank;
                         objUser.LastModifyTime = DateTime.Now;
                         await RequestSignAsync(objUser, true);
@@ -508,7 +508,7 @@ namespace Qiushui.Bot.Business
                             Uid = obj.ObjToString(),
                             LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]扣分{rank}"
                         });
-                        await SendMessageGroup(eventArgs, $"{_config.ConfigModel.BotName}已经成功扣除{_config.ConfigModel.BotName}[{objUser.NickName}]{rank}分", true);
+                        await SendMessageGroup(eventArgs, $"{_config.ConfigModel.BotName}已经成功扣除{_config.ConfigModel.NickName}[{objUser.NickName}]{rank}分", true);
                     }
                     else
                         await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]操作失败，检索不到该成员或分数错误", true);
@@ -537,21 +537,22 @@ namespace Qiushui.Bot.Business
                 {
                     if (eventArgs.SenderInfo.Role == Sora.Enumeration.EventParamsType.MemberRoleType.Owner || eventArgs.Sender.Id == 1069430666)
                     {
-                        await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]正在进行操作，请耐心等待", true);
+                        await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]正在进行耗时操作，请耐心等待", true);
                         var uList = await RequestListUsers();
                         uList.ForEach(async (uobj) =>
                        {
                            uobj.Rank += rank;
                            uobj.LastModifyTime = DateTime.Now;
                            await RequestSignAsync(uobj, true);
+                           await RequestLogsAsync(new SignLogs()
+                           {
+                               CmdType = CmdType.SpecialBonusPoints,
+                               LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员加{rank}分",
+                               ModifyRank = rank,
+                               Uid = uobj.QNumber
+                           });
                        });
-                        await RequestLogsAsync(new SignLogs()
-                        {
-                            CmdType = CmdType.SpecialBonusPoints,
-                            LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员加{rank}分",
-                            ModifyRank = rank,
-                            Uid = ""
-                        });
+                        await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]已成功执行指令", true);
                     }
                 }
                 else
@@ -580,21 +581,22 @@ namespace Qiushui.Bot.Business
                 {
                     if (eventArgs.SenderInfo.Role == Sora.Enumeration.EventParamsType.MemberRoleType.Owner || eventArgs.Sender.Id == 1069430666)
                     {
-                        await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]正在进行操作，请耐心等待", true);
+                        await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]正在进行耗时操作，请耐心等待", true);
                         var uList = await RequestListUsers();
                         uList.ForEach(async (uobj) =>
                         {
                             uobj.Rank -= rank;
                             uobj.LastModifyTime = DateTime.Now;
                             await RequestSignAsync(uobj, true);
+                            await RequestLogsAsync(new SignLogs()
+                            {
+                                CmdType = CmdType.SpecialBonusPoints,
+                                LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员扣{rank}分",
+                                ModifyRank = rank,
+                                Uid = uobj.QNumber
+                            });
                         });
-                        await RequestLogsAsync(new SignLogs()
-                        {
-                            CmdType = CmdType.SpecialBonusPoints,
-                            LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员扣{rank}分",
-                            ModifyRank = rank,
-                            Uid = ""
-                        });
+                        await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]已成功执行指令", true);
                     }
                 }
                 else

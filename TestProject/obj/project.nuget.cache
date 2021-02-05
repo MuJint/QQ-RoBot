@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "PtwJbZ8ZtxdNIKTqY9jQeiL1HUgrHxx5t/A2EaGCx3jWM6VO2i22Uw254M4q+USft+IADt34R2FpuWwhTj/KeQ==",
+  "dgSpecHash": "r9U65VILf6OXxH1O4ck/yxOfFovnw32yQhlYR+xZtdMGt8MXa9hoooBAVtsMIgzl+VBv1qCNm2PaMbZG9mOitg==",
   "success": true,
   "projectFilePath": "E:\\Demo\\Bot\\TestProject\\TestProject.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,7 @@
     "C:\\Users\\changqing\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\changqing\\.nuget\\packages\\microsoft.testplatform.objectmodel\\16.7.1\\microsoft.testplatform.objectmodel.16.7.1.nupkg.sha512",
     "C:\\Users\\changqing\\.nuget\\packages\\microsoft.testplatform.testhost\\16.7.1\\microsoft.testplatform.testhost.16.7.1.nupkg.sha512",
+    "C:\\Users\\changqing\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.10.9\\microsoft.visualstudio.azure.containers.tools.targets.1.10.9.nupkg.sha512",
     "C:\\Users\\changqing\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\changqing\\.nuget\\packages\\microsoft.win32.systemevents\\4.5.0\\microsoft.win32.systemevents.4.5.0.nupkg.sha512",
     "C:\\Users\\changqing\\.nuget\\packages\\mstest.testadapter\\2.1.1\\mstest.testadapter.2.1.1.nupkg.sha512",

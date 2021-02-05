@@ -39,12 +39,13 @@ namespace TestProject
                 //        Content = item.Chats
                 //    });
                 //}
-                //var t = await lianKeyWordsServices.Query(t => t.Status == Qiushui.Lian.Bot.Models.Status.Valid);
-                //var t1 = await signUserServices.Query(t => t.Status == Qiushui.Lian.Bot.Models.Status.Valid);
-                //var t2 = await lianChatServices.Query(t => t.Status == Qiushui.Lian.Bot.Models.Status.Valid);
+                var t = await lianKeyWordsServices.Query(t => t.Status == Qiushui.Bot.Models.Status.Valid);
+                var t1 = await signUserServices.Query(t => t.Status == Qiushui.Bot.Models.Status.Valid);
+                var t2 = await lianChatServices.Query(t => t.Status == Qiushui.Bot.Models.Status.Valid);
+                var t3 = await signUserServices.Query(t => t.QNumber.Equals("1069430666"));
                 await signLogsServices.DeleteById(t => t.ID > 0);
                // await signLogsServices.DeleteById(2);
-                var t = await signLogsServices.Query(t => t.ID > 0);
+                //var t = await signLogsServices.Query(t => t.ID > 0);
             }
             catch (Exception c)
             {

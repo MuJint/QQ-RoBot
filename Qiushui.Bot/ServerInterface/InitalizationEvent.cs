@@ -1,6 +1,7 @@
 using Qiushui.Bot.Helper.ConfigModule;
 using Sora.EventArgs.SoraEvent;
 using Sora.Tool;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Qiushui.Bot.ServerInterface
@@ -32,15 +33,7 @@ namespace Qiushui.Bot.ServerInterface
                 ConsoleLog.Debug("Hso Proxy", userConfig.HsoConfig.PximyProxy);
             }
 
-            //初始化数据库
-            //DatabaseInit.Init(connectEvent);
-
-            //初始化定时器线程
-            //if (userConfig.ModuleSwitch.Bili_Subscription)
-            //{
-            //    ConsoleLog.Debug("Timer Init", $"flash span = {userConfig.SubscriptionConfig.FlashTime}");
-            //    TimerEventParse.TimerAdd(connectEvent, userConfig.SubscriptionConfig.FlashTime);
-            //}
+            
 
             return ValueTask.CompletedTask;
         }
