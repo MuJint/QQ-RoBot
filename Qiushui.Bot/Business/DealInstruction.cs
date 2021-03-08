@@ -546,12 +546,19 @@ namespace Qiushui.Bot.Business
                            await RequestSignAsync(uobj, true);
                            await RequestLogsAsync(new SignLogs()
                            {
-                               CmdType = CmdType.SpecialBonusPoints,
+                               CmdType = CmdType.BonusPoints,
                                LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员加{rank}分",
                                ModifyRank = rank,
                                Uid = uobj.QNumber
                            });
                        });
+                        await RequestLogsAsync(new SignLogs()
+                        {
+                            CmdType = CmdType.SpecialBonusPoints,
+                            LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员加{rank}分",
+                            ModifyRank = rank,
+                            Uid = ""
+                        });
                         await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]已成功执行指令", true);
                     }
                 }
@@ -590,11 +597,18 @@ namespace Qiushui.Bot.Business
                             await RequestSignAsync(uobj, true);
                             await RequestLogsAsync(new SignLogs()
                             {
-                                CmdType = CmdType.SpecialBonusPoints,
+                                CmdType = CmdType.PointsDeducted,
                                 LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员扣{rank}分",
                                 ModifyRank = rank,
                                 Uid = uobj.QNumber
                             });
+                        });
+                        await RequestLogsAsync(new SignLogs()
+                        {
+                            CmdType = CmdType.SpecialPointsDeducted,
+                            LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]为全体成员扣{rank}分",
+                            ModifyRank = rank,
+                            Uid = ""
                         });
                         await SendMessageGroup(eventArgs, $"[{_config.ConfigModel.BotName}]已成功执行指令", true);
                     }
