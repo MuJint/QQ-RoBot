@@ -7,10 +7,10 @@
     <FileVersion>0.4.8.0</FileVersion>
     <Version>0.4.8</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>.Net 5异步机器人框架</Description>
     <Copyright>Copyright © 2020 Yukari316</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile></PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Yukari316/Sora</PackageProjectUrl>
     <Authors>Yukari316</Authors>
     <Company>Yukari316</Company>
@@ -37,10 +37,6 @@
     <None Remove="TypeEnum\**" />
     <None Remove="Sora.xml" />
     <EmbeddedResource Include="Sora.xml" />
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

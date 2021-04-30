@@ -1,4 +1,3 @@
-using Qiushui.Bot.Helper.ConfigModule;
 using Qiushui.Bot.Source;
 using SharpYaml.Serialization;
 using Sora.Tool;
@@ -9,7 +8,7 @@ using System.Threading;
 
 namespace Qiushui.Bot
 {
-    internal class Config
+    public class Config
     {
         #region 属性
         private string UserConfigPath { set; get; }

@@ -1,4 +1,3 @@
-using Qiushui.Bot.Models;
 using Sora.Entities;
 using Sora.Entities.CQCodes;
 using Sora.Entities.Info;
@@ -7,7 +6,7 @@ using System.Text;
 
 namespace Qiushui.Bot.Helper
 {
-    internal static class BotUtils
+    public static class BotUtils
     {
         #region 时间戳处理
         /// <summary>

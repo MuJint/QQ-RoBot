@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace Qiushui.Bot.Helper
+namespace Qiushui.Bot
 {
-    internal class CheckInCD
+    public class CheckInCD
     {
         #region 调用记录用结构体
         private struct CheckUser
         {
-            internal long GroupId { get; set; }
-            internal long UserId  { get; set; }
+            public long GroupId { get; set; }
+            public long UserId  { get; set; }
         }
         #endregion
 
         #region 调用时间记录Dictionary
         /// <param type="long">QQ号</param>
         /// <param type="DateTime">上次调用时间</param>
-        private static readonly Dictionary<CheckUser, DateTime> LastChatDate = new Dictionary<CheckUser, DateTime>();
+        private static readonly Dictionary<CheckUser, DateTime> LastChatDate = new();
         #endregion
 
         #region 调用时间检查
@@ -30,7 +30,7 @@ namespace Qiushui.Bot.Helper
         public static bool IsInCD(long groupId, long userId)
         {
             DateTime time = DateTime.Now; //获取当前时间
-            CheckUser user = new CheckUser
+            CheckUser user = new()
             {
                 GroupId = groupId,
                 UserId  = userId

@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Demo\\Bot\\TestProject\\TestProject.csproj": {}
+    "D:\\Demo\\Qiushui\\TestProject\\TestProject.csproj": {}
   },
   "projects": {
-    "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj": {
-      "version": "1.0.1",
+    "D:\\Demo\\Qiushui\\Qiushui.Bot\\Qiushui.Bot.csproj": {
+      "version": "1.0.0.2",
       "restore": {
-        "projectUniqueName": "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj",
+        "projectUniqueName": "D:\\Demo\\Qiushui\\Qiushui.Bot\\Qiushui.Bot.csproj",
         "projectName": "Qiushui.Bot",
-        "projectPath": "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj",
-        "packagesPath": "C:\\Users\\changqing\\.nuget\\packages\\",
-        "outputPath": "E:\\Demo\\Bot\\Qiushui.Bot\\obj\\",
+        "projectPath": "D:\\Demo\\Qiushui\\Qiushui.Bot\\Qiushui.Bot.csproj",
+        "packagesPath": "C:\\Users\\v-jinlv\\.nuget\\packages\\",
+        "outputPath": "D:\\Demo\\Qiushui\\Qiushui.Bot\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\changqing\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\v-jinlv\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,14 +22,22 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://api.bingadsbi.chn.gbl:8080/nuget/": {},
+          "http://nexus.chn.gbl/nuget/": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "E:\\Demo\\Bot\\Sora-master\\Sora\\Sora.csproj": {
-                "projectPath": "E:\\Demo\\Bot\\Sora-master\\Sora\\Sora.csproj"
+              "D:\\Demo\\Qiushui\\Qiushui.Common\\Qiushui.Common.csproj": {
+                "projectPath": "D:\\Demo\\Qiushui\\Qiushui.Common\\Qiushui.Common.csproj"
+              },
+              "D:\\Demo\\Qiushui\\Qiushui.Framework\\Qiushui.Framework.csproj": {
+                "projectPath": "D:\\Demo\\Qiushui\\Qiushui.Framework\\Qiushui.Framework.csproj"
+              },
+              "D:\\Demo\\Qiushui\\Sora-master\\Sora\\Sora.csproj": {
+                "projectPath": "D:\\Demo\\Qiushui\\Sora-master\\Sora\\Sora.csproj"
               }
             }
           }
@@ -50,6 +55,10 @@
             "LiteDB": {
               "target": "Package",
               "version": "[5.0.9, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
             },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
@@ -75,24 +84,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Demo\\Bot\\Sora-master\\Sora\\Sora.csproj": {
-      "version": "0.4.8",
+    "D:\\Demo\\Qiushui\\Qiushui.Common\\Qiushui.Common.csproj": {
+      "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Demo\\Bot\\Sora-master\\Sora\\Sora.csproj",
-        "projectName": "Sora",
-        "projectPath": "E:\\Demo\\Bot\\Sora-master\\Sora\\Sora.csproj",
-        "packagesPath": "C:\\Users\\changqing\\.nuget\\packages\\",
-        "outputPath": "E:\\Demo\\Bot\\Sora-master\\Sora\\obj\\",
+        "projectUniqueName": "D:\\Demo\\Qiushui\\Qiushui.Common\\Qiushui.Common.csproj",
+        "projectName": "Qiushui.Common",
+        "projectPath": "D:\\Demo\\Qiushui\\Qiushui.Common\\Qiushui.Common.csproj",
+        "packagesPath": "C:\\Users\\v-jinlv\\.nuget\\packages\\",
+        "outputPath": "D:\\Demo\\Qiushui\\Qiushui.Common\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\changqing\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\v-jinlv\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -100,6 +106,126 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://api.bingadsbi.chn.gbl:8080/nuget/": {},
+          "http://nexus.chn.gbl/nuget/": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Demo\\Qiushui\\Qiushui.Framework\\Qiushui.Framework.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Demo\\Qiushui\\Qiushui.Framework\\Qiushui.Framework.csproj",
+        "projectName": "Qiushui.Framework",
+        "projectPath": "D:\\Demo\\Qiushui\\Qiushui.Framework\\Qiushui.Framework.csproj",
+        "packagesPath": "C:\\Users\\v-jinlv\\.nuget\\packages\\",
+        "outputPath": "D:\\Demo\\Qiushui\\Qiushui.Framework\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\v-jinlv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://api.bingadsbi.chn.gbl:8080/nuget/": {},
+          "http://nexus.chn.gbl/nuget/": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "LiteDB": {
+              "target": "Package",
+              "version": "[5.0.9, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Demo\\Qiushui\\Sora-master\\Sora\\Sora.csproj": {
+      "version": "0.4.8",
+      "restore": {
+        "projectUniqueName": "D:\\Demo\\Qiushui\\Sora-master\\Sora\\Sora.csproj",
+        "projectName": "Sora",
+        "projectPath": "D:\\Demo\\Qiushui\\Sora-master\\Sora\\Sora.csproj",
+        "packagesPath": "C:\\Users\\v-jinlv\\.nuget\\packages\\",
+        "outputPath": "D:\\Demo\\Qiushui\\Sora-master\\Sora\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\v-jinlv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://api.bingadsbi.chn.gbl:8080/nuget/": {},
+          "http://nexus.chn.gbl/nuget/": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -146,24 +272,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Demo\\Bot\\TestProject\\TestProject.csproj": {
+    "D:\\Demo\\Qiushui\\TestProject\\TestProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Demo\\Bot\\TestProject\\TestProject.csproj",
+        "projectUniqueName": "D:\\Demo\\Qiushui\\TestProject\\TestProject.csproj",
         "projectName": "TestProject",
-        "projectPath": "E:\\Demo\\Bot\\TestProject\\TestProject.csproj",
-        "packagesPath": "C:\\Users\\changqing\\.nuget\\packages\\",
-        "outputPath": "E:\\Demo\\Bot\\TestProject\\obj\\",
+        "projectPath": "D:\\Demo\\Qiushui\\TestProject\\TestProject.csproj",
+        "packagesPath": "C:\\Users\\v-jinlv\\.nuget\\packages\\",
+        "outputPath": "D:\\Demo\\Qiushui\\TestProject\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\changqing\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\v-jinlv\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -171,14 +294,16 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://api.bingadsbi.chn.gbl:8080/nuget/": {},
+          "http://nexus.chn.gbl/nuget/": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj": {
-                "projectPath": "E:\\Demo\\Bot\\Qiushui.Bot\\Qiushui.Bot.csproj"
+              "D:\\Demo\\Qiushui\\Qiushui.Bot\\Qiushui.Bot.csproj": {
+                "projectPath": "D:\\Demo\\Qiushui\\Qiushui.Bot\\Qiushui.Bot.csproj"
               }
             }
           }
@@ -233,7 +358,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

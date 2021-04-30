@@ -118,7 +118,8 @@ Qiushui-Bot是一个基于onebot标准的机器人/当然目前只写了部分�
     * `config.yaml`中的url路径则为`http://127.0.0.1:8889`
     * 如果需要映射到外网，通过Nginx转发，或者Utools内网穿透等等等
   * 请多看注释，然后再`Issue`
-  * 可以参考我的博客图文使用攻略[点这](https://www.changqingmao.com)
+  * 可以参考我的博客图文使用攻略[点这](https://www.qiubb.com)
+  * 或者参考[`bilibili`](https://b23.tv/dAwA7S)
 * 如需通过源码方式，请直接下载当前源码，通过Nuget引入`Sora`，下方链接下载`go-cqhttp`，其它配置同上文
 # 底层框架
 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)<br />

@@ -5,7 +5,7 @@ namespace Qiushui.Bot
     /// <summary>
     /// Lian默认配置
     /// </summary>
-    internal class ConfigModel
+    public class ConfigModel
     {
         public string NickName { get; set; }
         public string BotName { get; set; }
