@@ -8,7 +8,7 @@ using Sora.Tool;
 
 namespace Qiushui.Bot
 {
-    internal static class IOUtils
+    public static class IOUtils
     {
         #region IO工具
         /// <summary>
