@@ -30,5 +30,6 @@ namespace Qiushui.Bot
         ValueTask Lian(GroupMessageEventArgs eventArgs);
         ValueTask AddKeys(GroupMessageEventArgs eventArgs);
         ValueTask AddThesaurus(GroupMessageEventArgs eventArgs);
+        ValueTask RollDice(GroupMessageEventArgs eventArgs);
     }
 }

@@ -824,11 +824,30 @@ namespace Qiushui.Bot
         }
         #endregion
 
+        #region 掷骰子
+        public async ValueTask RollDice(GroupMessageEventArgs eventArgs)
+        {
+            var r = new Random().Next(1, 7);
+            await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n转转转转转转\r\n", CQCode.CQImage($"{Environment.CurrentDirectory}\\Images\\{ConvertE(r)}.gif"));
+        }
+        #endregion
+
         #region Func
+        private static string ConvertE(int r) => r switch
+        {
+            1 => "one",
+            2 => "two",
+            3 => "three",
+            4 => "four",
+            5 => "five",
+            6 => "six",
+            _ => "random",
+        };
+
         /// <summary>
         /// 触发惩罚机制
         /// </summary>
-        public static bool TriggerPunish => DateTime.Now.Millisecond % 2 == 0 && DateTime.Now.Millisecond > 666;
+        private static bool TriggerPunish => DateTime.Now.Millisecond % 2 == 0 && DateTime.Now.Millisecond > 666;
 
         /// <summary>
         /// 发送群组消息
@@ -837,7 +856,7 @@ namespace Qiushui.Bot
         /// <param name="strContent"></param>
         /// <param name="isAt">是否艾特</param>
         /// <returns></returns>
-        public static async ValueTask<bool> SendMessageGroup(GroupMessageEventArgs eventArgs, string strContent, bool isAt = false)
+        private static async ValueTask<bool> SendMessageGroup(GroupMessageEventArgs eventArgs, string strContent, bool isAt = false)
         {
             if (isAt)
                 await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), strContent);
@@ -852,7 +871,7 @@ namespace Qiushui.Bot
         /// <param name="signLogs"></param>
         /// <param name="isUpdate">是否更新实体</param>
         /// <returns></returns>
-        public bool RequestLogsAsync(SignLogs signLogs, bool isUpdate = false)
+        private bool RequestLogsAsync(SignLogs signLogs, bool isUpdate = false)
         {
             if (isUpdate)
             {
@@ -868,7 +887,7 @@ namespace Qiushui.Bot
         /// <param name="signUser"></param>
         /// <param name="isUpdate">是否更新</param>
         /// <returns></returns>
-        public bool RequestSignAsync(SignUser signUser, bool isUpdate = false)
+        private bool RequestSignAsync(SignUser signUser, bool isUpdate = false)
         {
             if (isUpdate)
             {
@@ -884,13 +903,14 @@ namespace Qiushui.Bot
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public SignUser RequestUsers(long uid) => _signUserServices.QueryById(t => t.QNumber.Equals(uid.ObjToString()));
+        private SignUser RequestUsers(long uid) => _signUserServices.QueryById(t => t.QNumber.Equals(uid.ObjToString()));
 
         /// <summary>
         /// 用户列表请求
         /// </summary>
         /// <returns></returns>
-        public List<SignUser> RequestListUsers() => _signUserServices.Query(t => t.Status == Status.Valid);
+        private List<SignUser> RequestListUsers() => _signUserServices.Query(t => t.Status == Status.Valid);
+
         #endregion
     }
 }

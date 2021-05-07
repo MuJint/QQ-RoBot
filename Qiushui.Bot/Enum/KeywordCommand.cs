@@ -133,5 +133,10 @@ namespace Qiushui.Bot
         /// </summary>
         [Description("添加词库")]
         AddThesaurus,
+        /// <summary>
+        /// 骰子
+        /// </summary>
+        [Description("骰子 扔骰子 掷骰子 色子")]
+        RollDice,
     }
 }

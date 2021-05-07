@@ -117,6 +117,9 @@ namespace Qiushui.Bot
                     case KeywordCommand.AddThesaurus:
                         await _lianService.AddThesaurus(e);
                         break;
+                    case KeywordCommand.RollDice:
+                        await _lianService.RollDice(e);
+                        break;
                 }
             }
         }
