@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Qiushui.Bot.Framework.IServices;
-using Qiushui.Bot.Framework.Services;
+using Qiushui.Framework.Interface;
+using Qiushui.Framework.Models;
 using System;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
@@ -8,12 +8,20 @@ using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 namespace TestProject
 {
     [TestClass]
-    public class UnitTest1
+    public class UnitTest1 : BaseUt
     {
-        readonly ISignUserServices signUserServices = new SignUserServices();
-        readonly ISignLogsServices signLogsServices = new SignLogsServices();
-        readonly ILianChatServices lianChatServices = new LianChatServices();
-        readonly ILianKeyWordsServices lianKeyWordsServices = new LianKeyWordsServices();
+        readonly ISignUserServices signUserServices;
+        readonly ISignLogsServices signLogsServices ;
+        readonly ILianChatServices lianChatServices ;
+        readonly ILianKeyWordsServices lianKeyWordsServices;
+
+        public UnitTest1()
+        {
+            signUserServices = GetInstance<ISignUserServices>();
+            signLogsServices = GetInstance<ISignLogsServices>();
+            lianChatServices = GetInstance<ILianChatServices>();
+            lianKeyWordsServices = GetInstance<ILianKeyWordsServices>();
+        }
 
         [TestMethod]
         public void TestMethod1()
@@ -39,12 +47,12 @@ namespace TestProject
                 //        Content = item.Chats
                 //    });
                 //}
-                var t = await lianKeyWordsServices.Query(t => t.Status == Qiushui.Bot.Models.Status.Valid);
-                var t1 = await signUserServices.Query(t => t.Status == Qiushui.Bot.Models.Status.Valid);
-                var t2 = await lianChatServices.Query(t => t.Status == Qiushui.Bot.Models.Status.Valid);
-                var t3 = await signUserServices.Query(t => t.QNumber.Equals("1069430666"));
-                await signLogsServices.DeleteById(t => t.ID > 0);
-               // await signLogsServices.DeleteById(2);
+                var t =  lianKeyWordsServices.Query(t => t.Status == Status.Valid);
+                var t1 =  signUserServices.Query(t => t.Status == Status.Valid);
+                var t2 =  lianChatServices.Query(t => t.Status == Status.Valid);
+                var t3 =  signUserServices.Query(t => t.QNumber.Equals("1069430666"));
+                 signLogsServices.DeleteById(t => t.ID > 0);
+                // await signLogsServices.DeleteById(2);
                 //var t = await signLogsServices.Query(t => t.ID > 0);
             }
             catch (Exception c)
