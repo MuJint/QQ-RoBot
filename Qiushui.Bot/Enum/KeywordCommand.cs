@@ -138,5 +138,15 @@ namespace Qiushui.Bot
         /// </summary>
         [Description("骰子 扔骰子 掷骰子 色子")]
         RollDice,
+        /// <summary>
+        /// 词云
+        /// </summary>
+        [Description("词云")]
+        WordCloud,
+        /// <summary>
+        /// 发言榜
+        /// </summary>
+        [Description("发言榜")]
+        NonsenseKing,
     }
 }

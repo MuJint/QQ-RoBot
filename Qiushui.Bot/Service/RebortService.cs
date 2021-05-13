@@ -22,16 +22,19 @@ namespace Qiushui.Bot
         readonly ISignLogsServices _logsServices;
         readonly ILianKeyWordsServices _keyWordServices;
         readonly IModuleInterface _moduleInterface;
+        readonly ISpeakerServices _speakerServices;
         public RebortService()
         {
             _userServices = GetInstance<ISignUserServices>();
             _logsServices = GetInstance<ISignLogsServices>();
             _keyWordServices = GetInstance<ILianKeyWordsServices>();
             _moduleInterface = GetInstance<IModuleInterface>();
+            _speakerServices = GetInstance<ISpeakerServices>();
         }
         public ValueTask FriendAddParse(object sender, FriendAddEventArgs eventArgs)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return ValueTask.CompletedTask;
         }
 
         public async ValueTask GroupMemberChangeParse(object sender, GroupMemberChangeEventArgs eventArgs)
@@ -43,10 +46,10 @@ namespace Qiushui.Bot
                 switch (eventArgs.SubType)
                 {
                     case Sora.Enumeration.EventParamsType.MemberChangeType.Leave:
-                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]离开了..原因未知");
+                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]退群了....江湖路远，有缘再会");
                         break;
                     case Sora.Enumeration.EventParamsType.MemberChangeType.Kick:
-                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]被[{@operator.userInfo.Nick}]强行请离了");
+                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]被[{@operator.userInfo.Nick}]强行请离了....江湖路远，有缘再会");
                         break;
                     case Sora.Enumeration.EventParamsType.MemberChangeType.KickMe:
                         break;
@@ -66,7 +69,7 @@ namespace Qiushui.Bot
                 //System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'userId')
                 ConsoleLog.Error("Error", c.Message);
                 ConsoleLog.Error("Error", $"操作失败者：{eventArgs.Operator.Id}");
-                await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]不知道是退出了群聊还是加入了，咱也不知道啊 :)");
+                await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]不知道是退出了群聊还是加入了，咱也不知道啊 ");
             }
         }
 
@@ -83,10 +86,11 @@ namespace Qiushui.Bot
             if (!IsListenGroup(groupMessage.SourceGroup.Id, userConfig))
                 return;
 
-            await IsAIAsync(groupMessage, userConfig);
+            await IsAI(groupMessage, userConfig);
             await Reread(groupMessage, userConfig);
             await TriggerCute(groupMessage, userConfig);
             await TriggerSpecial(groupMessage, userConfig);
+            await SpeakerStorage(groupMessage);
 
             //聊天关键词
             if (CommandHelper.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
@@ -122,8 +126,15 @@ namespace Qiushui.Bot
 
         public async ValueTask GroupRecallParse(object sender, GroupRecallEventArgs groupMessage)
         {
-            //考虑到隐私问题，不写
-            await groupMessage.SourceGroup.SendGroupMessage($"怀孕了就说啊，撤回干嘛，大家都会负责的");
+            var r = new Random().Next(1, 10);
+            if (r is 6)
+            {
+                var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
+                var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
+                await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
+            }
+            else
+                await groupMessage.SourceGroup.SendGroupMessage($"怀孕了就说啊，撤回干嘛，大家都会负责的");
         }
 
         public ValueTask Initalization(object sender, ConnectEventArgs connectEvent)
@@ -195,7 +206,7 @@ namespace Qiushui.Bot
         /// <param name="eventArgs"></param>
         /// <param name="userConfig"></param>
         /// <returns></returns>
-        private static async ValueTask IsAIAsync(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        private static async ValueTask IsAI(GroupMessageEventArgs eventArgs, UserConfig userConfig)
         {
             //[CQ:at,qq=503745803] 你好啊
             try
@@ -344,6 +355,40 @@ namespace Qiushui.Bot
         /// <param name="path"></param>
         /// <returns></returns>
         private static async ValueTask<string> RequestAi(string path, string str) => await HttpHelper.HttpGetAsync($"{path}/{str}");
+
+        /// <summary>
+        /// 消息入库
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <returns></returns>
+        private async ValueTask SpeakerStorage(GroupMessageEventArgs eventArgs)
+        {
+            //[CQ:image,file=bc99f5e35895cf9a48edd43a682527a4.image]
+            await Task.Run(() =>
+            {
+                if (eventArgs.Message.RawText.StartsWith("[CQ:image,file="))
+                {
+                    _speakerServices.Insert(new SpeakerList()
+                    {
+                        GroupId = eventArgs.SourceGroup.Id,
+                        RawText = eventArgs.Message.RawText.Replace("[CQ:image,file=", "").Replace("]", ""),
+                        MsgId = eventArgs.Message.MessageId,
+                        Uid = eventArgs.Sender.Id,
+                        MsgType = MsgType.Img
+                    });
+                }
+                else
+                {
+                    _speakerServices.Insert(new SpeakerList()
+                    {
+                        GroupId = eventArgs.SourceGroup.Id,
+                        RawText = eventArgs.Message.RawText,
+                        MsgId = eventArgs.Message.MessageId,
+                        Uid = eventArgs.Sender.Id
+                    });
+                }
+            });
+        }
 
         private static async ValueTask StartTimer(GroupMessageEventArgs eventArgs)
         {

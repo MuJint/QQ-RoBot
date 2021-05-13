@@ -1,10 +1,14 @@
-﻿using Qiushui.Common;
+﻿using JiebaNet.Segmenter;
+using JiebaNet.Segmenter.Common;
+using Qiushui.Common;
 using Qiushui.Framework.Interface;
 using Qiushui.Framework.Models;
 using Sora.Entities.CQCodes;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -23,12 +27,14 @@ namespace Qiushui.Bot
         readonly ISignLogsServices _signLogsServices;
         readonly ILianChatServices _lianChatServices;
         readonly ILianKeyWordsServices _lianKeyWordsServices;
+        readonly ISpeakerServices _speakerServices;
         public LianService()
         {
             _signUserServices = GetInstance<ISignUserServices>();
             _signLogsServices = GetInstance<ISignLogsServices>();
             _lianChatServices = GetInstance<ILianChatServices>();
             _lianKeyWordsServices = GetInstance<ILianKeyWordsServices>();
+            _speakerServices = GetInstance<ISpeakerServices>();
         }
         #region 签到方法
         /// <summary>
@@ -830,6 +836,62 @@ namespace Qiushui.Bot
             var r = new Random().Next(1, 7);
             await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n转转转转转转\r\n", CQCode.CQImage($"{Environment.CurrentDirectory}\\Images\\{ConvertE(r)}.gif"));
         }
+        #endregion
+
+        #region 词云
+        public async ValueTask WordCloud(GroupMessageEventArgs eventArgs)
+        {
+            var speakerLists = _speakerServices.Query(s => s.Uid == eventArgs.Sender.Id && s.GroupId == eventArgs.SourceGroup.Id);
+            if (speakerLists.Any())
+            {
+                var builder = string.Join(",", speakerLists.Select(s => s.RawText))
+                                .Replace(",", "");
+                var seg = new JiebaSegmenter();
+                var freqs = new Counter<string>(seg.Cut(builder)).MostCommon(20);
+                var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+                var images = WordCloudGen
+                    .Draw(freqs.Select(s => s.Key).ToList(), freqs.Select(s => s.Value).ToList());
+                var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
+                images.Save(imgName, ImageFormat.Png);
+                await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n", CQCode.CQImage(imgName));
+                //delete img
+                await Task.Delay(10);
+                File.Delete(imgName);
+            }
+            else
+                await SendMessageGroup(eventArgs, $"尚不能构造出词云哦 :)", true);
+        }
+
+        #region 发言榜
+        public async ValueTask NonsenseKing(GroupMessageEventArgs eventArgs)
+        {
+            var speakerList = _speakerServices
+                .Query(q => q.GroupId == eventArgs.SourceGroup.Id && q.CreateTime.Month == DateTime.Now.Month && q.CreateTime.Year == DateTime.Now.Year)
+                .GroupBy(g => new { g.Uid })
+                .Select(s => new
+                {
+                    s.Key.Uid,
+                    Count = s.Count()
+                })
+                .OrderByDescending(o => o.Count)
+                .Skip(0).Take(15);
+            if (speakerList.Any())
+            {
+                var strSb = new StringBuilder();
+                strSb.Append($"----------发言榜----------\r\n");
+                foreach (var item in speakerList)
+                {
+                    var nick = _signUserServices.Query(q => q.QNumber == item.Uid.ObjToString());
+                    strSb.Append($"{nick.First().NickName}       {item.Count}条\r\n");
+                }
+                strSb.Append($"\r\n截止到目前：{DateTime.Now:yyyy-MM-dd}");
+                strSb.Append($"\r\n请注意：只计算当前月份");
+                await SendMessageGroup(eventArgs, strSb.ToString());
+            }
+        }
+        #endregion
+
+
         #endregion
 
         #region Func

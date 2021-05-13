@@ -51,3 +51,5 @@ ConfigModel:
   Tail: ~今天也是充满希望的一天
   #ai对话请求Url，建议默认值
   AiPath: https://aiqiushui.utools.club
+  #群组图片存放位置
+  GroupImgPath: null

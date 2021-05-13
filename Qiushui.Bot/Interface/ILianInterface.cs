@@ -31,5 +31,7 @@ namespace Qiushui.Bot
         ValueTask AddKeys(GroupMessageEventArgs eventArgs);
         ValueTask AddThesaurus(GroupMessageEventArgs eventArgs);
         ValueTask RollDice(GroupMessageEventArgs eventArgs);
+        ValueTask WordCloud(GroupMessageEventArgs eventArgs);
+        ValueTask NonsenseKing(GroupMessageEventArgs eventArgs);
     }
 }

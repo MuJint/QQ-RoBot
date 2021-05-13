@@ -5,7 +5,7 @@ namespace Qiushui.Framework.Services
 {
     public class SignUserServices : BaseServices<SignUser>, ISignUserServices
     {
-        readonly ISignUserRepository _dal;
+        //readonly ISignUserRepository _dal;
       
     }
 }

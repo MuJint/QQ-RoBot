@@ -131,4 +131,6 @@ Qiushui-Bot是一个基于onebot标准的机器人/当然目前只写了部分�
 [SharpYaml](https://github.com/xoofx/SharpYaml)<br />
 [Sora](https://github.com/Yukari316/Sora)<br />
 [LiteDB](https://www.litedb.org/)<br />
+[JieBa.NET](https://github.com/anderscui/jieba.NET)`结巴中文分词.net库`<br />
+[WordCloud](https://github.com/amueller/word_cloud)`词云`<br />
 [ChatterBot](https://github.com/gunthercox/ChatterBot)`人工智障`开源库

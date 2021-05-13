@@ -120,6 +120,14 @@ namespace Qiushui.Bot
                     case KeywordCommand.RollDice:
                         await _lianService.RollDice(e);
                         break;
+                    case KeywordCommand.WordCloud:
+                        if (IsTrigger(e.Message.RawText, KeywordCommand.WordCloud.GetDescription()))
+                            await _lianService.WordCloud(e);
+                        break;
+                    case KeywordCommand.NonsenseKing:
+                        if (IsTrigger(e.Message.RawText, KeywordCommand.NonsenseKing.GetDescription()))
+                            await _lianService.NonsenseKing(e);
+                        break;
                 }
             }
         }

@@ -1,7 +1,12 @@
+using JiebaNet.Segmenter;
+using JiebaNet.Segmenter.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Qiushui.Framework.Interface;
 using Qiushui.Framework.Models;
 using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
@@ -11,8 +16,8 @@ namespace TestProject
     public class UnitTest1 : BaseUt
     {
         readonly ISignUserServices signUserServices;
-        readonly ISignLogsServices signLogsServices ;
-        readonly ILianChatServices lianChatServices ;
+        readonly ISignLogsServices signLogsServices;
+        readonly ILianChatServices lianChatServices;
         readonly ILianKeyWordsServices lianKeyWordsServices;
 
         public UnitTest1()
@@ -24,14 +29,42 @@ namespace TestProject
         }
 
         [TestMethod]
+        public void UTCounterByJieba()
+        {
+            var s = "在数学和计算机科学之中，算法（algorithm）为任何良定义的具体计算步骤的一个序列，常用于计算、数据处理和自动推理。精确而言，算法是一个表示为有限长列表的有效方法。算法应包含清晰定义的指令用于计算函数。";
+            var seg = new JiebaSegmenter();
+            var freqs = new Counter<string>(seg.Cut(s));
+            var wordKeys = new List<string>();
+            var ints = new List<int>();
+            foreach (var pair in freqs.MostCommon(10))
+            {
+                wordKeys.Add(pair.Key);
+                ints.Add(pair.Value);
+                Console.WriteLine($"{pair.Key}: {pair.Value}");
+            }
+            var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+            var images = WordCloudGen.Draw(wordKeys, ints);
+            images.Save($"D:\\{Guid.NewGuid()}.png", ImageFormat.Png);
+            //var wc = new WordCloudGen(width, height);
+
+            //wc.Draw(words, frequencies);
+        }
+
+        [TestMethod]
         public void TestMethod1()
         {
+            var list = new List<string>() { "22", "33" }.ToArray();
+            Console.WriteLine(string.Join(",", list).Replace(",", ""));
+
             foreach (ContentEnum item in Enum.GetValues(typeof(ContentEnum)))
             {
+                var t = GetT(item).Name is nameof(ContentEnum);
                 string strName = Enum.GetName(typeof(ContentEnum), item);//获取名称
                 string strVaule = item.ToString();//获取值
             }
         }
+
+        private Type GetT<T>(T t) => typeof(T);
 
         [TestMethod]
         public async System.Threading.Tasks.Task TestMethod2Async()
@@ -47,11 +80,11 @@ namespace TestProject
                 //        Content = item.Chats
                 //    });
                 //}
-                var t =  lianKeyWordsServices.Query(t => t.Status == Status.Valid);
-                var t1 =  signUserServices.Query(t => t.Status == Status.Valid);
-                var t2 =  lianChatServices.Query(t => t.Status == Status.Valid);
-                var t3 =  signUserServices.Query(t => t.QNumber.Equals("1069430666"));
-                 signLogsServices.DeleteById(t => t.ID > 0);
+                var t = lianKeyWordsServices.Query(t => t.Status == Status.Valid);
+                var t1 = signUserServices.Query(t => t.Status == Status.Valid);
+                var t2 = lianChatServices.Query(t => t.Status == Status.Valid);
+                var t3 = signUserServices.Query(t => t.QNumber.Equals("1069430666"));
+                signLogsServices.DeleteById(t => t.ID > 0);
                 // await signLogsServices.DeleteById(2);
                 //var t = await signLogsServices.Query(t => t.ID > 0);
             }
@@ -59,7 +92,6 @@ namespace TestProject
             {
 
             }
-
         }
 
         public class Input
@@ -175,5 +207,48 @@ namespace TestProject
             return min;
         }
 
+        abstract class CmdBase<T>
+        {
+            protected abstract string Name { get; }
+            protected string _traceId;
+            private string _age;
+            public CmdBase([CallerMemberName] string age = null)
+            {
+                _age = age;
+                _traceId = Guid.NewGuid().ToString();
+            }
+
+            protected abstract string GenerateS(string G);
+            public virtual void Voice() => Console.WriteLine("the voice of water");
+        }
+
+        class Test : CmdBase<Input>
+        {
+            protected override string Name => "Test name";
+            public Test(string age) : base(age)
+            {
+
+            }
+
+            protected override string GenerateS(string G) => "generate s by override ";
+            public override void Voice()
+            {
+                Console.WriteLine($"{_traceId} the voice of {nameof(Test)}");
+            }
+        }
+
+        interface IA
+        {
+            string GenerateS(string G);
+            abstract void Voice();
+        }
+        class B : IA
+        {
+            public string GenerateS(string G) => "generate s by interface";
+            public void Voice()
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

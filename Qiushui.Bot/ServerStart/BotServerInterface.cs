@@ -19,6 +19,7 @@ namespace Qiushui.Bot
                 .AddScoped<ILianKeyWordsServices, LianKeyWordsServices>()
                 .AddScoped<ISignLogsServices, SignLogsServices>()
                 .AddScoped<ISignUserServices, SignUserServices>()
+                .AddScoped<ISpeakerServices, SpeakerServices>()
                 .AddScoped<IRebortInterface, RebortService>()
                 .AddScoped<ILianInterface, LianService>()
                 .AddScoped<IModuleInterface, ModuleService>()
