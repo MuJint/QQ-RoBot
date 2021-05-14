@@ -126,15 +126,22 @@ namespace Qiushui.Bot
 
         public async ValueTask GroupRecallParse(object sender, GroupRecallEventArgs groupMessage)
         {
-            var r = new Random().Next(1, 10);
-            if (r is 6)
+            try
             {
-                var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
-                var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
-                await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
+                var r = new Random().Next(5, 10);
+                if (r is 6)
+                {
+                    var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
+                    var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
+                    await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
+                }
+                else
+                    await groupMessage.SourceGroup.SendGroupMessage($"怀孕了就说啊，撤回干嘛，大家都会负责的");
             }
-            else
-                await groupMessage.SourceGroup.SendGroupMessage($"怀孕了就说啊，撤回干嘛，大家都会负责的");
+            catch (Exception)
+            {
+                await groupMessage.SourceGroup.SendGroupMessage($"我感觉他撤回的是图片，我懒得弄，下次一定");
+            }
         }
 
         public ValueTask Initalization(object sender, ConnectEventArgs connectEvent)

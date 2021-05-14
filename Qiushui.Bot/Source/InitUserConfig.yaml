@@ -1,9 +1,5 @@
 # 各模块的开关
 ModuleSwitch:
-  #切噜语翻译
-  Cheru: false
-  #奇怪的娱乐功能 (随机禁言啥的)
-  HaveFun: true
   #抽奖功能
   Raffle: false
   #打劫
@@ -50,6 +46,6 @@ ConfigModel:
   #小尾巴
   Tail: ~今天也是充满希望的一天
   #ai对话请求Url，建议默认值
-  AiPath: https://aiqiushui.utools.club
+  AiPath: http://127.0.0.1:8889/api/chat
   #群组图片存放位置
   GroupImgPath: null

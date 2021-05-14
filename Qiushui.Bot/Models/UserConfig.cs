@@ -48,19 +48,10 @@ namespace Qiushui.Bot
         /// 莲正常功能
         /// </summary>
         public bool LianBot { get; set; }
-
-        /// <summary>
-        /// 娱乐模块
-        /// </summary>
-        public bool HaveFun { set; get; }
         /// <summary>
         /// 来点色图
         /// </summary>
         public bool Hso { set; get; }
-        /// <summary>
-        /// 切噜翻译
-        /// </summary>
-        public bool Cheru { set; get; }
         /// <summary>
         /// 启用AI自动对话
         /// </summary>

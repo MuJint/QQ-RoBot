@@ -15,5 +15,6 @@ namespace Qiushui.Bot
         /// </summary>
         public string Tail { get; set; } = "";
         public string AiPath { get; set; }
+        public string GroupImgPath { get; set; }
     }
 }

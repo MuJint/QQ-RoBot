@@ -841,25 +841,33 @@ namespace Qiushui.Bot
         #region 词云
         public async ValueTask WordCloud(GroupMessageEventArgs eventArgs)
         {
-            var speakerLists = _speakerServices.Query(s => s.Uid == eventArgs.Sender.Id && s.GroupId == eventArgs.SourceGroup.Id);
-            if (speakerLists.Any())
+            try
             {
-                var builder = string.Join(",", speakerLists.Select(s => s.RawText))
-                                .Replace(",", "");
-                var seg = new JiebaSegmenter();
-                var freqs = new Counter<string>(seg.Cut(builder)).MostCommon(20);
-                var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
-                var images = WordCloudGen
-                    .Draw(freqs.Select(s => s.Key).ToList(), freqs.Select(s => s.Value).ToList());
-                var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
-                images.Save(imgName, ImageFormat.Png);
-                await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n", CQCode.CQImage(imgName));
-                //delete img
-                await Task.Delay(10);
-                File.Delete(imgName);
+                var speakerLists = _speakerServices.Query(s => s.Uid == eventArgs.Sender.Id && s.GroupId == eventArgs.SourceGroup.Id);
+                if (speakerLists.Any())
+                {
+                    var builder = string.Join(",", speakerLists.Select(s => s.RawText))
+                                    .Replace(",", "");
+                    var seg = new JiebaSegmenter();
+                    var freqs = new Counter<string>(seg.Cut(builder)).MostCommon(20);
+                    var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+                    var images = WordCloudGen
+                        .Draw(freqs.Select(s => s.Key).ToList(), freqs.Select(s => s.Value).ToList());
+                    var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
+                    images.Save(imgName, ImageFormat.Png);
+                    await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n", CQCode.CQImage(imgName));
+                    //delete img
+                    await Task.Delay(10);
+                    File.Delete(imgName);
+                }
+                else
+                    await SendMessageGroup(eventArgs, $"尚不能构造出词云哦 :)", true);
             }
-            else
+            catch (Exception c)
+            {
+                Console.WriteLine(c.Message);
                 await SendMessageGroup(eventArgs, $"尚不能构造出词云哦 :)", true);
+            }
         }
 
         #region 发言榜

@@ -48,7 +48,7 @@ namespace Qiushui.Bot
             try
             {
                 //反序列化配置文件
-                Serializer serializer = new Serializer();
+                Serializer serializer = new();
                 using TextReader reader = File.OpenText(UserConfigPath);
                 LoadedUserConfig = serializer.Deserialize<UserConfig>(reader);
                 //参数合法性检查
