@@ -22,7 +22,6 @@ namespace Qiushui.Bot
     /// </summary>
     public class LianService : BaseServiceObject, ILianInterface
     {
-        readonly int randRank = new Random().Next(2, 5);
         readonly ISignUserServices _signUserServices;
         readonly ISignLogsServices _signLogsServices;
         readonly ILianChatServices _lianChatServices;
@@ -45,6 +44,7 @@ namespace Qiushui.Bot
         public async ValueTask SignIn(GroupMessageEventArgs eventArgs, UserConfig config)
         {
             var isSign = RequestUsers(eventArgs.SenderInfo.UserId);
+            int randRank = new Random().Next(2, 5);
             if (isSign != null)
             {
                 var signLog = (_signLogsServices.Query(t => t.CmdType == CmdType.SignIn && t.Uid.Equals(eventArgs.SenderInfo.UserId.ObjToString()))).OrderByDescending(t => t.LastModifyTime)?.FirstOrDefault() ?? new SignLogs();
@@ -119,6 +119,7 @@ namespace Qiushui.Bot
         /// <returns></returns>
         public async ValueTask Fenlai(GroupMessageEventArgs eventArgs, UserConfig config)
         {
+            int randRank = new Random().Next(2, 5);
             if (new Random().Next(1, 100) is 6)
             {
                 var isSign = _signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
@@ -843,16 +844,19 @@ namespace Qiushui.Bot
         {
             try
             {
-                var speakerLists = _speakerServices.Query(s => s.Uid == eventArgs.Sender.Id && s.GroupId == eventArgs.SourceGroup.Id);
+                //排除掉图片、带CQ码的
+                var speakerLists = _speakerServices.Query(s => s.Uid == eventArgs.Sender.Id && !s.RawText.Contains("image") && !s.RawText.Contains("CQ"));
                 if (speakerLists.Any())
                 {
-                    var builder = string.Join(",", speakerLists.Select(s => s.RawText))
-                                    .Replace(",", "");
+                    var builder = string.Join(",", speakerLists.Select(s => s.RawText));
+                    //正则过滤所有标点符号
+                    builder = Regex.Replace(builder, "[\\s\\p{P}\n\r=<>$>+￥^]", "");
                     var seg = new JiebaSegmenter();
-                    var freqs = new Counter<string>(seg.Cut(builder)).MostCommon(20);
+                    var freqs = new Counter<string>(seg.Cut(builder));
+                    var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
                     var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
                     var images = WordCloudGen
-                        .Draw(freqs.Select(s => s.Key).ToList(), freqs.Select(s => s.Value).ToList());
+                        .Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
                     var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
                     images.Save(imgName, ImageFormat.Png);
                     await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n", CQCode.CQImage(imgName));

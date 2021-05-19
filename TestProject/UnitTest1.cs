@@ -6,6 +6,8 @@ using Qiushui.Framework.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
@@ -18,7 +20,9 @@ namespace TestProject
         readonly ISignUserServices signUserServices;
         readonly ISignLogsServices signLogsServices;
         readonly ILianChatServices lianChatServices;
-        readonly ILianKeyWordsServices lianKeyWordsServices;
+        readonly ILianKeyWordsServices lianKeyWordsServices; 
+        readonly ISpeakerServices speakerServices;
+
 
         public UnitTest1()
         {
@@ -26,6 +30,7 @@ namespace TestProject
             signLogsServices = GetInstance<ISignLogsServices>();
             lianChatServices = GetInstance<ILianChatServices>();
             lianKeyWordsServices = GetInstance<ILianKeyWordsServices>();
+            speakerServices = GetInstance<ISpeakerServices>();
         }
 
         [TestMethod]
@@ -36,7 +41,8 @@ namespace TestProject
             var freqs = new Counter<string>(seg.Cut(s));
             var wordKeys = new List<string>();
             var ints = new List<int>();
-            foreach (var pair in freqs.MostCommon(10))
+            var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
+            foreach (var pair in filterFreqs)
             {
                 wordKeys.Add(pair.Key);
                 ints.Add(pair.Value);
@@ -48,6 +54,37 @@ namespace TestProject
             //var wc = new WordCloudGen(width, height);
 
             //wc.Draw(words, frequencies);
+        }
+
+
+        [TestMethod]
+        public void UTGroupWC()
+        {
+            try
+            {
+                // && s.GroupId == 566040141
+                var speakerLists = speakerServices.Query(s => s.Uid == 1069430666);
+                if (speakerLists.Any())
+                {
+                    var builder = string.Join(",", speakerLists.Select(s => s.RawText))
+                                    .Replace(",", "");
+                    var seg = new JiebaSegmenter();
+                    var freqs = new Counter<string>(seg.Cut(builder));
+                    var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
+                    var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+                    var images = WordCloudGen
+                        .Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
+                    var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
+                    images.Save(imgName, ImageFormat.Png);
+                    //delete img
+                     //Task.Delay(10);
+                    //File.Delete(imgName);
+                }
+            }
+            catch (Exception c)
+            {
+                Console.WriteLine(c.Message);
+            }
         }
 
         [TestMethod]

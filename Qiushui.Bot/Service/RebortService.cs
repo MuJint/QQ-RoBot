@@ -128,7 +128,7 @@ namespace Qiushui.Bot
         {
             try
             {
-                var r = new Random().Next(5, 10);
+                var r = new Random().Next(5, 9);
                 if (r is 6)
                 {
                     var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();

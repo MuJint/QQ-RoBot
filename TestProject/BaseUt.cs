@@ -11,6 +11,7 @@ namespace TestProject
                 .AddScoped<ILianKeyWordsServices, LianKeyWordsServices>()
                 .AddScoped<ISignLogsServices, SignLogsServices>()
                 .AddScoped<ISignUserServices, SignUserServices>()
+                .AddScoped<ISpeakerServices, SpeakerServices>()
             .BuildServiceProvider();
         protected T GetInstance<T>() => provider.GetService<T>();
     }
