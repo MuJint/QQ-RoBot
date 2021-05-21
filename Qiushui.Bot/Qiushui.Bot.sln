@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "..\TestProje
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qiushui.Framework", "..\Qiushui.Framework\Qiushui.Framework.csproj", "{D4BFD9A1-988C-4A5B-8678-B1B6745B333A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qiushui.Common", "..\Qiushui.Common\Qiushui.Common.csproj", "{ED32501E-7030-4970-9E89-149EEC05D7C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qiushui.Common", "..\Qiushui.Common\Qiushui.Common.csproj", "{ED32501E-7030-4970-9E89-149EEC05D7C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordCloud", "..\WordCloud\WordCloud.csproj", "{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{ED32501E-7030-4970-9E89-149EEC05D7C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED32501E-7030-4970-9E89-149EEC05D7C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED32501E-7030-4970-9E89-149EEC05D7C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

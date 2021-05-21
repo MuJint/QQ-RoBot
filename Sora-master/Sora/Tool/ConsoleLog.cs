@@ -166,16 +166,16 @@ namespace Sora.Tool
             errorLogBuilder
                 .Append(ErrorLogBuilder(args.ExceptionObject as Exception));
             Fatal("Sora",errorLogBuilder);
-            Warning("Sora","将在1S后自动重启");
-            new Process()
-            {
-                StartInfo =
-                {
-                    FileName = AppDomain.CurrentDomain.BaseDirectory + "Qiushui.Bot.exe",
-                    UseShellExecute = false
-                }
-            }.Start();
-            Environment.Exit(-1);
+            //Warning("Sora","将在1S后自动重启");
+            //new Process()
+            //{
+            //    StartInfo =
+            //    {
+            //        FileName = AppDomain.CurrentDomain.BaseDirectory + "Qiushui.Bot.exe",
+            //        UseShellExecute = false
+            //    }
+            //}.Start();
+            //Environment.Exit(-1);
         }
         #endregion
     }

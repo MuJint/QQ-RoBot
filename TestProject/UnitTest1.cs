@@ -5,8 +5,7 @@ using Qiushui.Framework.Interface;
 using Qiushui.Framework.Models;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
+using System.DrawingCore.Imaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Xunit.Sdk;
@@ -48,12 +47,11 @@ namespace TestProject
                 ints.Add(pair.Value);
                 Console.WriteLine($"{pair.Key}: {pair.Value}");
             }
-            var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+            var WordCloudGen = new WordCloudSharp.WordCloud(300, 300, true);
+            //var images = WordCloudGen.Draw(wordKeys, ints);
             var images = WordCloudGen.Draw(wordKeys, ints);
+            //var images = WordCloudGen.Draw(@"C:\Users\v-jinlv\Desktop\background.jpg", wordKeys, ints);
             images.Save($"D:\\{Guid.NewGuid()}.png", ImageFormat.Png);
-            //var wc = new WordCloudGen(width, height);
-
-            //wc.Draw(words, frequencies);
         }
 
 
@@ -71,7 +69,7 @@ namespace TestProject
                     var seg = new JiebaSegmenter();
                     var freqs = new Counter<string>(seg.Cut(builder));
                     var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
-                    var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+                    var WordCloudGen = new WordCloudSharp.WordCloud(300, 300, true);
                     var images = WordCloudGen
                         .Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
                     var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";

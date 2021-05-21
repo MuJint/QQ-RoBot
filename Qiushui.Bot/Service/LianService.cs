@@ -7,7 +7,7 @@ using Sora.Entities.CQCodes;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
+using System.DrawingCore.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -835,7 +835,7 @@ namespace Qiushui.Bot
         public async ValueTask RollDice(GroupMessageEventArgs eventArgs)
         {
             var r = new Random().Next(1, 7);
-            await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n转转转转转转\r\n", CQCode.CQImage($"{Environment.CurrentDirectory}\\Images\\{ConvertE(r)}.gif"));
+            await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n转转转转转转\r\n", CQCode.CQImage($"{Environment.CurrentDirectory}/Images/{ConvertE(r)}.gif"));
         }
         #endregion
 
@@ -854,10 +854,11 @@ namespace Qiushui.Bot
                     var seg = new JiebaSegmenter();
                     var freqs = new Counter<string>(seg.Cut(builder));
                     var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
-                    var WordCloudGen = new WordCloud.WordCloud(300, 300, true);
+                    var WordCloudGen = new WordCloudSharp.WordCloud(300, 300, true, fontname: "simsun");
                     var images = WordCloudGen
                         .Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
-                    var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
+                    //linux环境下路径需替换为/，windows下的环境为\\
+                    var imgName = $"{Environment.CurrentDirectory}/Images/{Guid.NewGuid()}.png";
                     images.Save(imgName, ImageFormat.Png);
                     await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n", CQCode.CQImage(imgName));
                     //delete img

@@ -32,13 +32,13 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="SharpYaml" Version="1.6.6" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    <PackageReference Include="WordCloud" Version="1.0.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Qiushui.Common\Qiushui.Common.csproj" />
     <ProjectReference Include="..\Qiushui.Framework\Qiushui.Framework.csproj" />
     <ProjectReference Include="..\Sora-master\Sora\Sora.csproj" />
+    <ProjectReference Include="..\WordCloud\WordCloud.csproj" />
   </ItemGroup>
 
   <ItemGroup>
