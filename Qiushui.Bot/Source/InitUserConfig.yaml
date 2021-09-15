@@ -14,6 +14,8 @@ ModuleSwitch:
   Hso: true
   #复读模式
   Reread: true
+  #撤回
+  Recal: true
 # 随机色图设置
 HsoConfig:
   #色图源 Local/Lolicon/Yukari

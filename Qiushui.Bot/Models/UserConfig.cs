@@ -56,6 +56,10 @@ namespace Qiushui.Bot
         /// 启用AI自动对话
         /// </summary>
         public bool IsAI { get; set; }
+        /// <summary>
+        /// 是否撤回
+        /// </summary>
+        public bool Recal { get; set; }
 
 
         #region 将已启用的模块名转为字符串

@@ -79,7 +79,7 @@ namespace Qiushui.Bot
             //读取配置文件
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
-                await groupMessage.Reply("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
+                //await groupMessage.Reply("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
                 ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
                 return;
             }
@@ -126,10 +126,25 @@ namespace Qiushui.Bot
 
         public async ValueTask GroupRecallParse(object sender, GroupRecallEventArgs groupMessage)
         {
+            //配置文件实例
+            config = new(groupMessage.MessageSender.Id);
+            //读取配置文件
+            if (!config.LoadUserConfig(out UserConfig userConfig))
+            {
+                //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
+                ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
+                return;
+            }
             try
             {
                 var r = new Random().Next(5, 9);
                 if (r is 6)
+                {
+                    var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
+                    var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
+                    await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
+                }
+                else if (userConfig.ModuleSwitch.Recal)
                 {
                     var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
                     var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
@@ -173,7 +188,7 @@ namespace Qiushui.Bot
             //读取配置文件
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
-                await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
+                //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
                 ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
                 return;
             }
