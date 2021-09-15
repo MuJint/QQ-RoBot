@@ -156,9 +156,9 @@ namespace Qiushui.Bot
             var strSb = new StringBuilder();
             strSb.Append($"[当前机器人]：{config.ConfigModel.BotName}\r\n");
             strSb.Append($"[开源地址]：https://github.com/MuJint/Qiushui-Bot.git \r\n");
-            strSb.Append($"[使用说明]：https://www.qiubb.com/article/mtuxmty0nzu2mdu2mtu2qqm= \r\n");
+            strSb.Append($"[常用指令]：https://github.com/MuJint/Qiushui-Bot/tree/master#%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4 \r\n");
             strSb.Append($"[作者]：于心\r\n");
-            strSb.Append($"出于良心考虑，我不建议您通过任何方式进行商业用途，永远开源，不定时更新。能帮忙点个小星星最好~爱你们");
+            strSb.Append($"本机器人尚未以任何方式进行商业用途，永远开源，不定时更新");
             await SendMessageGroup(eventArgs, strSb.ToString());
         }
         #endregion
