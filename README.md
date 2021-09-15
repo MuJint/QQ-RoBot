@@ -64,7 +64,7 @@ Qiushui-Bot是一个基于onebot标准的机器人/当然目前只写了部分�
 * 如果只需要运行在本地，不需要源代码，请前往[Release](https://github.com/MuJint/Qiushui-Bot/releases)下载最新包
 * 分为两个文件，一个是`client`一个是`server`目前仅打包了`64`位操作系统
 * 请注意`server`端是`go-cqhttp`归原作者所有，可前往[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)自行下载
-* 默认配置文件如下，仅需要填入账号以及密码
+* 默认配置文件如下，需要填入账号以及密码，上报数据类型为`array`，反向websocket地址为`ws://127.0.0.1:9200`
   ``` Yaml
   # go-cqhttp 默认配置文件
       account: # 账号相关
