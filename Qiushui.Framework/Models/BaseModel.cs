@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Qiushui.Framework.Models
+namespace Robot.Framework.Models
 {
     public class BaseModel
     {

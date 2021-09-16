@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
     /// 单用户配置文件定义

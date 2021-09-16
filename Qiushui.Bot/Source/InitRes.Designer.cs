@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Qiushui.Bot.Source {
+namespace QQ.RoBot.Source {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Qiushui.Bot.Source {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Qiushui.Bot.Source.InitRes", typeof(InitRes).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("QQ.RoBot.Source.InitRes", typeof(InitRes).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

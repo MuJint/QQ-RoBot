@@ -1,15 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Qiushui.Framework.Interface;
-using Qiushui.Framework.Services;
-using Sora.Server;
-using Sora.Tool;
+using Robot.Framework.Interface;
+using Robot.Framework.Services;
+using Sora.Interfaces;
+using Sora.Net;
+using Sora.Net.Config;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using YukariToolBox.FormatLog;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
-    static class BotServerInterface
+    static class BotStartUp
     {
         static async Task Main()
         {
@@ -20,24 +22,24 @@ namespace Qiushui.Bot
                 .AddScoped<ISignLogsServices, SignLogsServices>()
                 .AddScoped<ISignUserServices, SignUserServices>()
                 .AddScoped<ISpeakerServices, SpeakerServices>()
-                .AddScoped<IRebortInterface, RebortService>()
+                .AddScoped<IRobotInterface, RobotService>()
                 .AddScoped<ILianInterface, LianService>()
                 .AddScoped<IModuleInterface, ModuleService>()
                 .BuildServiceProvider();
-            var Instance = Dependcy.Provider.GetService<IRebortInterface>();
+            var Instance = Dependcy.Provider.GetService<IRobotInterface>();
 
             //修改控制台标题
-            Console.Title = "Qiushui.Bot";
-            ConsoleLog.Info("Qiushui.Bot初始化", "Qiushui.Bot初始化...");
+            Console.Title = "Bot";
+            Log.Info("Bot初始化", "Bot初始化...");
             //初始化配置文件
-            ConsoleLog.Info("Qiushui.Bot初始化", "初始化服务器全局配置...");
+            Log.Info("Bot初始化", "初始化服务器全局配置...");
             Config config = new(0);
             config.GlobalConfigFileInit();
             config.LoadGlobalConfig(out GlobalConfig globalConfig, false);
 
-            ConsoleLog.SetLogLevel(Fleck.LogLevel.Info);
+            Log.SetLogLevel(LogLevel.Info);
             //显示Log等级
-            ConsoleLog.Debug("Log Level", globalConfig.LogLevel);
+            Log.Debug("Log Level", globalConfig.LogLevel);
 
             //初始化字符编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -46,19 +48,18 @@ namespace Qiushui.Bot
             CommandHelper.KeywordResourseInit();
 
             //
-            ConsoleLog.Info("Qiushui.Bot初始化", "初始化指令匹配集...");
-            ConsoleLog.Info("Qiushui.Bot初始化", "启动反向WebSocket服务器...");
+            Log.Info("Bot初始化", "初始化指令匹配集...");
+            Log.Info("Bot初始化", "启动反向WebSocket服务器...");
             //初始化服务器
-            SoraWSServer server = new(new ServerConfig
+            ISoraService server = SoraServiceFactory.CreateService(new ServerConfig
             {
-                Location = globalConfig.Location,
+                Host = globalConfig.Location,
                 Port = globalConfig.Port,
                 AccessToken = globalConfig.AccessToken,
                 UniversalPath = globalConfig.UniversalPath,
-                ApiPath = globalConfig.ApiPath,
-                EventPath = globalConfig.EventPath,
-                HeartBeatTimeOut = globalConfig.HeartBeatTimeOut,
-                ApiTimeOut = globalConfig.ApiTimeOut
+                HeartBeatTimeOut = TimeSpan.FromSeconds(globalConfig.HeartBeatTimeOut),
+                ApiTimeOut = TimeSpan.FromSeconds(globalConfig.ApiTimeOut),
+                EnableSoraCommandManager = true
             });
 
             server.Event.OnClientConnect += Instance.Initalization;
@@ -74,7 +75,8 @@ namespace Qiushui.Bot
             //server.ConnManager.OnCloseConnectionAsync += TimerEventParse.StopTimer;
             //server.ConnManager.OnHeartBeatTimeOut += TimerEventParse.StopTimer;
 
-            await server.StartServer();
+            await server.StartService();
+            await Task.Delay(-1);
         }
     }
 }

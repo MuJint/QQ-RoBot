@@ -1,4 +1,4 @@
-﻿namespace Qiushui.Framework.Models
+﻿namespace Robot.Framework.Models
 {
     public class LianChat : BaseModel
     {

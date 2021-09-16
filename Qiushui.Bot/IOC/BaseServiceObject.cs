@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     public abstract class BaseServiceObject
     {

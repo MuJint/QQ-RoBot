@@ -1,9 +1,9 @@
-﻿using Qiushui.Framework.Interface;
+﻿using Robot.Framework.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Qiushui.Framework.Services
+namespace Robot.Framework.Services
 {
     public class BaseServices<TEntity> : IBaseServices<TEntity> where TEntity : class, new()
     {

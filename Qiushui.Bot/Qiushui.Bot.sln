@@ -3,17 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qiushui.Bot", "Qiushui.Bot.csproj", "{7BDE6A63-59B3-4794-A208-6890EB4435E5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sora", "..\Sora-master\Sora\Sora.csproj", "{86827BF5-3516-4973-AD5F-9755C837C60F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QQ.RoBot", "QQ.RoBot.csproj", "{7BDE6A63-59B3-4794-A208-6890EB4435E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "..\TestProject\TestProject.csproj", "{118E6653-9AC1-4F81-859F-491694885963}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qiushui.Framework", "..\Qiushui.Framework\Qiushui.Framework.csproj", "{D4BFD9A1-988C-4A5B-8678-B1B6745B333A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robot.Framework", "..\Qiushui.Framework\Robot.Framework.csproj", "{D4BFD9A1-988C-4A5B-8678-B1B6745B333A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qiushui.Common", "..\Qiushui.Common\Qiushui.Common.csproj", "{ED32501E-7030-4970-9E89-149EEC05D7C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robot.Common", "..\Qiushui.Common\Robot.Common.csproj", "{ED32501E-7030-4970-9E89-149EEC05D7C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordCloud", "..\WordCloud\WordCloud.csproj", "{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordCloud", "..\WordCloud\WordCloud.csproj", "{B5BD2C46-93E5-4736-962D-D1D4A35C7EC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{7BDE6A63-59B3-4794-A208-6890EB4435E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BDE6A63-59B3-4794-A208-6890EB4435E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BDE6A63-59B3-4794-A208-6890EB4435E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86827BF5-3516-4973-AD5F-9755C837C60F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86827BF5-3516-4973-AD5F-9755C837C60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86827BF5-3516-4973-AD5F-9755C837C60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86827BF5-3516-4973-AD5F-9755C837C60F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{118E6653-9AC1-4F81-859F-491694885963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{118E6653-9AC1-4F81-859F-491694885963}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{118E6653-9AC1-4F81-859F-491694885963}.Release|Any CPU.ActiveCfg = Release|Any CPU

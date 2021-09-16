@@ -1,12 +1,12 @@
 ﻿using Sora.EventArgs.SoraEvent;
 using System.Threading.Tasks;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
-    /// RebortEvent interface
+    /// RobotEvent interface
     /// </summary>
-    public interface IRebortInterface
+    public interface IRobotInterface
     {
         /// <summary>
         /// Initalization

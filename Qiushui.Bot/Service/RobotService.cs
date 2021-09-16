@@ -1,21 +1,21 @@
-﻿using Qiushui.Common;
-using Qiushui.Framework.Interface;
-using Qiushui.Framework.Models;
-using Sora.Entities.CQCodes;
+﻿using Robot.Common;
+using Robot.Framework.Interface;
+using Robot.Framework.Models;
+using Sora.Entities.MessageElement;
 using Sora.EventArgs.SoraEvent;
-using Sora.Tool;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YukariToolBox.FormatLog;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
-    /// RebortService
+    /// RobotService
     /// </summary>
-    public class RebortService : BaseServiceObject, IRebortInterface
+    public class RobotService : BaseServiceObject, IRobotInterface
     {
         private Config config;
         readonly ISignUserServices _userServices;
@@ -23,7 +23,7 @@ namespace Qiushui.Bot
         readonly ILianKeyWordsServices _keyWordServices;
         readonly IModuleInterface _moduleInterface;
         readonly ISpeakerServices _speakerServices;
-        public RebortService()
+        public RobotService()
         {
             _userServices = GetInstance<ISignUserServices>();
             _logsServices = GetInstance<ISignLogsServices>();
@@ -46,10 +46,10 @@ namespace Qiushui.Bot
                 switch (eventArgs.SubType)
                 {
                     case Sora.Enumeration.EventParamsType.MemberChangeType.Leave:
-                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]退群了....江湖路远，有缘再会");
+                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]退群了。江湖路远，有缘再会");
                         break;
                     case Sora.Enumeration.EventParamsType.MemberChangeType.Kick:
-                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]被[{@operator.userInfo.Nick}]强行请离了....江湖路远，有缘再会");
+                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]被[{@operator.userInfo.Nick}]强行请离了。江湖路远，有缘再会");
                         break;
                     case Sora.Enumeration.EventParamsType.MemberChangeType.KickMe:
                         break;
@@ -67,9 +67,9 @@ namespace Qiushui.Bot
             {
                 //此处存在一个异常
                 //System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'userId')
-                ConsoleLog.Error("Error", c.Message);
-                ConsoleLog.Error("Error", $"操作失败者：{eventArgs.Operator.Id}");
-                await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]不知道是退出了群聊还是加入了，咱也不知道啊 ");
+                Log.Error("Error", c.Message);
+                Log.Error("Error", $"操作失败者：{eventArgs.Operator.Id}");
+                await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]状态异常");
             }
         }
 
@@ -80,7 +80,7 @@ namespace Qiushui.Bot
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
                 //await groupMessage.Reply("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
+                Log.Error("Qiushui机器人管理", "无法读取用户配置文件");
                 return;
             }
             if (!IsListenGroup(groupMessage.SourceGroup.Id, userConfig))
@@ -95,7 +95,7 @@ namespace Qiushui.Bot
             //聊天关键词
             if (CommandHelper.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
             {
-                ConsoleLog.Info("关键词触发", $"触发关键词[{keywordCommand.GetDescription()}]");
+                Log.Info("关键词触发", $"触发关键词[{keywordCommand.GetDescription()}]");
                 switch (keywordCommand)
                 {
                     case KeywordCommand.Hso:
@@ -117,10 +117,7 @@ namespace Qiushui.Bot
             {
                 await eventArgs
                     .SourceGroup
-                    .SendGroupMessage(
-                        CQCode.CQAt(eventArgs.SendUser),
-                        "\r\n再戳锤爆你的头\r\n",
-                        CQCode.CQImage("https://i.loli.net/2020/10/20/zWPyocxFEVp2tDT.jpg"));
+                    .SendGroupMessage($"{CQCodes.CQAt(eventArgs.SendUser)}\r\n再戳锤爆你的头\r\n{CQCodes.CQImage("https://i.loli.net/2020/10/20/zWPyocxFEVp2tDT.jpg")}");
             }
         }
 
@@ -132,7 +129,7 @@ namespace Qiushui.Bot
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
                 //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
+                Log.Error("Bot机器人管理", "无法读取用户配置文件");
                 return;
             }
             try
@@ -161,21 +158,21 @@ namespace Qiushui.Bot
 
         public ValueTask Initalization(object sender, ConnectEventArgs connectEvent)
         {
-            ConsoleLog.Info("Qiushui.Bot初始化", "与onebot客户端连接成功，初始化资源...");
+            Log.Info("Bot初始化", "与onebot客户端连接成功，初始化资源...");
             //初始化配置文件
-            ConsoleLog.Info("Qiushui.Bot初始化", $"初始化用户[{connectEvent.LoginUid}]配置");
+            Log.Info("Bot初始化", $"初始化用户[{connectEvent.LoginUid}]配置");
             config = new(connectEvent.LoginUid);
             config.UserConfigFileInit();
             config.LoadUserConfig(out UserConfig userConfig, false);
 
 
             //在控制台显示启用模块
-            ConsoleLog.Info("已启用的模块",
+            Log.Info("已启用的模块",
                             $"\n{userConfig.ModuleSwitch}");
             //显示代理信息
             if (userConfig.ModuleSwitch.Hso && !string.IsNullOrEmpty(userConfig.HsoConfig.PximyProxy))
             {
-                ConsoleLog.Debug("Hso Proxy", userConfig.HsoConfig.PximyProxy);
+                Log.Debug("Hso Proxy", userConfig.HsoConfig.PximyProxy);
             }
 
             return ValueTask.CompletedTask;
@@ -189,12 +186,12 @@ namespace Qiushui.Bot
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
                 //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                ConsoleLog.Error("Qiushui机器人管理", "无法读取用户配置文件");
+                Log.Error("Bot机器人管理", "无法读取用户配置文件");
                 return;
             }
 
             //人工智障
-            //var service = new DealInstruction(ConsoleLog, userConfig);
+            //var service = new DealInstruction(Log, userConfig);
             var all = _keyWordServices.Query(t => t.ID > 0);
             var result = _keyWordServices.Query(t => t.Keys.Contains(eventArgs.Message.RawText)) ?? new List<LianKeyWords>();
             if (result.Count > 0 && result != null)
@@ -238,7 +235,7 @@ namespace Qiushui.Bot
                 {
                     var json = await RequestAi(userConfig.ConfigModel.AiPath,
                         eventArgs.Message.RawText.Replace(at, "").Replace(" ", ""));
-                    await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), json.ObjectToGBK());
+                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.Sender.Id)}{json.ObjectToGBK()}");
                 }
             }
             catch (Exception c)
@@ -295,7 +292,7 @@ namespace Qiushui.Bot
                 var rank = new Random().Next(1, 10);
                 if (user == null)
                 {
-                    await eventArgs.Reply(CQCode.CQAt(eventArgs.SenderInfo.UserId), $"未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~");
+                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.SenderInfo.UserId)}未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~");
                 }
                 else
                 {
@@ -309,7 +306,7 @@ namespace Qiushui.Bot
                         ModifyRank = rank,
                         Uid = eventArgs.SenderInfo.UserId.ObjToString()
                     });
-                    await eventArgs.Reply(CQCode.CQAt(eventArgs.SenderInfo.UserId), $"看{userConfig.ConfigModel.NickName}这么可爱，就奖励{userConfig.ConfigModel.NickName}{rank}分~");
+                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.SenderInfo.UserId)}看{userConfig.ConfigModel.NickName}这么可爱就奖励{userConfig.ConfigModel.NickName}{rank}分~");
                 }
             }
         }
@@ -410,24 +407,6 @@ namespace Qiushui.Bot
                     });
                 }
             });
-        }
-
-        private static async ValueTask StartTimer(GroupMessageEventArgs eventArgs)
-        {
-            if (DateTime.Now.Hour is 9 && DateTime.Now.DayOfWeek is DayOfWeek.Monday)
-            {
-                var dicCache = StaticModel.GetSystemLog;
-                if (dicCache.Count <= 0)
-                {
-                    dicCache.Add(eventArgs.SourceGroup.Id, true);
-                    await eventArgs.Reply($"-------公告-------\r\n由于服务器发生不可逆转的致命错误\r\n导致十二月三号至今二月二号的数据全部丢失\r\n补偿措施已签到列表成员全体每日最高分4*61天\r\n放心我们已经杀了一只阿橘祭天，尽量避免此类事情发生。");
-                }
-                if (dicCache.ContainsKey(eventArgs.SourceGroup.Id))
-                    return;
-            }
-            //new Timer(async (obj) => {
-
-            //}, null, 0, 1000 * 60 * 30);
         }
         #endregion
     }

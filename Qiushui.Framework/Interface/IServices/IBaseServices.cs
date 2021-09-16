@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Qiushui.Framework.Interface
+namespace Robot.Framework.Interface
 {
     public interface IBaseServices<TEntity> where TEntity : class
     {

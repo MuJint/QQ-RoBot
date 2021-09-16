@@ -1,8 +1,8 @@
 using JiebaNet.Segmenter;
 using JiebaNet.Segmenter.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Qiushui.Framework.Interface;
-using Qiushui.Framework.Models;
+using Robot.Framework.Interface;
+using Robot.Framework.Models;
 using System;
 using System.Collections.Generic;
 using System.DrawingCore.Imaging;

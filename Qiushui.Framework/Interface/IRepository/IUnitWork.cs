@@ -1,4 +1,4 @@
-﻿namespace Qiushui.Framework.Interface
+﻿namespace Robot.Framework.Interface
 {
     public interface IUnitWork
     {

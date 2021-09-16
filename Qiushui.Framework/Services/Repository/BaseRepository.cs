@@ -1,11 +1,11 @@
 ﻿using LiteDB;
-using Qiushui.Framework.Services;
+using Robot.Framework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Qiushui.Framework.Interface
+namespace Robot.Framework.Interface
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
     {

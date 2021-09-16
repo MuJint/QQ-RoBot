@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json;
-using Qiushui.Common;
-using Sora.Entities.CQCodes;
-using Sora.Tool;
+using Robot.Common;
+using Sora.Entities.MessageElement;
+using Sora.EventArgs.SoraEvent;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sora.EventArgs.SoraEvent;
+using YukariToolBox.FormatLog;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
     /// ModuleService
@@ -29,7 +29,7 @@ namespace Qiushui.Bot
             //检查色图文件夹大小
             if (IOUtils.GetHsoSize() >= userConfig.HsoConfig.SizeLimit * 1024 * 1024)
             {
-                ConsoleLog.Warning("Hso", "色图文件夹超出大小限制，将清空文件夹");
+                Log.Warning("Hso", "色图文件夹超出大小限制，将清空文件夹");
                 Directory.Delete(IOUtils.GetHsoPath(), true);
             }
             await GeneaterHso(userConfig.HsoConfig, e.SourceGroup);
@@ -143,7 +143,7 @@ namespace Qiushui.Bot
         private static async Task GeneaterHso(Hso hso, Sora.Entities.Group group)
         {
             string localPicPath;
-            ConsoleLog.Debug("源", hso.Source);
+            Log.Debug("源", hso.Source);
             //本地模式
             if (hso.Source == SetuSourceType.Local)
             {
@@ -155,16 +155,16 @@ namespace Qiushui.Bot
                 }
                 Random randFile = new();
                 localPicPath = $"{picNames[randFile.Next(0, picNames.Length - 1)]}";
-                ConsoleLog.Debug("发送图片", localPicPath);
+                Log.Debug("发送图片", localPicPath);
                 await group.SendGroupMessage(hso.CardImage
-                                                   ? CQCode.CQCardImage(localPicPath)
-                                                   : CQCode.CQImage(localPicPath));
+                                                   ? CQCodes.CQCardImage(localPicPath)
+                                                   : CQCodes.CQImage(localPicPath));
                 return;
             }
             //网络部分
             try
             {
-                ConsoleLog.Info("NET", "尝试获取色图");
+                Log.Info("NET", "尝试获取色图");
                 string apiKey;
                 string serverUrl;
                 //源切换
@@ -193,7 +193,7 @@ namespace Qiushui.Bot
                         break;
                     default:
                         await group.SendGroupMessage("发生了未知错误");
-                        ConsoleLog.Error("Hso", "发生了未知错误");
+                        Log.Error("Hso", "发生了未知错误");
                         return;
                 }
                 //向服务器发送请求
@@ -202,17 +202,17 @@ namespace Qiushui.Bot
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));
-                    await group.SendGroupMessage(CQCode.CQImage(result.Data.First().Url));
+                    await group.SendGroupMessage(CQCodes.CQImage(result.Data.First().Url));
                 }
                 else
                     await group.SendGroupMessage("发生了未知错误");
-                ConsoleLog.Debug("Get Json", json);
+                Log.Debug("Get Json", json);
             }
             catch (Exception e)
             {
                 //网络错误
                 await group.SendGroupMessage("网络错误，暂时没有请求到~");
-                ConsoleLog.Error("网络发生错误", ConsoleLog.ErrorLogBuilder(e.InnerException));
+                Log.Error("网络发生错误", Log.ErrorLogBuilder(e.InnerException));
                 return;
             }
             //https://dotnet.microsoft.com/download/dotnet/current/runtime

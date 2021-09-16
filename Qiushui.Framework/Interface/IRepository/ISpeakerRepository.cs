@@ -1,6 +1,6 @@
-﻿using Qiushui.Framework.Models;
+﻿using Robot.Framework.Models;
 
-namespace Qiushui.Framework.Interface
+namespace Robot.Framework.Interface
 {
     public interface ISpeakerRepository : IBaseRepository<SpeakerList>
     {

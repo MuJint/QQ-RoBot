@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Qiushui.Common
+namespace Robot.Common
 {
     internal class SimilarityHelper
     {

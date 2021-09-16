@@ -1,4 +1,4 @@
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     public enum SetuSourceType
     {

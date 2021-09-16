@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Qiushui.Common
+namespace Robot.Common
 {
     public static class UtilHelper
     {

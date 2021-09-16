@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
     /// 关键字触发
@@ -71,7 +71,7 @@ namespace Qiushui.Bot
         /// <summary>
         /// 技能
         /// </summary>
-        [Description("技能 菜单 功能")]
+        [Description("技能 菜单 功能 指令")]
         Skill,
         /// <summary>
         /// 抽奖

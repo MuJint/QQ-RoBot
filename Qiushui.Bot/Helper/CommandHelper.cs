@@ -1,11 +1,11 @@
-using Qiushui.Common;
+using Robot.Common;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     public static class CommandHelper
     {

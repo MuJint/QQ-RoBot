@@ -1,7 +1,7 @@
-﻿using Qiushui.Framework.Interface;
-using Qiushui.Framework.Models;
+﻿using Robot.Framework.Interface;
+using Robot.Framework.Models;
 
-namespace Qiushui.Framework.Services
+namespace Robot.Framework.Services
 {
     public class SignUserServices : BaseServices<SignUser>, ISignUserServices
     {

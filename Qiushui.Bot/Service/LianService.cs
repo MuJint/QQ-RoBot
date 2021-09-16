@@ -1,9 +1,10 @@
 ﻿using JiebaNet.Segmenter;
 using JiebaNet.Segmenter.Common;
-using Qiushui.Common;
-using Qiushui.Framework.Interface;
-using Qiushui.Framework.Models;
-using Sora.Entities.CQCodes;
+using Robot.Common;
+using Robot.Framework.Interface;
+using Robot.Framework.Models;
+using Sora.Entities;
+using Sora.Entities.MessageElement;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
     /// LianService
@@ -835,7 +836,12 @@ namespace Qiushui.Bot
         public async ValueTask RollDice(GroupMessageEventArgs eventArgs)
         {
             var r = new Random().Next(1, 7);
-            await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n转转转转转转\r\n", CQCode.CQImage($"{Environment.CurrentDirectory}/Images/{ConvertE(r)}.gif"));
+            var msg = new MessageBody()
+            {
+               CQCodes.CQAt(eventArgs.Sender.Id),
+               CQCodes.CQImage($"{Environment.CurrentDirectory}/Images/{ConvertE(r)}.gif")
+            };
+            await eventArgs.Reply(msg);
         }
         #endregion
 
@@ -860,7 +866,12 @@ namespace Qiushui.Bot
                     //linux环境下路径需替换为/，windows下的环境为\\
                     var imgName = $"{Environment.CurrentDirectory}/Images/{Guid.NewGuid()}.png";
                     images.Save(imgName, ImageFormat.Png);
-                    await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), "\r\n", CQCode.CQImage(imgName));
+                    var msg = new MessageBody
+                    {
+                        CQCodes.CQAt(eventArgs.Sender.Id),
+                        CQCodes.CQImage(imgName)
+                    };
+                    await eventArgs.Reply(msg);
                     //delete img
                     await Task.Delay(10);
                     File.Delete(imgName);
@@ -878,6 +889,7 @@ namespace Qiushui.Bot
         #region 发言榜
         public async ValueTask NonsenseKing(GroupMessageEventArgs eventArgs)
         {
+            await SendMessageGroup(eventArgs, "请稍等，正在执行耗时操作");
             var speakerList = _speakerServices
                 .Query(q => q.GroupId == eventArgs.SourceGroup.Id && q.CreateTime.Month == DateTime.Now.Month && q.CreateTime.Year == DateTime.Now.Year)
                 .GroupBy(g => new { g.Uid })
@@ -934,7 +946,7 @@ namespace Qiushui.Bot
         private static async ValueTask<bool> SendMessageGroup(GroupMessageEventArgs eventArgs, string strContent, bool isAt = false)
         {
             if (isAt)
-                await eventArgs.Reply(CQCode.CQAt(eventArgs.Sender.Id), strContent);
+                await eventArgs.Reply(CQCodes.CQAt(eventArgs.Sender.Id) + strContent);
             else
                 await eventArgs.Reply(strContent);
             return false;

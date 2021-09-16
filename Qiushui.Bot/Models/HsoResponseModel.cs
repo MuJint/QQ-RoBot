@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     /// <summary>
     /// 色图 model

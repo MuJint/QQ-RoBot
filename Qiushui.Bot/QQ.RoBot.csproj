@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>Qiushui.Bot</AssemblyName>
-    <RootNamespace>Qiushui.Bot</RootNamespace>
+    <AssemblyName>QQ.RoBot</AssemblyName>
+    <RootNamespace>QQ.RoBot</RootNamespace>
     <Authors>于心</Authors>
     <PackageProjectUrl>https://github.com/MuJint/Qiushui-Bot</PackageProjectUrl>
     <Version>1.0.0.2</Version>
@@ -27,17 +27,15 @@
 
   <ItemGroup>
     <PackageReference Include="jieba.NET" Version="0.42.2" />
-    <PackageReference Include="LiteDB" Version="5.0.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="SharpYaml" Version="1.6.6" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="Sora" Version="1.0.0-rc.19" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qiushui.Common\Qiushui.Common.csproj" />
-    <ProjectReference Include="..\Qiushui.Framework\Qiushui.Framework.csproj" />
-    <ProjectReference Include="..\Sora-master\Sora\Sora.csproj" />
+    <ProjectReference Include="..\Qiushui.Common\Robot.Common.csproj" />
+    <ProjectReference Include="..\Qiushui.Framework\Robot.Framework.csproj" />
     <ProjectReference Include="..\WordCloud\WordCloud.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     public class CheckInCD
     {

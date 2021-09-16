@@ -1,12 +1,12 @@
-using Qiushui.Bot.Source;
+using QQ.RoBot.Source;
 using SharpYaml.Serialization;
-using Sora.Tool;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading;
+using YukariToolBox.FormatLog;
 
-namespace Qiushui.Bot
+namespace QQ.RoBot
 {
     public class Config
     {
@@ -44,7 +44,7 @@ namespace Qiushui.Bot
                 userConfig = LoadedUserConfig;
                 return LoadedUserConfig != null;
             }
-            ConsoleLog.Debug("ConfigIO", "读取用户配置");
+            Log.Debug("ConfigIO", "读取用户配置");
             try
             {
                 //反序列化配置文件
@@ -54,7 +54,7 @@ namespace Qiushui.Bot
                 //参数合法性检查
                 if (LoadedUserConfig.HsoConfig.SizeLimit < 1)
                 {
-                    ConsoleLog.Error("读取用户配置", "参数值超出合法范围，重新生成配置文件");
+                    Log.Error("读取用户配置", "参数值超出合法范围，重新生成配置文件");
                     userConfig = null;
                     return false;
                 }
@@ -63,7 +63,7 @@ namespace Qiushui.Bot
             }
             catch (Exception e)
             {
-                ConsoleLog.Error("读取用户配置文件时发生错误", ConsoleLog.ErrorLogBuilder(e));
+                Log.Error("读取用户配置文件时发生错误", Log.ErrorLogBuilder(e));
                 userConfig = null;
                 return false;
             }
@@ -82,7 +82,7 @@ namespace Qiushui.Bot
                 globalConfig = LoadedGlobalConfig;
                 return LoadedGlobalConfig != null;
             }
-            ConsoleLog.Debug("ConfigIO", "读取全局配置");
+            Log.Debug("ConfigIO", "读取全局配置");
             try
             {
                 //反序列化配置文件
@@ -95,7 +95,7 @@ namespace Qiushui.Bot
                     LoadedGlobalConfig.ApiTimeOut == 0 ||
                     LoadedGlobalConfig.Port is 0 or > 65535)
                 {
-                    ConsoleLog.Error("读取全局配置", "参数值超出合法范围，重新生成配置文件");
+                    Log.Error("读取全局配置", "参数值超出合法范围，重新生成配置文件");
                     globalConfig = null;
                     return false;
                 }
@@ -104,7 +104,7 @@ namespace Qiushui.Bot
             }
             catch (Exception e)
             {
-                ConsoleLog.Error("读取全局配置文件时发生错误", ConsoleLog.ErrorLogBuilder(e));
+                Log.Error("读取全局配置文件时发生错误", Log.ErrorLogBuilder(e));
                 globalConfig = null;
                 return false;
             }
@@ -121,12 +121,12 @@ namespace Qiushui.Bot
                 //当读取到文件时直接返回
                 if (File.Exists(UserConfigPath) && LoadUserConfig(out _))
                 {
-                    ConsoleLog.Debug("ConfigIO", "读取配置文件");
+                    Log.Debug("ConfigIO", "读取配置文件");
                     return;
                 }
                 //没读取到文件时创建新的文件
-                ConsoleLog.Error("ConfigIO", "未找到配置文件");
-                ConsoleLog.Warning("ConfigIO", "创建新的配置文件");
+                Log.Error("ConfigIO", "未找到配置文件");
+                Log.Warning("ConfigIO", "创建新的配置文件");
                 string initConfigText = Encoding.UTF8.GetString(InitRes.InitUserConfig);
                 using (TextWriter writer = File.CreateText(UserConfigPath))
                 {
@@ -138,7 +138,7 @@ namespace Qiushui.Bot
             }
             catch (Exception e)
             {
-                ConsoleLog.Fatal("ConfigIO ERROR", ConsoleLog.ErrorLogBuilder(e));
+                Log.Fatal("ConfigIO ERROR", Log.ErrorLogBuilder(e));
                 Thread.Sleep(5000);
                 Environment.Exit(-1);
             }
@@ -155,12 +155,12 @@ namespace Qiushui.Bot
                 //当读取到文件时直接返回
                 if (File.Exists(GlobalConfigPath) && LoadGlobalConfig(out _))
                 {
-                    ConsoleLog.Debug("ConfigIO", "读取配置文件");
+                    Log.Debug("ConfigIO", "读取配置文件");
                     return;
                 }
                 //没读取到文件时创建新的文件
-                ConsoleLog.Error("ConfigIO", "未找到配置文件");
-                ConsoleLog.Warning("ConfigIO", "创建新的配置文件");
+                Log.Error("ConfigIO", "未找到配置文件");
+                Log.Warning("ConfigIO", "创建新的配置文件");
                 string initConfigText = Encoding.UTF8.GetString(InitRes.InitGlobalConfig);
                 using (TextWriter writer = File.CreateText(GlobalConfigPath))
                 {
@@ -172,7 +172,7 @@ namespace Qiushui.Bot
             }
             catch (Exception e)
             {
-                ConsoleLog.Fatal("ConfigIO ERROR", ConsoleLog.ErrorLogBuilder(e));
+                Log.Fatal("ConfigIO ERROR", Log.ErrorLogBuilder(e));
                 Thread.Sleep(5000);
                 Environment.Exit(-1);
             }

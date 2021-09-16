@@ -1,10 +1,10 @@
 using Sora.Entities;
-using Sora.Entities.CQCodes;
 using Sora.Entities.Info;
+using Sora.Entities.MessageElement;
 using System;
 using System.Text;
 
-namespace Qiushui.Bot.Helper
+namespace QQ.RoBot.Helper
 {
     public static class BotUtils
     {
@@ -13,7 +13,7 @@ namespace Qiushui.Bot.Helper
         /// 获取今天零点的时间戳
         /// 时间戳单位(秒)
         /// </summary>
-        public static long GetTodayStampLong() =>(long) (DateTime.Today - new DateTime(1970, 1, 1, 8, 0, 0, 0)).TotalSeconds;
+        public static long GetTodayStampLong() => (long)(DateTime.Today - new DateTime(1970, 1, 1, 8, 0, 0, 0)).TotalSeconds;
 
         /// <summary>
         /// 获取游戏刷新的时间戳
@@ -23,12 +23,12 @@ namespace Qiushui.Bot.Helper
         {
             if (DateTime.Now > DateTime.Today.Add(new TimeSpan(5, 0, 0)))
             {
-                return (long)( DateTime.Today - new DateTime(1970, 1, 1, 8, 0, 0, 0)).Add(new TimeSpan(5, 0, 0)).TotalSeconds;
+                return (long)(DateTime.Today - new DateTime(1970, 1, 1, 8, 0, 0, 0)).Add(new TimeSpan(5, 0, 0)).TotalSeconds;
             }
             else
             {
-                return (long)( DateTime.Today.AddDays(-1) - new DateTime(1970, 1, 1, 8, 0, 0, 0)).Add(new TimeSpan(5, 0, 0)).TotalSeconds;
-            } 
+                return (long)(DateTime.Today.AddDays(-1) - new DateTime(1970, 1, 1, 8, 0, 0, 0)).Add(new TimeSpan(5, 0, 0)).TotalSeconds;
+            }
         }
         #endregion
 
@@ -85,7 +85,7 @@ namespace Qiushui.Bot.Helper
         {
             StringBuilder sb = new StringBuilder();
 
-            int toPadNum = (int) Math.Floor(padNums - GetQQStrLength(input));
+            int toPadNum = (int)Math.Floor(padNums - GetQQStrLength(input));
             if (toPadNum <= 0)
             {
                 return input;
@@ -119,7 +119,7 @@ namespace Qiushui.Bot.Helper
             }
             else
             {
-                QQgroup?.SendGroupMessage(CQCode.CQAt(fromQQid), " 命令参数不全，请补充。");
+                QQgroup?.SendGroupMessage(CQCodes.CQAt(fromQQid) + " 命令参数不全，请补充。");
                 return LenType.Illegal;
             }
         }
