@@ -34,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qiushui.Common\Robot.Common.csproj" />
-    <ProjectReference Include="..\Qiushui.Framework\Robot.Framework.csproj" />
+    <ProjectReference Include="..\Robot.Common\Robot.Common.csproj" />
+    <ProjectReference Include="..\Robot.Framework\Robot.Framework.csproj" />
     <ProjectReference Include="..\WordCloud\WordCloud.csproj" />
   </ItemGroup>
 

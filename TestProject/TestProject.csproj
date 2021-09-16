@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qiushui.Bot\QQ.RoBot.csproj" />
+    <ProjectReference Include="..\QQ.Robot\QQ.RoBot.csproj" />
   </ItemGroup>
 
 </Project>
