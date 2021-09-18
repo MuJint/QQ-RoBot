@@ -1,6 +1,7 @@
 ﻿using Robot.Common;
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
+using Sora.Entities;
 using Sora.Entities.MessageElement;
 using Sora.EventArgs.SoraEvent;
 using System;
@@ -306,7 +307,12 @@ namespace QQ.RoBot
                         ModifyRank = rank,
                         Uid = eventArgs.SenderInfo.UserId.ObjToString()
                     });
-                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.SenderInfo.UserId)}看{userConfig.ConfigModel.NickName}这么可爱就奖励{userConfig.ConfigModel.NickName}{rank}分~");
+                    var msg = new MessageBody()
+                    {
+                        CQCodes.CQAt(eventArgs.SenderInfo.UserId),
+                        $"看{userConfig.ConfigModel.NickName}这么可爱就奖励{userConfig.ConfigModel.NickName}{rank}分~",
+                    };
+                    await eventArgs.Reply(msg);
                 }
             }
         }

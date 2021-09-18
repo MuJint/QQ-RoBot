@@ -5,6 +5,7 @@ using Sora.EventArgs.SoraEvent;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using YukariToolBox.FormatLog;
@@ -41,7 +42,17 @@ namespace QQ.RoBot
 
             Config config = new(e.LoginUid);
             config.LoadUserConfig(out UserConfig userConfig);
-            //var _lianService = new DealInstruction(userConfig);
+            var assembly = typeof(ILianInterface);
+            foreach (var method in assembly.GetMethods())
+            {
+                var attribute = method.GetCustomAttribute(typeof(KeyWordAttribute));
+                var s = e.Message.RawText;
+                if (attribute != null && e.Message.RawText.Contains(attribute.GetType().Name))
+                {
+                    method.Invoke(_lianService, new object[] { userConfig });
+                    return;
+                }
+            }
             //判断指令类型并分发
             if (command is KeywordCommand keywordCmdType)
             {

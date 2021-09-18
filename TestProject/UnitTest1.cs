@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.DrawingCore.Imaging;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
@@ -131,71 +132,14 @@ namespace TestProject
 
         public class Input
         {
-            public string Chats { get; set; }
-        }
-
-        private enum ContentEnum
-        {
-            [Description("签到")]
-            签到 = 1,
-            [Description("查询")]
-            查询 = 2,
-            [Description("早安")]
-            早安 = 3,
-            [Description("晚安")]
-            晚安 = 4,
-            [Description("莲")]
-            莲 = 5,
-            [Description("分来")]
-            分来 = 6,
-            [Description("排行榜")]
-            排行榜 = 7,
-            [Description("特殊事件")]
-            特殊事件 = 8,
-            [Description("活跃榜")]
-            活跃榜 = 9,
-            [Description("技能")]
-            技能 = 10,
-            [Description("抽奖")]
-            抽奖 = 11,
-            [Description("打劫")]
-            打劫 = 12,
-            [Description("劫狱")]
-            劫狱 = 13,
-            [Description("赠送")]
-            赠送 = 14,
-            [Description("关键词")]
-            关键词 = 15,
-            [Description("加分")]
-            加分 = 16,
-            [Description("扣分")]
-            扣分 = 17,
-            [Description("全体加分")]
-            全体加分 = 18,
-            [Description("全体扣分")]
-            全体扣分 = 19
-        }
-
-        /// <summary>
-        /// 字符串相似度计算
-        /// </summary>
-        /// <param name="str1"></param>
-        /// <param name="str2"></param>
-        public static void Levenshtein(String str1, String str2)
-        {
-            //计算两个字符串的长度。  
-            int len1 = str1.Length;
-            int len2 = str2.Length;
-            //建立上面说的数组，比字符长度大一个空间  
-            int[,] dif = new int[len1 + 1, len2 + 1];
-            //赋初值，步骤B。  
-            for (int a = 0; a <= len1; a++)
+            var lianAss = typeof(ILianInterface);
+            var lianAss2 = typeof(ILianInterface).GetMethods().ToArray();
+            foreach (var item in lianAss.GetMethods())
             {
-                dif[a, 0] = a;
-            }
-            for (int a = 0; a <= len2; a++)
-            {
-                dif[0, a] = a;
+                var s = item.GetCustomAttribute(typeof(KeyWordAttribute));
+                if (s != null)
+                {
+                }
             }
             //计算两个字符是否一样，计算左上的值  
             int temp;
