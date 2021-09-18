@@ -1,4 +1,5 @@
-﻿using Sora.EventArgs.SoraEvent;
+﻿using Robot.Common;
+using Sora.EventArgs.SoraEvent;
 using System.Threading.Tasks;
 
 namespace QQ.RoBot
@@ -9,6 +10,7 @@ namespace QQ.RoBot
     /// </summary>
     public interface ILianInterface
     {
+        [KeyWord("签到")]
         ValueTask SignIn(GroupMessageEventArgs eventArgs, UserConfig config);
         ValueTask SearchRank(GroupMessageEventArgs eventArgs, UserConfig config);
         ValueTask Fenlai(GroupMessageEventArgs eventArgs, UserConfig config);
