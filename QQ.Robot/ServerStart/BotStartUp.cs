@@ -24,7 +24,7 @@ namespace QQ.RoBot
                 .AddScoped<ISpeakerServices, SpeakerServices>()
                 .AddScoped<IRobotInterface, RobotService>()
                 .AddScoped<ILianInterface, LianService>()
-                .AddScoped<IModuleInterface, ModuleService>()
+                .AddScoped<IHsoInterface, HsoService>()
                 .BuildServiceProvider();
             var Instance = Dependcy.Provider.GetService<IRobotInterface>();
 
@@ -46,6 +46,9 @@ namespace QQ.RoBot
 
             //指令匹配初始化
             CommandHelper.KeywordResourseInit();
+
+            //初始化接口对应服务字典
+            GlobalSettings.GlobalSettingsInit();
 
             //
             Log.Info("Bot初始化", "初始化指令匹配集...");

@@ -38,7 +38,6 @@ namespace QQ.RoBot
                 KeywordList.Add((KeywordCommand)(fieldInfo.GetValue(null) ?? -1), regexes);
             }
         }
-
         #endregion
 
         #region 获取指令类型

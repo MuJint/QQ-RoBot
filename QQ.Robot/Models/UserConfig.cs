@@ -61,7 +61,6 @@ namespace QQ.RoBot
         /// </summary>
         public bool Recal { get; set; }
 
-
         #region 将已启用的模块名转为字符串
         public override string ToString()
         {
@@ -77,5 +76,57 @@ namespace QQ.RoBot
             return string.Join("\n",ret);
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Lian默认配置
+    /// </summary>
+    public class ConfigModel
+    {
+        public string NickName { get; set; }
+        public string BotName { get; set; }
+        public List<string> GroupIds { get; set; }
+        /// <summary>
+        /// 小尾巴
+        /// </summary>
+        public string Tail { get; set; } = "";
+        public string AiPath { get; set; }
+        public string GroupImgPath { get; set; }
+    }
+
+    public class Hso
+    {
+        /// <summary>
+        /// 色图源类型
+        /// </summary>
+        public SetuSourceType Source { set; get; }
+        /// <summary>
+        /// Pximy代理
+        /// </summary>
+        public string PximyProxy { set; get; }
+        /// <summary>
+        /// 是否启用本地缓存
+        /// </summary>
+        public bool UseCache { set; get; }
+        /// <summary>
+        /// 是否使用装逼大图
+        /// </summary>
+        public bool CardImage { set; get; }
+        /// <summary>
+        /// 色图文件夹大小限制
+        /// </summary>
+        public long SizeLimit { set; get; }
+        /// <summary>
+        /// LoliconToken
+        /// </summary>
+        public string LoliconApiKey { set; get; }
+        /// <summary>
+        /// YukariToken
+        /// </summary>
+        public string YukariApiKey { set; get; }
+        /// <summary>
+        /// R18
+        /// </summary>
+        public bool R18 { get; set; } = false;
     }
 }

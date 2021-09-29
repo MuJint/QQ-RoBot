@@ -885,6 +885,7 @@ namespace QQ.RoBot
                 await SendMessageGroup(eventArgs, $"尚不能构造出词云哦 :)", true);
             }
         }
+        #endregion
 
         #region 发言榜
         public async ValueTask NonsenseKing(GroupMessageEventArgs eventArgs)
@@ -914,9 +915,6 @@ namespace QQ.RoBot
                 await SendMessageGroup(eventArgs, strSb.ToString());
             }
         }
-        #endregion
-
-
         #endregion
 
         #region Func

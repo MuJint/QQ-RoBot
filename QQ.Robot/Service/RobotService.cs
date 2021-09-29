@@ -7,7 +7,9 @@ using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YukariToolBox.FormatLog;
 
@@ -22,15 +24,17 @@ namespace QQ.RoBot
         readonly ISignUserServices _userServices;
         readonly ISignLogsServices _logsServices;
         readonly ILianKeyWordsServices _keyWordServices;
-        readonly IModuleInterface _moduleInterface;
         readonly ISpeakerServices _speakerServices;
+        readonly ILianInterface _lianService;
+        readonly IHsoInterface _hsoInterface;
         public RobotService()
         {
             _userServices = GetInstance<ISignUserServices>();
             _logsServices = GetInstance<ISignLogsServices>();
             _keyWordServices = GetInstance<ILianKeyWordsServices>();
-            _moduleInterface = GetInstance<IModuleInterface>();
             _speakerServices = GetInstance<ISpeakerServices>();
+            _lianService = GetInstance<ILianInterface>();
+            _hsoInterface = GetInstance<IHsoInterface>();
         }
         public ValueTask FriendAddParse(object sender, FriendAddEventArgs eventArgs)
         {
@@ -93,22 +97,153 @@ namespace QQ.RoBot
             await TriggerSpecial(groupMessage, userConfig);
             await SpeakerStorage(groupMessage);
 
+            #region 正则匹配关键字Switch分发
             //聊天关键词
-            if (CommandHelper.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
+            //if (CommandHelper.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
+            //{
+            //    Log.Info("关键词触发", $"触发关键词[{keywordCommand.GetDescription()}]");
+            //    switch (keywordCommand)
+            //    {
+            //        case KeywordCommand.Hso:
+            //            if (userConfig.ModuleSwitch.Hso)
+            //                await _hsoInterface.Hso(groupMessage);
+            //            break;
+            //        case KeywordCommand.Sign:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Sign.GetDescription()))
+            //                await _lianService.SignIn(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Search:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Search.GetDescription()))
+            //                await _lianService.SearchRank(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Fenlai:
+            //            await _lianService.Fenlai(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Skill:
+            //            await _lianService.Skill(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.RankList:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.RankList.GetDescription()))
+            //                await _lianService.RankList(groupMessage);
+            //            break;
+            //        case KeywordCommand.SpecialEvent:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.SpecialEvent.GetDescription()))
+            //                await _lianService.SpecialEvent(groupMessage);
+            //            break;
+            //        case KeywordCommand.LogsRecord:
+            //            await _lianService.LogsRecord(groupMessage);
+            //            break;
+            //        case KeywordCommand.Giving:
+            //            await _lianService.Giving(groupMessage);
+            //            break;
+            //        case KeywordCommand.Morning:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Morning.GetDescription()))
+            //                await _lianService.Morning(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Night:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Night.GetDescription()))
+            //                await _lianService.Night(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.BonusPoint:
+            //            await _lianService.BonusPoint(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.DeductPoint:
+            //            await _lianService.DeductPoint(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.AllBonusPoint:
+            //            await _lianService.AllBonusPoint(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.AllDeductPoint:
+            //            await _lianService.AllDeductPoint(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.RedTea:
+            //            await _lianService.RedTea(groupMessage);
+            //            break;
+            //        case KeywordCommand.Raffle:
+            //            await _lianService.Raffle(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Rob:
+            //            await _lianService.Rob(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Rescur:
+            //            await _lianService.Rescur(groupMessage, userConfig);
+            //            break;
+            //        case KeywordCommand.Lian:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Lian.GetDescription()))
+            //                await _lianService.Lian(groupMessage);
+            //            break;
+            //        case KeywordCommand.AddKeys:
+            //            await _lianService.AddKeys(groupMessage);
+            //            break;
+            //        case KeywordCommand.AddThesaurus:
+            //            await _lianService.AddThesaurus(groupMessage);
+            //            break;
+            //        case KeywordCommand.RollDice:
+            //            await _lianService.RollDice(groupMessage);
+            //            break;
+            //        case KeywordCommand.WordCloud:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.WordCloud.GetDescription()))
+            //                await _lianService.WordCloud(groupMessage);
+            //            break;
+            //        case KeywordCommand.NonsenseKing:
+            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.NonsenseKing.GetDescription()))
+            //                await _lianService.NonsenseKing(groupMessage);
+            //            break;
+            //    }
+            //}
+            #endregion
+
+            #region 反射利用特性分发
+            //方法写入内存
+            if(GlobalSettings.Methods?.Count<=0)
             {
-                Log.Info("关键词触发", $"触发关键词[{keywordCommand.GetDescription()}]");
-                switch (keywordCommand)
+                var assemblyType = Assembly.GetAssembly(typeof(ILianInterface)).ExportedTypes
+                    .Where(w => w.FullName.Contains("Interface"))
+                    .Select(s => new AssemblyMethod
+                    {
+                        Name = s.Name,
+                        Methods = s.GetMethods(),
+                    }).ToList();
+                foreach (var assembly in assemblyType.SelectMany(s => s.Methods))
                 {
-                    case KeywordCommand.Hso:
-                        if (userConfig.ModuleSwitch.Hso)
-                            await _moduleInterface.HsoHandle(sender, groupMessage);
-                        break;
-                    default:
-                        if (userConfig.ModuleSwitch.LianBot)
-                            await _moduleInterface.LianHandle(sender, groupMessage, keywordCommand);
-                        break;
+                    if (assembly?.GetCustomAttribute(typeof(KeyWordAttribute)) is not KeyWordAttribute attribute)
+                        continue;
+                    //所有反射方法 ILianInterface -> SignIn
+                    GlobalSettings.Methods.TryAdd(assembly.DeclaringType.Name, assembly);
+                    //正则匹配字典 SignIn -> [(签到)+]  
+                    GlobalSettings.KeyWordRegexs.TryAdd(assembly, attribute.KeyWord.Split(' ').Select(s => new Regex($"({s})+")).ToList());
                 }
             }
+            //从内存中拉取符合匹配函数
+            var methodInfo = GlobalSettings.KeyWordRegexs.Where(w => w.Value.Any(regex => regex.IsMatch(groupMessage.Message.RawText)))?.FirstOrDefault().Key;
+            if (methodInfo is null)
+                return;
+            Log.Info(methodInfo.GetType(), $"反射已匹配到方法【{methodInfo.Name}】");
+            //获取函数的Attribute
+            var methodInfoAttribute = methodInfo.GetCustomAttribute(typeof(KeyWordAttribute));
+            if (((KeyWordAttribute)methodInfoAttribute).FullMatch)
+            {
+                if (((KeyWordAttribute)methodInfoAttribute).KeyWord != groupMessage.Message.RawText)
+                    return;
+            }
+            //根据接口获取对应的注入服务
+            var dicService = GlobalSettings.MatchDic.FirstOrDefault(w => w.Key == GlobalSettings.Methods.FirstOrDefault(f => f.Value == methodInfo).Key);
+            //匹配服务
+            var service = GetInvokeService(dicService.Value);
+            var methodParameters = new List<object>() { };
+            //组装函数的入参
+            foreach (var parameter in methodInfo.GetParameters())
+            {
+                if (parameter.ParameterType.Name == nameof(Object))
+                    methodParameters.Add(sender);
+                if (parameter.ParameterType.Name == nameof(GroupMessageEventArgs))
+                    methodParameters.Add(groupMessage);
+                if (parameter.ParameterType.Name == nameof(UserConfig))
+                    methodParameters.Add(userConfig);
+            }
+            //调用方法
+            methodInfo.Invoke(service, methodParameters.ToArray());
+            #endregion
         }
 
         public async ValueTask GroupPokeEventParse(object sender, GroupPokeEventArgs eventArgs)
@@ -260,7 +395,7 @@ namespace QQ.RoBot
                 await eventArgs.Repeat();
             else
             {
-                var dicCache = StaticModel.GetDic;
+                var dicCache = GlobalSettings.GetDic;
                 if (dicCache.ContainsKey(eventArgs.SourceGroup.Id))
                 {
                     dicCache.TryGetValue(eventArgs.SourceGroup.Id, out var dicResult);
@@ -414,6 +549,22 @@ namespace QQ.RoBot
                 }
             });
         }
+
+        /// <summary>
+        /// 反射类
+        /// </summary>
+        private class AssemblyMethod
+        {
+            public string Name { get; set; }
+            public MethodInfo[] Methods { get; set; }
+        }
+        private object GetInvokeService(object obj) => obj switch
+        {
+            "LianService" => _lianService,
+            "HsoService" => _hsoInterface,
+            _ => _lianService,
+        };
+        private static bool IsTrigger(string rawText, string keyWord) => rawText.Equals(keyWord);
         #endregion
     }
 }
