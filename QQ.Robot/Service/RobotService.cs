@@ -260,7 +260,7 @@ namespace QQ.RoBot
         public async ValueTask GroupRecallParse(object sender, GroupRecallEventArgs groupMessage)
         {
             //配置文件实例
-            config = new(groupMessage.MessageSender.Id);
+            config = new(groupMessage.LoginUid);
             //读取配置文件
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
