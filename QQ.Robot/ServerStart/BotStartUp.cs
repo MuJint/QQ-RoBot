@@ -33,6 +33,8 @@ namespace QQ.RoBot
             Log.Info("Bot初始化", "Bot初始化...");
             //初始化配置文件
             Log.Info("Bot初始化", "初始化服务器全局配置...");
+            Log.Warning("Warn", "由于QQ协议的更新以及源包的更新，可能会做出毁灭性的命名调整请查看：https://sora-docs.yukari.one/updatelog/#v1-0-0-rc22以及https://github.com/Mrs4s/go-cqhttp");
+            Log.Warning("Warn", "可前往release下载最新版：https://github.com/MuJint/Qiushui-Bot/releases");
             Config config = new(0);
             config.GlobalConfigFileInit();
             config.LoadGlobalConfig(out GlobalConfig globalConfig, false);

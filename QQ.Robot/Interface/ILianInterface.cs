@@ -16,7 +16,7 @@ namespace QQ.RoBot
         ValueTask SearchRank(GroupMessageEventArgs eventArgs, UserConfig config);
         [KeyWord("分来", true)]
         ValueTask Fenlai(GroupMessageEventArgs eventArgs, UserConfig config);
-        [KeyWord("技能 菜单 功能 指令")]
+        [KeyWord("技能 菜单 功能 指令", true)]
         ValueTask Skill(GroupMessageEventArgs eventArgs, UserConfig config);
         [KeyWord("排行榜", true)]
         ValueTask RankList(GroupMessageEventArgs eventArgs);

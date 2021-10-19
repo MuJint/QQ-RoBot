@@ -2,7 +2,7 @@
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
 using Sora.Entities;
-using Sora.Entities.MessageElement;
+using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
@@ -251,9 +251,15 @@ namespace QQ.RoBot
             if (eventArgs.TargetUser == eventArgs.LoginUid &&
                    !CheckInCD.IsInCD(eventArgs.SourceGroup, eventArgs.SendUser))
             {
+                var msg = new MessageBody()
+                {
+                    SegmentBuilder.At(eventArgs.SendUser),
+                    SegmentBuilder.Text("\r\n再戳锤爆你的头\r\n"),
+                    SegmentBuilder.Image("https://i.loli.net/2020/10/20/zWPyocxFEVp2tDT.jpg")
+                };
                 await eventArgs
                     .SourceGroup
-                    .SendGroupMessage($"{CQCodes.CQAt(eventArgs.SendUser)}\r\n再戳锤爆你的头\r\n{CQCodes.CQImage("https://i.loli.net/2020/10/20/zWPyocxFEVp2tDT.jpg")}");
+                    .SendGroupMessage(msg);
             }
         }
 
@@ -371,7 +377,12 @@ namespace QQ.RoBot
                 {
                     var json = await RequestAi(userConfig.ConfigModel.AiPath,
                         eventArgs.Message.RawText.Replace(at, "").Replace(" ", ""));
-                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.Sender.Id)}{json.ObjectToGBK()}");
+                    var msg = new MessageBody()
+                    {
+                        SegmentBuilder.At(eventArgs.Sender.Id),
+                        SegmentBuilder.Text(json.ObjectToGBK())
+                    };
+                    await eventArgs.Reply(msg);
                 }
             }
             catch (Exception c)
@@ -428,7 +439,12 @@ namespace QQ.RoBot
                 var rank = new Random().Next(1, 10);
                 if (user == null)
                 {
-                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.SenderInfo.UserId)}未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~");
+                    var msg = new MessageBody()
+                    {
+                        SegmentBuilder.At(eventArgs.SenderInfo.UserId),
+                        $"未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~",
+                    };
+                    await eventArgs.Reply(msg);
                 }
                 else
                 {
@@ -444,7 +460,7 @@ namespace QQ.RoBot
                     });
                     var msg = new MessageBody()
                     {
-                        CQCodes.CQAt(eventArgs.SenderInfo.UserId),
+                        SegmentBuilder.At(eventArgs.SenderInfo.UserId),
                         $"看{userConfig.ConfigModel.NickName}这么可爱就奖励{userConfig.ConfigModel.NickName}{rank}分~",
                     };
                     await eventArgs.Reply(msg);

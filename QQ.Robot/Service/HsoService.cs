@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Robot.Common;
-using Sora.Entities.MessageElement;
+using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.IO;
@@ -69,8 +69,8 @@ namespace QQ.RoBot
                 localPicPath = $"{picNames[randFile.Next(0, picNames.Length - 1)]}";
                 Log.Debug("发送图片", localPicPath);
                 await group.SendGroupMessage(hso.CardImage
-                                                   ? CQCodes.CQCardImage(localPicPath)
-                                                   : CQCodes.CQImage(localPicPath));
+                                                   ? SegmentBuilder.CardImage(localPicPath)
+                                                   : SegmentBuilder.Image(localPicPath));
                 return;
             }
             //网络部分
@@ -114,7 +114,7 @@ namespace QQ.RoBot
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));
-                    await group.SendGroupMessage(CQCodes.CQImage(result.Data.First().Url));
+                    await group.SendGroupMessage(SegmentBuilder.Image(result.Data.First().Url));
                 }
                 else
                     await group.SendGroupMessage("发生了未知错误");

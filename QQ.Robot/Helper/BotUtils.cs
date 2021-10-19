@@ -1,6 +1,6 @@
 using Sora.Entities;
 using Sora.Entities.Info;
-using Sora.Entities.MessageElement;
+using Sora.Entities.Segment;
 using System;
 using System.Text;
 
@@ -119,7 +119,7 @@ namespace QQ.RoBot.Helper
             }
             else
             {
-                QQgroup?.SendGroupMessage(CQCodes.CQAt(fromQQid) + " 命令参数不全，请补充。");
+                QQgroup?.SendGroupMessage(SegmentBuilder.At(fromQQid) + " 命令参数不全，请补充。");
                 return LenType.Illegal;
             }
         }
