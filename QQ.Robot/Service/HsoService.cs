@@ -122,11 +122,7 @@ namespace QQ.RoBot
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));
-                    var msg = new MessageBody()
-                    {
-                        SoraSegment.Image(result?.Data?.First()?.Url),
-                    };
-                    await group.SendGroupMessage(msg);
+                    await group.SendGroupMessage(CQCodes.CQImage(result.Data.First().Url));
                 }
                 else
                     await group.SendGroupMessage("发生了未知错误");

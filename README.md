@@ -91,7 +91,7 @@ Qiushui-Bot是一个基于onebot标准的机器人/当然目前只写了部分�
         # 可选: string,array
         post-format: array
         # 是否忽略无效的CQ码, 如果为假将原样发送
-        ignore-invalid-cqcode: false
+        ignore-invalid-cqcode: true
         # 是否强制分片发送消息
         # 分片发送将会带来更快的速度
         # 但是兼容性会有些问题
