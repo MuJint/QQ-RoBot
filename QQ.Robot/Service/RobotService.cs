@@ -296,9 +296,9 @@ namespace QQ.RoBot
                 else
                     await groupMessage.SourceGroup.SendGroupMessage($"怀孕了就说啊，撤回干嘛，大家都会负责的");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                await groupMessage.SourceGroup.SendGroupMessage($"我感觉他撤回的是图片，我懒得弄，下次一定");
+                _logs.Error(e, "发送撤回消息失败");
             }
         }
 
