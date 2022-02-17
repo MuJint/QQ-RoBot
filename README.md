@@ -13,13 +13,12 @@ Qiushui-Bot是一个基于onebot标准的机器人/当然目前只写了部分�
 ><b>注意</b><br />
 >仅支持反向WebSocket通讯方式<br />
 >仅支持Array事件上报格式<br />
+>不定时更新版本，未发布Lts版本
 
 可以运行在支持[onebot](https://github.com/howmanybots/onebot)协议的平台下<br />
-不需要任何运行环境<br />
-使用单文件模式进行编译（其实还有些运行时库没法打包就是了）<br />
 对Windows/Liunx/OSX平台都进行了支持（包括ARM架构）<br />
 ~~如果其他平台上有什么运行问题一定要提issue啊~~<br />
-如果出现闪退现象，请前往微软[下载](https://dotnet.microsoft.com/download).Net5环境，请根据自身电脑环境执行下载
+如果出现Windos环境出现闪退现象，请前往微软[下载](https://dotnet.microsoft.com/download).Net6环境
 
 # 开源协议
 ![mahua](https://camo.githubusercontent.com/3bd1dd6998bcac11dad3430fc4213d8f979b5b133b0e8f66018917be06e3f8f7/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6963656e73652f434247616e2f537569736569426f743f7374796c653d666f722d7468652d6261646765)
@@ -202,7 +201,7 @@ Qiushui-Bot是一个基于onebot标准的机器人/当然目前只写了部分�
 * 请多看注释，然后再`Issue`
 * 可以参考我的博客图文使用攻略[点这](https://www.qiubb.com)
 * 或者参考[`bilibili`](https://b23.tv/dAwA7S)
-* 如需通过源码方式，请直接下载当前源码，通过Nuget引入`Sora`，下方链接下载`go-cqhttp`，其它配置同上文
+* 如需通过源码方式，请直接下载当前源码
 
 # 底层框架
 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)<br />
