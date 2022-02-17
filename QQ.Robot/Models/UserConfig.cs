@@ -97,10 +97,6 @@ namespace QQ.RoBot
     public class Hso
     {
         /// <summary>
-        /// 色图源类型
-        /// </summary>
-        public SetuSourceType Source { set; get; }
-        /// <summary>
         /// Pximy代理
         /// </summary>
         public string PximyProxy { set; get; }

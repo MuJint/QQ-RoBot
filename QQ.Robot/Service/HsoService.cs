@@ -60,27 +60,6 @@ namespace QQ.RoBot
         /// <param name="hso">hso配置实例</param>
         private  async Task GeneaterHso(Hso hso, Sora.Entities.Group group)
         {
-            string localPicPath;
-            _logs.Debug(logs: $"{hso.Source}");
-            //本地模式
-            if (hso.Source == SetuSourceType.Local)
-            {
-                string[] picNames = Directory.GetFiles(IOUtils.GetHsoPath());
-                if (picNames.Length == 0)
-                {
-                    await group.SendGroupMessage("机器人管理者没有在服务器上塞色图\r\n你去找他要啦!");
-                    return;
-                }
-                Random randFile = new();
-                localPicPath = $"{picNames[randFile.Next(0, picNames.Length - 1)]}";
-                _logs.Debug(logs: localPicPath);
-                var msg = new MessageBody
-                {
-                    SoraSegment.Image(localPicPath)
-                };
-                await group.SendGroupMessage(msg);
-                return;
-            }
             //网络部分
             try
             {
@@ -88,41 +67,29 @@ namespace QQ.RoBot
                 string apiKey;
                 string serverUrl;
                 //源切换
-                switch (hso.Source)
-                {
-                    case SetuSourceType.Mix:
-                        Random randSource = new();
-                        if (randSource.Next(1, 100) > 50)
-                        {
-                            serverUrl = "https://api.lolicon.app/setu/";
-                            apiKey = hso.LoliconApiKey ?? string.Empty;
-                        }
-                        else
-                        {
-                            serverUrl = "https://api.yukari.one/setu/";
-                            apiKey = hso.YukariApiKey ?? string.Empty;
-                        }
-                        break;
-                    case SetuSourceType.Yukari:
-                        serverUrl = "https://api.yukari.one/setu/";
-                        apiKey = hso.YukariApiKey ?? string.Empty;
-                        break;
-                    case SetuSourceType.Lolicon:
-                        serverUrl = "https://api.yukari.one/setu/";
-                        apiKey = hso.LoliconApiKey ?? string.Empty;
-                        break;
-                    default:
-                        await group.SendGroupMessage("发生了未知错误");
-                        _logs.Error(new Exception(), "发生了未知错误");
-                        return;
-                }
+                serverUrl = "https://api.lolicon.app/setu/";
+                apiKey = hso.LoliconApiKey ?? string.Empty;
+                //if (new Random().Next(1, 100) > 50)
+                //{
+                //    serverUrl = "https://api.lolicon.app/setu/";
+                //    apiKey = hso.LoliconApiKey ?? string.Empty;
+                //}
+                //else
+                //{
+                //    serverUrl = "https://yanghanwen.xyz/tu/setu.php";
+                //    apiKey = string.Empty;
+                //}
                 //向服务器发送请求
                 var json = await HttpHelper.HttpGetAsync($"{serverUrl}?apikey={apiKey}&r18={hso.R18}");
                 var result = JsonConvert.DeserializeObject<HsoResponseModel>(json);
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));
-                    await group.SendGroupMessage(CQCodes.CQImage(result.Data.First().Url));
+                    var msg = new MessageBody()
+                    {
+                        SoraSegment.Image($"{result.Data.First()?.Url}")
+                    };
+                    await group.SendGroupMessage(msg);
                 }
                 else
                     await group.SendGroupMessage("发生了未知错误");

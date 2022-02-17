@@ -18,8 +18,6 @@ ModuleSwitch:
   Recal: true
 # 随机色图设置
 HsoConfig:
-  #色图源 Local/Lolicon/Yukari
-  Source: Yukari
   #，如果没有设置0为null即可
   PximyProxy: null
   #是否使用本地缓存
