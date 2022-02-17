@@ -1,10 +1,12 @@
 using QQ.RoBot.Source;
+using Microsoft.Extensions.DependencyInjection;
+using Robot.Common.Interface;
 using SharpYaml.Serialization;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using YukariToolBox.FormatLog;
+
 
 namespace QQ.RoBot
 {
@@ -15,6 +17,7 @@ namespace QQ.RoBot
         private string GlobalConfigPath { get; set; }
         private UserConfig LoadedUserConfig { set; get; }
         private GlobalConfig LoadedGlobalConfig { set; get; }
+        private readonly ILogsInterface _logs = Dependcy.Provider.GetService<ILogsInterface>();
         #endregion
 
         #region 构造函数
@@ -44,7 +47,7 @@ namespace QQ.RoBot
                 userConfig = LoadedUserConfig;
                 return LoadedUserConfig != null;
             }
-            Log.Debug("ConfigIO", "读取用户配置");
+            _logs.Debug(new Exception(), "读取用户配置");
             try
             {
                 //反序列化配置文件
@@ -54,7 +57,7 @@ namespace QQ.RoBot
                 //参数合法性检查
                 if (LoadedUserConfig.HsoConfig.SizeLimit < 1)
                 {
-                    Log.Error("读取用户配置", "参数值超出合法范围，重新生成配置文件");
+                    _logs.Error(new Exception(), "参数值超出合法范围，重新生成配置文件");
                     userConfig = null;
                     return false;
                 }
@@ -63,7 +66,7 @@ namespace QQ.RoBot
             }
             catch (Exception e)
             {
-                Log.Error("读取用户配置文件时发生错误", Log.ErrorLogBuilder(e));
+                _logs.Error(e, "");
                 userConfig = null;
                 return false;
             }
@@ -82,11 +85,11 @@ namespace QQ.RoBot
                 globalConfig = LoadedGlobalConfig;
                 return LoadedGlobalConfig != null;
             }
-            Log.Debug("ConfigIO", "读取全局配置");
+            _logs.Debug(new Exception(), "读取全局配置");
             try
             {
                 //反序列化配置文件
-                Serializer serializer = new Serializer();
+                Serializer serializer = new();
                 using TextReader reader = File.OpenText(GlobalConfigPath);
                 LoadedGlobalConfig = serializer.Deserialize<GlobalConfig>(reader);
                 //参数合法性检查
@@ -95,7 +98,7 @@ namespace QQ.RoBot
                     LoadedGlobalConfig.ApiTimeOut == 0 ||
                     LoadedGlobalConfig.Port is 0 or > 65535)
                 {
-                    Log.Error("读取全局配置", "参数值超出合法范围，重新生成配置文件");
+                    _logs.Error(new Exception(), "参数值超出合法范围，重新生成配置文件");
                     globalConfig = null;
                     return false;
                 }
@@ -104,7 +107,7 @@ namespace QQ.RoBot
             }
             catch (Exception e)
             {
-                Log.Error("读取全局配置文件时发生错误", Log.ErrorLogBuilder(e));
+                _logs.Error(e, "");
                 globalConfig = null;
                 return false;
             }
@@ -121,12 +124,12 @@ namespace QQ.RoBot
                 //当读取到文件时直接返回
                 if (File.Exists(UserConfigPath) && LoadUserConfig(out _))
                 {
-                    Log.Debug("ConfigIO", "读取配置文件");
+                    _logs.Debug(new Exception(), "读取配置文件");
                     return;
                 }
                 //没读取到文件时创建新的文件
-                Log.Error("ConfigIO", "未找到配置文件");
-                Log.Warning("ConfigIO", "创建新的配置文件");
+                _logs.Error(new Exception(), "未找到配置文件");
+                _logs.Warn(new Exception(), "创建新的配置文件");
                 string initConfigText = Encoding.UTF8.GetString(InitRes.InitUserConfig);
                 using (TextWriter writer = File.CreateText(UserConfigPath))
                 {
@@ -138,7 +141,7 @@ namespace QQ.RoBot
             }
             catch (Exception e)
             {
-                Log.Fatal("ConfigIO ERROR", Log.ErrorLogBuilder(e));
+                _logs.Fatal(e, "");
                 Thread.Sleep(5000);
                 Environment.Exit(-1);
             }
@@ -155,12 +158,12 @@ namespace QQ.RoBot
                 //当读取到文件时直接返回
                 if (File.Exists(GlobalConfigPath) && LoadGlobalConfig(out _))
                 {
-                    Log.Debug("ConfigIO", "读取配置文件");
+                    _logs.Debug(new Exception(), "读取配置文件");
                     return;
                 }
                 //没读取到文件时创建新的文件
-                Log.Error("ConfigIO", "未找到配置文件");
-                Log.Warning("ConfigIO", "创建新的配置文件");
+                _logs.Error(new Exception(), "未找到配置文件");
+                _logs.Warn(new Exception(), "创建新的配置文件");
                 string initConfigText = Encoding.UTF8.GetString(InitRes.InitGlobalConfig);
                 using (TextWriter writer = File.CreateText(GlobalConfigPath))
                 {
@@ -172,7 +175,7 @@ namespace QQ.RoBot
             }
             catch (Exception e)
             {
-                Log.Fatal("ConfigIO ERROR", Log.ErrorLogBuilder(e));
+                _logs.Fatal(e, "ConfigIO ERROR");
                 Thread.Sleep(5000);
                 Environment.Exit(-1);
             }

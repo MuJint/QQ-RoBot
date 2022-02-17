@@ -1,7 +1,8 @@
 {
   "profiles": {
     "QQ.RoBot": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "remoteDebugEnabled": false
     },
     "Docker": {
       "commandName": "Docker"

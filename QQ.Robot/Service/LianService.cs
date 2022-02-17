@@ -4,7 +4,7 @@ using Robot.Common;
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
 using Sora.Entities;
-using Sora.Entities.MessageElement;
+using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
@@ -838,8 +838,8 @@ namespace QQ.RoBot
             var r = new Random().Next(1, 7);
             var msg = new MessageBody()
             {
-               CQCodes.CQAt(eventArgs.Sender.Id),
-               CQCodes.CQImage($"{Environment.CurrentDirectory}/Images/{ConvertE(r)}.gif")
+               SoraSegment.At(eventArgs.Sender.Id),
+               SoraSegment.Image($"{Environment.CurrentDirectory}/Images/{ConvertE(r)}.gif")
             };
             await eventArgs.Reply(msg);
         }
@@ -868,8 +868,8 @@ namespace QQ.RoBot
                     images.Save(imgName, ImageFormat.Png);
                     var msg = new MessageBody
                     {
-                        CQCodes.CQAt(eventArgs.Sender.Id),
-                        CQCodes.CQImage(imgName)
+                        SoraSegment.At(eventArgs.Sender.Id),
+                        SoraSegment.Image(imgName)
                     };
                     await eventArgs.Reply(msg);
                     //delete img
@@ -944,7 +944,14 @@ namespace QQ.RoBot
         private static async ValueTask<bool> SendMessageGroup(GroupMessageEventArgs eventArgs, string strContent, bool isAt = false)
         {
             if (isAt)
-                await eventArgs.Reply(CQCodes.CQAt(eventArgs.Sender.Id) + strContent);
+            {
+                var msg = new MessageBody()
+                {
+                    SoraSegment.At(eventArgs.Sender.Id),
+                    SoraSegment.Text(strContent)
+                };
+                await eventArgs.Reply(msg);
+            }
             else
                 await eventArgs.Reply(strContent);
             return false;

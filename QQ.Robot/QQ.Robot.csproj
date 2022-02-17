@@ -1,108 +1,122 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>QQ.RoBot</AssemblyName>
-    <RootNamespace>QQ.RoBot</RootNamespace>
-    <Authors>于心</Authors>
-    <PackageProjectUrl>https://github.com/MuJint/Qiushui-Bot</PackageProjectUrl>
-    <Version>1.0.0.2</Version>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Company />
-    <Copyright>Copyright © 2021 Qiushui</Copyright>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<AssemblyName>QQ.RoBot</AssemblyName>
+		<RootNamespace>QQ.RoBot</RootNamespace>
+		<Authors>于心</Authors>
+		<PackageProjectUrl>https://github.com/MuJint/Qiushui-Bot</PackageProjectUrl>
+		<Version>1.0.0.3-alpha</Version>
+		<FileVersion>1.0.1.0</FileVersion>
+		<Company />
+		<Copyright>Copyright © 2022 Qiushui</Copyright>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>.</DockerfileContext>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<IsPublishable>False</IsPublishable>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<DebugType>full</DebugType>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Source\InitGlobalConfig.yaml" />
-    <None Remove="Source\InitUserConfig.yaml" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Optimize>False</Optimize>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="Source\InitGlobalConfig.yaml" />
-    <Content Include="Source\InitUserConfig.yaml" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>False</Optimize>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="jieba.NET" Version="0.42.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
-    <PackageReference Include="SharpYaml" Version="1.6.6" />
-    <PackageReference Include="Sora" Version="1.0.0-rc.19" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Source\InitGlobalConfig.yaml" />
+		<None Remove="Source\InitUserConfig.yaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Robot.Common\Robot.Common.csproj" />
-    <ProjectReference Include="..\Robot.Framework\Robot.Framework.csproj" />
-    <ProjectReference Include="..\WordCloud\WordCloud.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Source\InitGlobalConfig.yaml" />
+		<Content Include="Source\InitUserConfig.yaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Source\InitRes.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InitRes.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="jieba.NET" Version="0.42.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
+		<PackageReference Include="SharpYaml" Version="1.6.6" />
+		<PackageReference Include="Sora" Version="1.0.0-rc.46" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Source\InitRes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InitRes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Robot.Common\Robot.Common.csproj" />
+		<ProjectReference Include="..\Robot.Framework\Robot.Framework.csproj" />
+		<ProjectReference Include="..\WordCloud\WordCloud.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Images\five.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Images\four.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Images\one.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Images\random.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Images\six.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Images\three.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Images\two.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\char_state_tab.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\dict.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\idf.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\pos_prob_emit.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\pos_prob_start.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\pos_prob_trans.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\prob_emit.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\prob_trans.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\stopwords.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Source\InitRes.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>InitRes.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Source\InitRes.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>InitRes.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Images\five.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\four.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\one.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\random.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\six.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\three.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\two.gif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\char_state_tab.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\dict.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\idf.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\pos_prob_emit.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\pos_prob_start.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\pos_prob_trans.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\prob_emit.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\prob_trans.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Resources\stopwords.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

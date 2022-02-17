@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Robot.Common;
-using Sora.Entities.MessageElement;
+using Robot.Common.Interface;
+using Sora.Entities;
+using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YukariToolBox.FormatLog;
+
 
 namespace QQ.RoBot
 {
@@ -17,7 +19,11 @@ namespace QQ.RoBot
     public class HsoService : BaseServiceObject, IHsoInterface
     {
         #region Property
-
+        readonly ILogsInterface _logs;
+        public HsoService()
+        {
+            _logs = GetInstance<ILogsInterface>();
+        }
         #endregion
 
         #region Public Func
@@ -35,7 +41,7 @@ namespace QQ.RoBot
             //检查色图文件夹大小
             if (IOUtils.GetHsoSize() >= userConfig.HsoConfig.SizeLimit * 1024 * 1024)
             {
-                Log.Warning("Hso", "色图文件夹超出大小限制，将清空文件夹");
+                _logs.Warn(new IOException(), "色图文件夹超出大小限制，将清空文件夹");
                 Directory.Delete(IOUtils.GetHsoPath(), true);
             }
             await GeneaterHso(userConfig.HsoConfig, e.SourceGroup);
@@ -52,10 +58,10 @@ namespace QQ.RoBot
         /// <para>不会支持R18的哦</para>
         /// </summary>
         /// <param name="hso">hso配置实例</param>
-        private static async Task GeneaterHso(Hso hso, Sora.Entities.Group group)
+        private  async Task GeneaterHso(Hso hso, Sora.Entities.Group group)
         {
             string localPicPath;
-            Log.Debug("源", hso.Source);
+            _logs.Debug(logs: $"{hso.Source}");
             //本地模式
             if (hso.Source == SetuSourceType.Local)
             {
@@ -67,16 +73,18 @@ namespace QQ.RoBot
                 }
                 Random randFile = new();
                 localPicPath = $"{picNames[randFile.Next(0, picNames.Length - 1)]}";
-                Log.Debug("发送图片", localPicPath);
-                await group.SendGroupMessage(hso.CardImage
-                                                   ? CQCodes.CQCardImage(localPicPath)
-                                                   : CQCodes.CQImage(localPicPath));
+                _logs.Debug(logs: localPicPath);
+                var msg = new MessageBody
+                {
+                    SoraSegment.Image(localPicPath)
+                };
+                await group.SendGroupMessage(msg);
                 return;
             }
             //网络部分
             try
             {
-                Log.Info("NET", "尝试获取色图");
+                _logs.Info("NET", "尝试获取色图");
                 string apiKey;
                 string serverUrl;
                 //源切换
@@ -105,7 +113,7 @@ namespace QQ.RoBot
                         break;
                     default:
                         await group.SendGroupMessage("发生了未知错误");
-                        Log.Error("Hso", "发生了未知错误");
+                        _logs.Error(new Exception(), "发生了未知错误");
                         return;
                 }
                 //向服务器发送请求
@@ -114,17 +122,21 @@ namespace QQ.RoBot
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));
-                    await group.SendGroupMessage(CQCodes.CQImage(result.Data.First().Url));
+                    var msg = new MessageBody()
+                    {
+                        SoraSegment.Image(result?.Data?.First()?.Url),
+                    };
+                    await group.SendGroupMessage(msg);
                 }
                 else
                     await group.SendGroupMessage("发生了未知错误");
-                Log.Debug("Get Json", json);
+                _logs.Debug(new Exception(), json);
             }
             catch (Exception e)
             {
                 //网络错误
                 await group.SendGroupMessage("网络错误，暂时没有请求到~");
-                Log.Error("网络发生错误", Log.ErrorLogBuilder(e.InnerException));
+                _logs.Error(e, "");
                 return;
             }
             //https://dotnet.microsoft.com/download/dotnet/current/runtime

@@ -1,10 +1,12 @@
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Robot.Common.Interface;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using YukariToolBox.FormatLog;
+
 
 namespace QQ.RoBot
 {
@@ -16,7 +18,7 @@ namespace QQ.RoBot
         /// </summary>
         private static string GetCrashLogPath()
         {
-            StringBuilder pathBuilder = new StringBuilder();
+            StringBuilder pathBuilder = new();
 #if DEBUG
             pathBuilder.Append(Environment.GetEnvironmentVariable("DebugDataPath"));
 #else
@@ -34,7 +36,7 @@ namespace QQ.RoBot
         public static string GetUserConfigPath(long userId)
         {
             if (userId < 10000) return null;
-            StringBuilder pathBuilder = new StringBuilder();
+            StringBuilder pathBuilder = new();
 #if DEBUG
             pathBuilder.Append(Environment.GetEnvironmentVariable("DebugDataPath"));
 #else
@@ -51,7 +53,7 @@ namespace QQ.RoBot
 
         public static string GetGlobalConfigPath()
         {
-            StringBuilder pathBuilder = new StringBuilder();
+            StringBuilder pathBuilder = new();
 #if DEBUG
             pathBuilder.Append(Environment.GetEnvironmentVariable("DebugDataPath"));
 #else
@@ -69,7 +71,7 @@ namespace QQ.RoBot
         /// </summary>
         public static string GetHsoPath()
         {
-            StringBuilder pathBuilder = new StringBuilder();
+            StringBuilder pathBuilder = new();
 #if DEBUG
             pathBuilder.Append(Environment.GetEnvironmentVariable("DebugDataPath"));
 #else
@@ -87,7 +89,7 @@ namespace QQ.RoBot
         /// <param name="errorMessage">错误信息</param>
         public static void CrashLogGen(string errorMessage)
         {
-            StringBuilder pathBuilder = new StringBuilder();
+            StringBuilder pathBuilder = new();
             pathBuilder.Append(GetCrashLogPath());
             pathBuilder.Append("crash-");
             pathBuilder.Append(DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss"));
@@ -126,7 +128,9 @@ namespace QQ.RoBot
             }
             catch (Exception e)
             {
-                Log.Error("IO ERROR", $"读取文件{jsonPath}时出错，错误：\n{Log.ErrorLogBuilder(e)}");
+
+                var _logs = Dependcy.Provider.GetService<ILogsInterface>();
+                _logs.Error(e, $"读取文件{jsonPath}时出错");
                 return null;
             }
         }

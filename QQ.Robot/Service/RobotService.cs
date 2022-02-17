@@ -1,8 +1,9 @@
 ﻿using Robot.Common;
+using Robot.Common.Interface;
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
 using Sora.Entities;
-using Sora.Entities.MessageElement;
+using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using YukariToolBox.FormatLog;
 
 namespace QQ.RoBot
 {
@@ -27,6 +27,7 @@ namespace QQ.RoBot
         readonly ISpeakerServices _speakerServices;
         readonly ILianInterface _lianService;
         readonly IHsoInterface _hsoInterface;
+        readonly ILogsInterface _logs;
         public RobotService()
         {
             _userServices = GetInstance<ISignUserServices>();
@@ -35,6 +36,7 @@ namespace QQ.RoBot
             _speakerServices = GetInstance<ISpeakerServices>();
             _lianService = GetInstance<ILianInterface>();
             _hsoInterface = GetInstance<IHsoInterface>();
+            _logs = GetInstance<ILogsInterface>();
         }
         public ValueTask FriendAddParse(object sender, FriendAddEventArgs eventArgs)
         {
@@ -72,8 +74,8 @@ namespace QQ.RoBot
             {
                 //此处存在一个异常
                 //System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'userId')
-                Log.Error("Error", c.Message);
-                Log.Error("Error", $"操作失败者：{eventArgs.Operator.Id}");
+                _logs.Error(c, c.Message);
+                _logs.Error(c, $"操作失败者：{eventArgs.Operator.Id}");
                 await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]状态异常");
             }
         }
@@ -85,7 +87,7 @@ namespace QQ.RoBot
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
                 //await groupMessage.Reply("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                Log.Error("Qiushui机器人管理", "无法读取用户配置文件");
+                _logs.Error(new Exception(), "无法读取用户配置文件");
                 return;
             }
             if (!IsListenGroup(groupMessage.SourceGroup.Id, userConfig))
@@ -101,7 +103,7 @@ namespace QQ.RoBot
             //聊天关键词
             //if (CommandHelper.GetKeywordType(groupMessage.Message.RawText, out KeywordCommand keywordCommand))
             //{
-            //    Log.Info("关键词触发", $"触发关键词[{keywordCommand.GetDescription()}]");
+            //    _logs.Info("关键词触发", $"触发关键词[{keywordCommand.GetDescription()}]");
             //    switch (keywordCommand)
             //    {
             //        case KeywordCommand.Hso:
@@ -215,15 +217,17 @@ namespace QQ.RoBot
                 }
             }
             //从内存中拉取符合匹配函数
-            var methodInfo = GlobalSettings.KeyWordRegexs.Where(w => w.Value.Any(regex => regex.IsMatch(groupMessage.Message.RawText)))?.FirstOrDefault().Key;
+            var methodInfo = GlobalSettings.KeyWordRegexs
+                            .Where(w => w.Value.Any(regex => regex.IsMatch(groupMessage.Message.RawText)))
+                            ?.FirstOrDefault().Key;
             if (methodInfo is null)
                 return;
-            Log.Info(methodInfo.GetType(), $"反射已匹配到方法【{methodInfo.Name}】");
+            _logs.Info($"{methodInfo.GetType()}", $"反射已匹配到方法【{methodInfo.Name}】");
             //获取函数的Attribute
             var methodInfoAttribute = methodInfo.GetCustomAttribute(typeof(KeyWordAttribute));
-            if (((KeyWordAttribute)methodInfoAttribute).FullMatch)
+            if (methodInfoAttribute is KeyWordAttribute keyWordAttribute && keyWordAttribute.FullMatch)
             {
-                if (((KeyWordAttribute)methodInfoAttribute).KeyWord != groupMessage.Message.RawText)
+                if (keyWordAttribute.KeyWord != groupMessage.Message.RawText)
                     return;
             }
             //根据接口获取对应的注入服务
@@ -251,9 +255,15 @@ namespace QQ.RoBot
             if (eventArgs.TargetUser == eventArgs.LoginUid &&
                    !CheckInCD.IsInCD(eventArgs.SourceGroup, eventArgs.SendUser))
             {
+                var msg = new MessageBody()
+                {
+                    SoraSegment.At(eventArgs.SendUser),
+                    SoraSegment.Text("\r\n再戳锤爆你的头\r\n"),
+                    SoraSegment.Image("https://i.loli.net/2020/10/20/zWPyocxFEVp2tDT.jpg")
+                };
                 await eventArgs
                     .SourceGroup
-                    .SendGroupMessage($"{CQCodes.CQAt(eventArgs.SendUser)}\r\n再戳锤爆你的头\r\n{CQCodes.CQImage("https://i.loli.net/2020/10/20/zWPyocxFEVp2tDT.jpg")}");
+                    .SendGroupMessage(msg);
             }
         }
 
@@ -265,7 +275,7 @@ namespace QQ.RoBot
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
                 //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                Log.Error("Bot机器人管理", "无法读取用户配置文件");
+                _logs.Error(new Exception(), "无法读取用户配置文件");
                 return;
             }
             try
@@ -294,21 +304,21 @@ namespace QQ.RoBot
 
         public ValueTask Initalization(object sender, ConnectEventArgs connectEvent)
         {
-            Log.Info("Bot初始化", "与onebot客户端连接成功，初始化资源...");
+            _logs.Info("Bot初始化", "与onebot客户端连接成功，初始化资源...");
             //初始化配置文件
-            Log.Info("Bot初始化", $"初始化用户[{connectEvent.LoginUid}]配置");
+            _logs.Info("Bot初始化", $"初始化用户[{connectEvent.LoginUid}]配置");
             config = new(connectEvent.LoginUid);
             config.UserConfigFileInit();
             config.LoadUserConfig(out UserConfig userConfig, false);
 
 
             //在控制台显示启用模块
-            Log.Info("已启用的模块",
+            _logs.Info("已启用的模块",
                             $"\n{userConfig.ModuleSwitch}");
             //显示代理信息
             if (userConfig.ModuleSwitch.Hso && !string.IsNullOrEmpty(userConfig.HsoConfig.PximyProxy))
             {
-                Log.Debug("Hso Proxy", userConfig.HsoConfig.PximyProxy);
+                _logs.Info("Hso Proxy", userConfig.HsoConfig.PximyProxy);
             }
 
             return ValueTask.CompletedTask;
@@ -322,12 +332,12 @@ namespace QQ.RoBot
             if (!config.LoadUserConfig(out UserConfig userConfig))
             {
                 //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                Log.Error("Bot机器人管理", "无法读取用户配置文件");
+                _logs.Error(new Exception(), "无法读取用户配置文件");
                 return;
             }
 
             //人工智障
-            //var service = new DealInstruction(Log, userConfig);
+            //var service = new DealInstruction(_logs, userConfig);
             var all = _keyWordServices.Query(t => t.ID > 0);
             var result = _keyWordServices.Query(t => t.Keys.Contains(eventArgs.Message.RawText)) ?? new List<LianKeyWords>();
             if (result.Count > 0 && result != null)
@@ -371,7 +381,12 @@ namespace QQ.RoBot
                 {
                     var json = await RequestAi(userConfig.ConfigModel.AiPath,
                         eventArgs.Message.RawText.Replace(at, "").Replace(" ", ""));
-                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.Sender.Id)}{json.ObjectToGBK()}");
+                    var msg = new MessageBody()
+                    {
+                        SoraSegment.At(eventArgs.Sender.Id),
+                        SoraSegment.Text(json.ObjectToGBK())
+                    };
+                    await eventArgs.Reply(msg);
                 }
             }
             catch (Exception c)
@@ -428,7 +443,12 @@ namespace QQ.RoBot
                 var rank = new Random().Next(1, 10);
                 if (user == null)
                 {
-                    await eventArgs.Reply($"{CQCodes.CQAt(eventArgs.SenderInfo.UserId)}未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~");
+                    var msg = new MessageBody()
+                    {
+                        SoraSegment.At(eventArgs.SenderInfo.UserId),
+                        SoraSegment.Text($"未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~"),
+                    };
+                    await eventArgs.Reply(msg);
                 }
                 else
                 {
@@ -444,7 +464,7 @@ namespace QQ.RoBot
                     });
                     var msg = new MessageBody()
                     {
-                        CQCodes.CQAt(eventArgs.SenderInfo.UserId),
+                        SoraSegment.At(eventArgs.SenderInfo.UserId),
                         $"看{userConfig.ConfigModel.NickName}这么可爱就奖励{userConfig.ConfigModel.NickName}{rank}分~",
                     };
                     await eventArgs.Reply(msg);
