@@ -46,6 +46,6 @@ ConfigModel:
   #小尾巴
   Tail: ~今天也是充满希望的一天
   #ai对话请求Url，建议默认值
-  AiPath: http://127.0.0.1:8889/api/chat
+  AiPath: http://api.qingyunke.com/api.php?key=free&appid=0&msg=
   #群组图片存放位置
   GroupImgPath: null

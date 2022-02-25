@@ -40,7 +40,7 @@ namespace Robot.Common
         /// <param name="headers"></param>
         /// <param name="timeout">请求响应超时时间，单位/s(默认100秒)</param>
         /// <returns></returns>
-        public static async Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null, int timeout = 0)
+        public static async Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null, int timeout = 15)
         {
             using HttpClient client = new HttpClient();
             if (headers != null)

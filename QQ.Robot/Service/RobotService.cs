@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace QQ.RoBot
 {
@@ -379,14 +380,36 @@ namespace QQ.RoBot
                 var at = $"[CQ:at,qq={eventArgs.LoginUid}]";
                 if (eventArgs.Message.RawText.Contains(at) && userConfig.ModuleSwitch.IsAI)
                 {
-                    var json = await RequestAi(userConfig.ConfigModel.AiPath,
-                        eventArgs.Message.RawText.Replace(at, "").Replace(" ", ""));
-                    var msg = new MessageBody()
+                    //http://api.qingyunke.com/api.php?key=free&appid=0&msg=关键词
+                    var urlEncodeMsg = eventArgs.Message.RawText.Replace(at, "");
+                    urlEncodeMsg = HttpUtility.UrlEncode(urlEncodeMsg);
+                    //拦截请求 十三分钟限制200次
+                    var lastTime = GlobalSettings.AIRequest.Item1;
+                    var requestLimit = GlobalSettings.AIRequest.Item2;
+                    //重置当前时间，重置请求次数
+                    if (lastTime.AddMinutes(13) <= DateTime.Now)
+                        GlobalSettings.AIRequest = (DateTime.Now, 0);
+                    if (lastTime.AddMinutes(13) >= DateTime.Now && requestLimit >= 200)
+                        await eventArgs.Reply($"当前时间段已超出请求次数，请与{lastTime.AddMinutes(13)}之后尝试");
+                    GlobalSettings.AIRequest = (lastTime, requestLimit + 1);
+                    var json = await RequestAi(userConfig.ConfigModel.AiPath, urlEncodeMsg);
+                    if (string.IsNullOrEmpty(json) is false)
                     {
-                        SoraSegment.At(eventArgs.Sender.Id),
-                        SoraSegment.Text(json.ObjectToGBK())
-                    };
-                    await eventArgs.Reply(msg);
+                        var result = Newtonsoft.Json.JsonConvert.DeserializeObject<AiResult>(json);
+                        var msg = new MessageBody()
+                        {
+                            SoraSegment.At(eventArgs.Sender.Id),
+                        };
+                        //有结果集
+                        if (result.Result == 0)
+                        {
+                            result.Content = result.Content.Replace("{br}", "\r\n");
+                            msg.Add(SoraSegment.Text(result.Content));
+                        }
+                        await eventArgs.Reply(msg);
+                    }
+                    else
+                        await eventArgs.Reply("网络错误");
                 }
             }
             catch (Exception c)
@@ -577,6 +600,17 @@ namespace QQ.RoBot
         {
             public string Name { get; set; }
             public MethodInfo[] Methods { get; set; }
+        }
+        private class AiResult
+        {
+            /// <summary>
+            /// 编码
+            /// </summary>
+            public int Result { get; set; }
+            /// <summary>
+            /// 内容
+            /// </summary>
+            public string Content { get; set; }
         }
         private object GetInvokeService(object obj) => obj switch
         {

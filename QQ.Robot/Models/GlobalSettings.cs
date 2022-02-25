@@ -1,4 +1,5 @@
 ﻿using Robot.Common;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -25,6 +26,11 @@ namespace QQ.RoBot
                 }
             }
         }
+
+        /// <summary>
+        /// AI接口调用次数限制
+        /// </summary>
+        public static (DateTime, int) AIRequest { get; set; } = (DateTime.Now, 0);
 
         /// <summary>
         /// 所有反射加载方法
