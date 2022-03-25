@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
 
 namespace QQ.RoBot
 {
     public static class Dependcy
     {
-        public static ServiceProvider Provider { get; set; }
+        public static IServiceProvider Provider { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace QQ.RoBot
                 .AddScoped<ILianInterface, LianService>()
                 .AddScoped<IHsoInterface, HsoService>()
                 .BuildServiceProvider();
-            var Instance = Dependcy.Provider.GetService<IRobotInterface>();
+            var _robot = Dependcy.Provider.GetService<IRobotInterface>();
             var _logs = Dependcy.Provider.GetService<ILogsInterface>();
 
             //修改控制台标题
@@ -69,13 +69,13 @@ namespace QQ.RoBot
                 EnableSoraCommandManager = true
             });
 
-            server.Event.OnClientConnect += Instance.Initalization;
-            server.Event.OnGroupMessage += Instance.GroupMessageParse;
-            server.Event.OnPrivateMessage += Instance.PrivateMessageParse;
-            server.Event.OnGroupPoke += Instance.GroupPokeEventParse;
-            server.Event.OnFriendAdd += Instance.FriendAddParse;
-            server.Event.OnGroupMemberChange += Instance.GroupMemberChangeParse;
-            server.Event.OnGroupRecall += Instance.GroupRecallParse;
+            server.Event.OnClientConnect += _robot.Initalization;
+            server.Event.OnGroupMessage += _robot.GroupMessageParse;
+            server.Event.OnPrivateMessage += _robot.PrivateMessageParse;
+            server.Event.OnGroupPoke += _robot.GroupPokeEventParse;
+            server.Event.OnFriendAdd += _robot.FriendAddParse;
+            server.Event.OnGroupMemberChange += _robot.GroupMemberChangeParse;
+            server.Event.OnGroupRecall += _robot.GroupRecallParse;
             //更多事件按需处理
 
             //关闭连接事件处理

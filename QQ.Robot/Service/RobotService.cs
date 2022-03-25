@@ -198,7 +198,7 @@ namespace QQ.RoBot
 
             #region 反射利用特性分发
             //方法写入内存
-            if(GlobalSettings.Methods?.Count<=0)
+            if (GlobalSettings.Methods?.Count <= 0)
             {
                 var assemblyType = Assembly.GetAssembly(typeof(ILianInterface)).ExportedTypes
                     .Where(w => w.FullName.Contains("Interface"))
