@@ -16,14 +16,16 @@ namespace QQ.RoBot
     /// <summary>
     /// hso实现
     /// </summary>
-    public class HsoService : BaseServiceObject, IHsoInterface
+    public class HsoService : IHsoInterface
     {
         #region Property
         readonly ILogsInterface _logs;
-        public HsoService()
+
+        public HsoService(ILogsInterface logs)
         {
-            _logs = GetInstance<ILogsInterface>();
+            _logs = logs;
         }
+
         #endregion
 
         #region Public Func
@@ -36,15 +38,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Hso(GroupMessageEventArgs e)
         {
-            Config config = new(e.LoginUid);
-            config.LoadUserConfig(out UserConfig userConfig);
-            //检查色图文件夹大小
-            if (IOUtils.GetHsoSize() >= userConfig.HsoConfig.SizeLimit * 1024 * 1024)
-            {
-                _logs.Warn(new IOException(), "色图文件夹超出大小限制，将清空文件夹");
-                Directory.Delete(IOUtils.GetHsoPath(), true);
-            }
-            await GeneaterHso(userConfig.HsoConfig, e.SourceGroup);
+            await GeneaterHso(e.SourceGroup);
         }
         #endregion
 
@@ -57,18 +51,15 @@ namespace QQ.RoBot
         /// <para>从色图源获取色图</para>
         /// <para>不会支持R18的哦</para>
         /// </summary>
-        /// <param name="hso">hso配置实例</param>
-        private  async Task GeneaterHso(Hso hso, Sora.Entities.Group group)
+        private async Task GeneaterHso(Sora.Entities.Group group)
         {
             //网络部分
             try
             {
                 _logs.Info("NET", "尝试获取色图");
-                string apiKey;
                 string serverUrl;
                 //源切换
                 serverUrl = "https://api.lolicon.app/setu/";
-                apiKey = hso.LoliconApiKey ?? string.Empty;
                 //if (new Random().Next(1, 100) > 50)
                 //{
                 //    serverUrl = "https://api.lolicon.app/setu/";
@@ -80,8 +71,8 @@ namespace QQ.RoBot
                 //    apiKey = string.Empty;
                 //}
                 //向服务器发送请求
-                var json = await HttpHelper.HttpGetAsync($"{serverUrl}?apikey={apiKey}&r18={hso.R18}");
-                var result = JsonConvert.DeserializeObject<HsoResponseModel>(json);
+                var json = await HttpHelper.HttpGetAsync($"{serverUrl}");
+                var result = JsonConvert.DeserializeObject<HsoResult>(json);
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));
@@ -105,7 +96,7 @@ namespace QQ.RoBot
             //https://dotnet.microsoft.com/download/dotnet/current/runtime
         }
 
-        private static string GetResult(HsoResponseModel hsoResponse)
+        private static string GetResult(HsoResult hsoResponse)
         {
             var strBulider = new StringBuilder();
             var tags = hsoResponse.Data.First().Tags;

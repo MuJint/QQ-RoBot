@@ -1,8 +1,85 @@
+﻿using Robot.Common.Enums;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace QQ.RoBot
+namespace QQ.RoBot.Models
 {
+    /// <summary>
+    /// 配置中心
+    /// </summary>
+    public class AppSetting
+    {
+        /// <summary>
+        /// 日志
+        /// </summary>
+        public Logging Logging { get; set; }
+        /// <summary>
+        /// Socket配置
+        /// </summary>
+        public ServerConfig ServerConfig { get; set; }
+        /// <summary>
+        /// 用户配置
+        /// </summary>
+        public UserConfig UserConfig { get; set; }
+    }
+
+    public class Logging
+    {
+        public LogLevel LogLevel { get; set; }
+    }
+
+    public class LogLevel
+    {
+        /// <summary>
+        /// 日志等级
+        /// </summary>
+        public EnumLogLevel Default { get; set; }
+    }
+
+    public class ServerConfig
+    {
+        /// <summary>
+        /// 监听地址
+        /// </summary>
+        public string Location { get; set; }
+
+        /// <summary>
+        /// 端口
+        /// </summary>
+        public ushort Port { get; set; }
+
+        /// <summary>
+        /// 鉴权Token
+        /// </summary>
+        public string AccessToken { get; set; }
+
+        /// <summary>
+        /// API请求路径
+        /// </summary>
+        public string ApiPath { get; set; }
+
+        /// <summary>
+        /// Event请求路径
+        /// </summary>
+        public string EventPath { get; set; }
+
+        /// <summary>
+        /// Universal请求路径
+        /// </summary>
+        public string UniversalPath { get; set; }
+
+        /// <summary>
+        /// <para>心跳包超时设置(秒)</para>
+        /// <para>此值请不要小于或等于客户端心跳包的发送间隔</para>
+        /// </summary>
+        public uint HeartBeatTimeOut { get; set; }
+
+        /// <summary>
+        /// <para>客户端API调用超时设置(毫秒)</para>
+        /// <para>默认为1000无需修改</para>
+        /// </summary>
+        public uint ApiTimeOut { get; set; }
+    }
     /// <summary>
     /// 单用户配置文件定义
     /// </summary>
@@ -12,11 +89,6 @@ namespace QQ.RoBot
         /// 各模块的控制开关
         /// </summary>
         public ModuleSwitch ModuleSwitch { set; get; }
-        /// <summary>
-        /// <summary>
-        /// 色图相关设置
-        /// </summary>
-        public Hso HsoConfig { set; get; }
         /// <summary>
         /// 莲配置
         /// </summary>
@@ -73,7 +145,7 @@ namespace QQ.RoBot
                     ret.Add(property.Name);
                 }
             }
-            return string.Join("\n",ret);
+            return string.Join("\n", ret);
         }
         #endregion
     }
@@ -92,37 +164,5 @@ namespace QQ.RoBot
         public string Tail { get; set; } = "";
         public string AiPath { get; set; }
         public string GroupImgPath { get; set; }
-    }
-
-    public class Hso
-    {
-        /// <summary>
-        /// Pximy代理
-        /// </summary>
-        public string PximyProxy { set; get; }
-        /// <summary>
-        /// 是否启用本地缓存
-        /// </summary>
-        public bool UseCache { set; get; }
-        /// <summary>
-        /// 是否使用装逼大图
-        /// </summary>
-        public bool CardImage { set; get; }
-        /// <summary>
-        /// 色图文件夹大小限制
-        /// </summary>
-        public long SizeLimit { set; get; }
-        /// <summary>
-        /// LoliconToken
-        /// </summary>
-        public string LoliconApiKey { set; get; }
-        /// <summary>
-        /// YukariToken
-        /// </summary>
-        public string YukariApiKey { set; get; }
-        /// <summary>
-        /// R18
-        /// </summary>
-        public bool R18 { get; set; } = false;
     }
 }

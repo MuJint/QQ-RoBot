@@ -13,7 +13,7 @@ namespace Robot.Common.Helper
     {
         #region Property
 
-        public EnumLogLevel LogLevel = EnumLogLevel.Info;
+        public EnumLogLevel LogLevel = EnumLogLevel.Information;
         private readonly object _logLock = new();
         private ConsoleColor _consoleColor = Console.BackgroundColor;
         private readonly CultureInfo _cultureInfo = CultureInfo.CurrentCulture;
@@ -55,7 +55,7 @@ namespace Robot.Common.Helper
         /// <param name="memberName"></param>
         /// <param name="lineNumber"></param>
         /// <param name="filePath"></param>
-        public void Info(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Info, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
+        public void Info(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Information, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
         {
             if (LogLevel > logLevel) return;
             lock (_logLock)
@@ -81,7 +81,7 @@ namespace Robot.Common.Helper
         /// <param name="memberName"></param>
         /// <param name="lineNumber"></param>
         /// <param name="filePath"></param>
-        public void Info(string caption, string logs, EnumLogLevel logLevel = EnumLogLevel.Info, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
+        public void Info(string caption, string logs, EnumLogLevel logLevel = EnumLogLevel.Information, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
         {
             if (LogLevel > logLevel) return;
             lock (_logLock)
@@ -107,7 +107,7 @@ namespace Robot.Common.Helper
         /// <param name="memberName"></param>
         /// <param name="lineNumber"></param>
         /// <param name="filePath"></param>
-        public void Warn(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Warn, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
+        public void Warn(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Warning, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
         {
             if (LogLevel > logLevel) return;
             lock (_logLock)

@@ -30,20 +30,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Source\InitGlobalConfig.yaml" />
-		<None Remove="Source\InitUserConfig.yaml" />
+		<None Remove="appsetting.json" />
+		<None Remove="appsettings.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Source\InitGlobalConfig.yaml" />
-		<Content Include="Source\InitUserConfig.yaml" />
+		<Content Include="appsettings.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="jieba.NET" Version="0.42.2" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
-		<PackageReference Include="SharpYaml" Version="1.6.6" />
 		<PackageReference Include="Sora" Version="1.0.0-rc.47" />
 	</ItemGroup>
 
@@ -54,21 +54,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Source\InitRes.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>InitRes.resx</DependentUpon>
-		</Compile>
+	  <Resource Include="appsetting.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Source\InitRes.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>InitRes.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
+		<None Update="Dockerfile">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Images\five.gif">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

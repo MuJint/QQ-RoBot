@@ -125,7 +125,7 @@ namespace TestProject
                 {
                     var t = item.ParameterType.Name;
                 }
-                GlobalSettings.Methods.TryAdd(assembly2.DeclaringType.Name, assembly2);
+                GlobalSettings.AllMethods.TryAdd(assembly2.DeclaringType.Name, assembly2);
             }
             var regex = new Regex(@"^[]");
             //var methodInfo = GlobalSettings.Methods.FirstOrDefault(f => Regex.IsMatch("Ç©µ½",f.Key.KeyWord));
@@ -206,7 +206,7 @@ namespace TestProject
             var ss = GetHttpResponse("https://yanghanwen.xyz/tu/setu.php", 600);
             var json = HttpHelper.HttpGetAsync($"https://yanghanwen.xyz/tu/setu.php").Result;
             Console.WriteLine(json);
-            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<HsoResponseModel>(json);
+            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<HsoResult>(json);
         }
 
         public static string GetHttpResponse(string url, int Timeout)

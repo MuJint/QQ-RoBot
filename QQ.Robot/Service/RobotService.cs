@@ -1,4 +1,5 @@
-﻿using Robot.Common;
+﻿using QQ.RoBot.Models;
+using Robot.Common;
 using Robot.Common.Interface;
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
@@ -10,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -19,9 +19,8 @@ namespace QQ.RoBot
     /// <summary>
     /// RobotService
     /// </summary>
-    public class RobotService : BaseServiceObject, IRobotInterface
+    public class RobotService : IRobotInterface
     {
-        private Config config;
         readonly ISignUserServices _userServices;
         readonly ISignLogsServices _logsServices;
         readonly ILianKeyWordsServices _keyWordServices;
@@ -29,16 +28,26 @@ namespace QQ.RoBot
         readonly ILianInterface _lianService;
         readonly IHsoInterface _hsoInterface;
         readonly ILogsInterface _logs;
-        public RobotService()
+        readonly UserConfig userConfig = GlobalSettings.AppSetting.UserConfig;
+
+        public RobotService(ISignUserServices userServices,
+            ISignLogsServices logsServices,
+            ILianKeyWordsServices keyWordServices,
+            ISpeakerServices speakerServices,
+            ILianInterface lianService,
+            IHsoInterface hsoInterface,
+            ILogsInterface logs)
         {
-            _userServices = GetInstance<ISignUserServices>();
-            _logsServices = GetInstance<ISignLogsServices>();
-            _keyWordServices = GetInstance<ILianKeyWordsServices>();
-            _speakerServices = GetInstance<ISpeakerServices>();
-            _lianService = GetInstance<ILianInterface>();
-            _hsoInterface = GetInstance<IHsoInterface>();
-            _logs = GetInstance<ILogsInterface>();
+            _userServices = userServices;
+            _logsServices = logsServices;
+            _keyWordServices = keyWordServices;
+            _speakerServices = speakerServices;
+            _lianService = lianService;
+            _hsoInterface = hsoInterface;
+            _logs = logs;
         }
+
+
         public ValueTask FriendAddParse(object sender, FriendAddEventArgs eventArgs)
         {
             //throw new NotImplementedException();
@@ -83,21 +92,13 @@ namespace QQ.RoBot
 
         public async ValueTask GroupMessageParse(object sender, GroupMessageEventArgs groupMessage)
         {
-            config = new(groupMessage.LoginUid);
-            //读取配置文件
-            if (!config.LoadUserConfig(out UserConfig userConfig))
-            {
-                //await groupMessage.Reply("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                _logs.Error(new Exception(), "无法读取用户配置文件");
-                return;
-            }
-            if (!IsListenGroup(groupMessage.SourceGroup.Id, userConfig))
+            if (!IsListenGroup(groupMessage.SourceGroup.Id))
                 return;
 
-            await IsAI(groupMessage, userConfig);
-            await Reread(groupMessage, userConfig);
-            await TriggerCute(groupMessage, userConfig);
-            await TriggerSpecial(groupMessage, userConfig);
+            await IsAI(groupMessage);
+            await Reread(groupMessage);
+            await TriggerCute(groupMessage);
+            await TriggerSpecial(groupMessage);
             await SpeakerStorage(groupMessage);
 
             #region 正则匹配关键字Switch分发
@@ -111,143 +112,47 @@ namespace QQ.RoBot
             //            if (userConfig.ModuleSwitch.Hso)
             //                await _hsoInterface.Hso(groupMessage);
             //            break;
-            //        case KeywordCommand.Sign:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Sign.GetDescription()))
-            //                await _lianService.SignIn(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Search:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Search.GetDescription()))
-            //                await _lianService.SearchRank(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Fenlai:
-            //            await _lianService.Fenlai(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Skill:
-            //            await _lianService.Skill(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.RankList:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.RankList.GetDescription()))
-            //                await _lianService.RankList(groupMessage);
-            //            break;
-            //        case KeywordCommand.SpecialEvent:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.SpecialEvent.GetDescription()))
-            //                await _lianService.SpecialEvent(groupMessage);
-            //            break;
-            //        case KeywordCommand.LogsRecord:
-            //            await _lianService.LogsRecord(groupMessage);
-            //            break;
-            //        case KeywordCommand.Giving:
-            //            await _lianService.Giving(groupMessage);
-            //            break;
-            //        case KeywordCommand.Morning:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Morning.GetDescription()))
-            //                await _lianService.Morning(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Night:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Night.GetDescription()))
-            //                await _lianService.Night(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.BonusPoint:
-            //            await _lianService.BonusPoint(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.DeductPoint:
-            //            await _lianService.DeductPoint(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.AllBonusPoint:
-            //            await _lianService.AllBonusPoint(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.AllDeductPoint:
-            //            await _lianService.AllDeductPoint(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.RedTea:
-            //            await _lianService.RedTea(groupMessage);
-            //            break;
-            //        case KeywordCommand.Raffle:
-            //            await _lianService.Raffle(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Rob:
-            //            await _lianService.Rob(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Rescur:
-            //            await _lianService.Rescur(groupMessage, userConfig);
-            //            break;
-            //        case KeywordCommand.Lian:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.Lian.GetDescription()))
-            //                await _lianService.Lian(groupMessage);
-            //            break;
-            //        case KeywordCommand.AddKeys:
-            //            await _lianService.AddKeys(groupMessage);
-            //            break;
-            //        case KeywordCommand.AddThesaurus:
-            //            await _lianService.AddThesaurus(groupMessage);
-            //            break;
-            //        case KeywordCommand.RollDice:
-            //            await _lianService.RollDice(groupMessage);
-            //            break;
-            //        case KeywordCommand.WordCloud:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.WordCloud.GetDescription()))
-            //                await _lianService.WordCloud(groupMessage);
-            //            break;
-            //        case KeywordCommand.NonsenseKing:
-            //            if (IsTrigger(groupMessage.Message.RawText, KeywordCommand.NonsenseKing.GetDescription()))
-            //                await _lianService.NonsenseKing(groupMessage);
-            //            break;
             //    }
             //}
             #endregion
 
             #region 反射利用特性分发
-            //方法写入内存
-            if (GlobalSettings.Methods?.Count <= 0)
-            {
-                var assemblyType = Assembly.GetAssembly(typeof(ILianInterface)).ExportedTypes
-                    .Where(w => w.FullName.Contains("Interface"))
-                    .Select(s => new AssemblyMethod
-                    {
-                        Name = s.Name,
-                        Methods = s.GetMethods(),
-                    }).ToList();
-                foreach (var assembly in assemblyType.SelectMany(s => s.Methods))
-                {
-                    if (assembly?.GetCustomAttribute(typeof(KeyWordAttribute)) is not KeyWordAttribute attribute)
-                        continue;
-                    //所有反射方法 ILianInterface -> SignIn
-                    GlobalSettings.Methods.TryAdd(assembly.DeclaringType.Name, assembly);
-                    //正则匹配字典 SignIn -> [(签到)+]  
-                    GlobalSettings.KeyWordRegexs.TryAdd(assembly, attribute.KeyWord.Split(' ').Select(s => new Regex($"({s})+")).ToList());
-                }
-            }
+
             //从内存中拉取符合匹配函数
             var methodInfo = GlobalSettings.KeyWordRegexs
                             .Where(w => w.Value.Any(regex => regex.IsMatch(groupMessage.Message.RawText)))
-                            ?.FirstOrDefault().Key;
-            if (methodInfo is null)
+                            ?.FirstOrDefault();
+            if (methodInfo.HasValue is false || methodInfo.Value.Key is null)
                 return;
-            _logs.Info($"{methodInfo.GetType()}", $"反射已匹配到方法【{methodInfo.Name}】");
+            _logs.Info($"{methodInfo.GetType()}", $"反射已匹配到方法【{methodInfo.Value.Key}】");
+
             //获取函数的Attribute
-            var methodInfoAttribute = methodInfo.GetCustomAttribute(typeof(KeyWordAttribute));
-            if (methodInfoAttribute is KeyWordAttribute keyWordAttribute && keyWordAttribute.FullMatch)
+            var methodInfoAttribute = methodInfo.Value.Key.GetCustomAttribute(typeof(KeyWordAttribute));
+            if (methodInfoAttribute is KeyWordAttribute keyWordAttribute)
             {
-                if (keyWordAttribute.KeyWord != groupMessage.Message.RawText)
-                    return;
+                if(keyWordAttribute.FullMatch)
+                {
+                    var keyWords = keyWordAttribute.KeyWord.Split(" ").ToList();
+                    if (keyWords.Contains(groupMessage.Message.RawText) is false)
+                        return;
+                }
             }
+
             //根据接口获取对应的注入服务
-            var dicService = GlobalSettings.MatchDic.FirstOrDefault(w => w.Key == GlobalSettings.Methods.FirstOrDefault(f => f.Value == methodInfo).Key);
+            var dicService = GlobalSettings.InterfaceToServicesDic.FirstOrDefault(w => w.Key == GlobalSettings.AllMethods.FirstOrDefault(f => f.Key == methodInfo.Value.Key).Value);
             //匹配服务
             var service = GetInvokeService(dicService.Value);
             var methodParameters = new List<object>() { };
             //组装函数的入参
-            foreach (var parameter in methodInfo.GetParameters())
+            foreach (var parameter in methodInfo.Value.Key.GetParameters())
             {
                 if (parameter.ParameterType.Name == nameof(Object))
                     methodParameters.Add(sender);
                 if (parameter.ParameterType.Name == nameof(GroupMessageEventArgs))
                     methodParameters.Add(groupMessage);
-                if (parameter.ParameterType.Name == nameof(UserConfig))
-                    methodParameters.Add(userConfig);
             }
             //调用方法
-            methodInfo.Invoke(service, methodParameters.ToArray());
+            methodInfo.Value.Key.Invoke(service, methodParameters.ToArray());
             #endregion
         }
 
@@ -270,15 +175,6 @@ namespace QQ.RoBot
 
         public async ValueTask GroupRecallParse(object sender, GroupRecallEventArgs groupMessage)
         {
-            //配置文件实例
-            config = new(groupMessage.LoginUid);
-            //读取配置文件
-            if (!config.LoadUserConfig(out UserConfig userConfig))
-            {
-                //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                _logs.Error(new Exception(), "无法读取用户配置文件");
-                return;
-            }
             try
             {
                 var r = new Random().Next(5, 9);
@@ -308,37 +204,16 @@ namespace QQ.RoBot
             _logs.Info("Bot初始化", "与onebot客户端连接成功，初始化资源...");
             //初始化配置文件
             _logs.Info("Bot初始化", $"初始化用户[{connectEvent.LoginUid}]配置");
-            config = new(connectEvent.LoginUid);
-            config.UserConfigFileInit();
-            config.LoadUserConfig(out UserConfig userConfig, false);
-
 
             //在控制台显示启用模块
             _logs.Info("已启用的模块",
                             $"\n{userConfig.ModuleSwitch}");
-            //显示代理信息
-            if (userConfig.ModuleSwitch.Hso && !string.IsNullOrEmpty(userConfig.HsoConfig.PximyProxy))
-            {
-                _logs.Info("Hso Proxy", userConfig.HsoConfig.PximyProxy);
-            }
-
             return ValueTask.CompletedTask;
         }
 
         public async ValueTask PrivateMessageParse(object sender, PrivateMessageEventArgs eventArgs)
         {
-            //配置文件实例
-            config = new(eventArgs.LoginUid);
-            //读取配置文件
-            if (!config.LoadUserConfig(out UserConfig userConfig))
-            {
-                //await eventArgs.Sender.SendPrivateMessage("读取配置文件(User)时发生错误\r\n请检查配置文件然后重启");
-                _logs.Error(new Exception(), "无法读取用户配置文件");
-                return;
-            }
-
             //人工智障
-            //var service = new DealInstruction(_logs, userConfig);
             var all = _keyWordServices.Query(t => t.ID > 0);
             var result = _keyWordServices.Query(t => t.Keys.Contains(eventArgs.Message.RawText)) ?? new List<LianKeyWords>();
             if (result.Count > 0 && result != null)
@@ -364,7 +239,7 @@ namespace QQ.RoBot
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        private static bool IsListenGroup(long groupId, UserConfig userConfig) => userConfig?.ConfigModel?.GroupIds?.Contains(groupId.ToString()) ?? false;
+        private bool IsListenGroup(long groupId) => userConfig?.ConfigModel?.GroupIds?.Contains(groupId.ToString()) ?? false;
 
         /// <summary>
         /// 处理ai
@@ -372,7 +247,7 @@ namespace QQ.RoBot
         /// <param name="eventArgs"></param>
         /// <param name="userConfig"></param>
         /// <returns></returns>
-        private static async ValueTask IsAI(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        private async ValueTask IsAI(GroupMessageEventArgs eventArgs)
         {
             //[CQ:at,qq=503745803] 你好啊
             try
@@ -424,7 +299,7 @@ namespace QQ.RoBot
         /// <param name="eventArgs"></param>
         /// <param name="userConfig"></param>
         /// <returns></returns>
-        private static async ValueTask Reread(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        private async ValueTask Reread(GroupMessageEventArgs eventArgs)
         {
             //两条一致信息复读，随机数等于6复读
             if (!userConfig.ModuleSwitch.Reread)
@@ -458,7 +333,7 @@ namespace QQ.RoBot
         /// <param name="eventArgs"></param>
         /// <param name="userConfig"></param>
         /// <returns></returns>
-        private async ValueTask TriggerCute(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        private async ValueTask TriggerCute(GroupMessageEventArgs eventArgs)
         {
             if (new Random().Next(1, 100) is 66)
             {
@@ -501,7 +376,7 @@ namespace QQ.RoBot
         /// <param name="eventArgs"></param>
         /// <param name="userConfig"></param>
         /// <returns></returns>
-        private async ValueTask TriggerSpecial(GroupMessageEventArgs eventArgs, UserConfig userConfig)
+        private async ValueTask TriggerSpecial(GroupMessageEventArgs eventArgs)
         {
             var deTrigger = new Random().Next(1, 5000) is 666;
             var trigger = new Random().Next(1, 5000) is 444;
@@ -594,13 +469,19 @@ namespace QQ.RoBot
         }
 
         /// <summary>
-        /// 反射类
+        /// 获取服务
         /// </summary>
-        private class AssemblyMethod
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private object GetInvokeService(object obj) => obj switch
         {
-            public string Name { get; set; }
-            public MethodInfo[] Methods { get; set; }
-        }
+            "LianService" => _lianService,
+            "HsoService" => _hsoInterface,
+            _ => _lianService,
+        };
+        #endregion
+
+        #region Identity
         private class AiResult
         {
             /// <summary>
@@ -612,13 +493,6 @@ namespace QQ.RoBot
             /// </summary>
             public string Content { get; set; }
         }
-        private object GetInvokeService(object obj) => obj switch
-        {
-            "LianService" => _lianService,
-            "HsoService" => _hsoInterface,
-            _ => _lianService,
-        };
-        private static bool IsTrigger(string rawText, string keyWord) => rawText.Equals(keyWord);
         #endregion
     }
 }

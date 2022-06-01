@@ -1,14 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Robot.Common.Helper;
 using Robot.Common.Interface;
-using Robot.Common.Enums;
 using Robot.Framework.Interface;
 using Robot.Framework.Services;
-using Sora;
-using Sora.Interfaces;
-using Sora.Net.Config;
-using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace QQ.RoBot
@@ -17,73 +13,30 @@ namespace QQ.RoBot
     {
         static async Task Main()
         {
-            //IOC
-            Dependcy.Provider = new ServiceCollection()
-                .AddScoped<ILogsInterface, LogsHelper>()
-                .AddScoped<ILianChatServices, LianChatServices>()
-                .AddScoped<ILianKeyWordsServices, LianKeyWordsServices>()
-                .AddScoped<ISignLogsServices, SignLogsServices>()
-                .AddScoped<ISignUserServices, SignUserServices>()
-                .AddScoped<ISpeakerServices, SpeakerServices>()
-                .AddScoped<IRobotInterface, RobotService>()
-                .AddScoped<ILianInterface, LianService>()
-                .AddScoped<IHsoInterface, HsoService>()
-                .BuildServiceProvider();
-            var _robot = Dependcy.Provider.GetService<IRobotInterface>();
-            var _logs = Dependcy.Provider.GetService<ILogsInterface>();
-
-            //修改控制台标题
-            Console.Title = "Bot";
-            _logs.Info("Bot初始化", "Bot初始化...");
-            //初始化配置文件
-            _logs.Info("Bot初始化", "初始化服务器全局配置...");
-            Config config = new(0);
-            config.GlobalConfigFileInit();
-            config.LoadGlobalConfig(out GlobalConfig globalConfig, false);
-
-            _logs.SetLogLevel(EnumLogLevel.Info);
-            //显示_logs等级
-            _logs.Info("LogLevel", $"{globalConfig.LogLevel}");
-
-            //初始化字符编码
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            //指令匹配初始化
-            CommandHelper.KeywordResourseInit();
-
-            //初始化接口对应服务字典
-            GlobalSettings.GlobalSettingsInit();
-
-            //
-            _logs.Info("Bot初始化", "初始化指令匹配集");
-            _logs.Info("Bot初始化", "启动反向WebSocket服务器");
-            //初始化服务器
-            ISoraService server = SoraServiceFactory.CreateService(new ServerConfig
+            Host.CreateDefaultBuilder().ConfigureServices((builder, services) =>
             {
-                Host = globalConfig.Location,
-                Port = globalConfig.Port,
-                AccessToken = globalConfig.AccessToken,
-                UniversalPath = globalConfig.UniversalPath,
-                HeartBeatTimeOut = TimeSpan.FromSeconds(globalConfig.HeartBeatTimeOut),
-                ApiTimeOut = TimeSpan.FromSeconds(globalConfig.ApiTimeOut),
-                EnableSoraCommandManager = true
-            });
+                var config = builder.Configuration;
+                config.Bind(GlobalSettings.AppSetting);
+                var s = GlobalSettings.AppSetting;
+                services.AddScoped<ILogsInterface, LogsHelper>();
+                services.AddScoped<ILianChatServices, LianChatServices>();
+                services.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>();
+                services.AddScoped<ISignLogsServices, SignLogsServices>();
+                services.AddScoped<ISignUserServices, SignUserServices>();
+                services.AddScoped<ISpeakerServices, SpeakerServices>();
+                services.AddScoped<IRobotInterface, RobotService>();
+                services.AddScoped<ILianInterface, LianService>();
+                services.AddScoped<IHsoInterface, HsoService>();
+                services.AddHostedService<IWorker>();
+            })
+            .ConfigureHostConfiguration(builder => 
+            {
+                builder.AddJsonFile("appsettings.json");
+            })
+            .Build()
+            .Run();
 
-            server.Event.OnClientConnect += _robot.Initalization;
-            server.Event.OnGroupMessage += _robot.GroupMessageParse;
-            server.Event.OnPrivateMessage += _robot.PrivateMessageParse;
-            server.Event.OnGroupPoke += _robot.GroupPokeEventParse;
-            server.Event.OnFriendAdd += _robot.FriendAddParse;
-            server.Event.OnGroupMemberChange += _robot.GroupMemberChangeParse;
-            server.Event.OnGroupRecall += _robot.GroupRecallParse;
-            //更多事件按需处理
-
-            //关闭连接事件处理
-            //server.ConnManager.OnCloseConnectionAsync += TimerEventParse.StopTimer;
-            //server.ConnManager.OnHeartBeatTimeOut += TimerEventParse.StopTimer;
-
-            await server.StartService();
-            await Task.Delay(-1);
+            await Task.Delay(1);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace QQ.RoBot
     /// <summary>
     /// 色图 model
     /// </summary>
-    public class HsoResponseModel
+    public class HsoResult
     {
         /// <summary>
         /// 状态码

@@ -13,11 +13,11 @@
         /// <summary>
         /// Info
         /// </summary>
-        Info = 2,
+        Information = 2,
         /// <summary>
         /// Warn
         /// </summary>
-        Warn = 3,
+        Warning = 3,
         /// <summary>
         /// error
         /// </summary>
