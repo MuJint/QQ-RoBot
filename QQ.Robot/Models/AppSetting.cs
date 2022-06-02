@@ -155,7 +155,6 @@ namespace QQ.RoBot.Models
     /// </summary>
     public class ConfigModel
     {
-        public string NickName { get; set; }
         public string BotName { get; set; }
         public List<string> GroupIds { get; set; }
         /// <summary>

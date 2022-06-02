@@ -17,7 +17,7 @@ namespace Robot.Common
         /// <returns></returns>
         public static string HttpGet(string url, Dictionary<string, string> headers = null, int timeout = 0)
         {
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             if (headers != null)
             {
                 foreach (KeyValuePair<string, string> header in headers)
@@ -42,7 +42,7 @@ namespace Robot.Common
         /// <returns></returns>
         public static async Task<string> HttpGetAsync(string url, Dictionary<string, string> headers = null, int timeout = 15)
         {
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             if (headers != null)
             {
                 foreach (KeyValuePair<string, string> header in headers)
@@ -71,7 +71,7 @@ namespace Robot.Common
         /// <returns></returns>
         public static string HttpPost(string url, string postData, Dictionary<string, string> headers = null, string contentType = null, int timeout = 0, Encoding encoding = null)
         {
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             if (headers != null)
             {
                 foreach (KeyValuePair<string, string> header in headers)
@@ -105,7 +105,7 @@ namespace Robot.Common
         /// <returns></returns>
         public static async Task<string> HttpPostAsync(string url, string postData, Dictionary<string, string> headers = null, string contentType = null, int timeout = 0, Encoding encoding = null)
         {
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             if (headers != null)
             {
                 foreach (KeyValuePair<string, string> header in headers)

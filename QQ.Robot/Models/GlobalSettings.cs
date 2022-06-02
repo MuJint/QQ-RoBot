@@ -38,17 +38,12 @@ namespace QQ.RoBot
         /// <summary>
         /// 所有反射加载方法
         /// </summary>
-        public static Dictionary<MethodInfo, string> AllMethods { get; set; } = new Dictionary<MethodInfo, string>();
+        //public static Dictionary<MethodInfo, string> AllMethods { get; set; } = new Dictionary<MethodInfo, string>();
 
         /// <summary>
         /// KeyWordAttribute 匹配字典
         /// </summary>
         public static Dictionary<MethodInfo, List<Regex>> KeyWordRegexs { get; set; } = new Dictionary<MethodInfo, List<Regex>>();
-
-        /// <summary>
-        /// 接口对应服务字典
-        /// </summary>
-        public static Dictionary<string, object> InterfaceToServicesDic { get; set; } = new Dictionary<string, object>();
 
         /// <summary>
         /// 初始化接口对应服务
@@ -69,19 +64,9 @@ namespace QQ.RoBot
                 if (assembly?.GetCustomAttribute(typeof(KeyWordAttribute)) is not KeyWordAttribute attribute)
                     continue;
                 //所有反射方法 SignIn -> ILianInterface
-                AllMethods.TryAdd(assembly, assembly.DeclaringType.Name);
+                //AllMethods.TryAdd(assembly, assembly.DeclaringType.Name);
                 //正则匹配字典 SignIn -> [(签到)+]  
                 KeyWordRegexs.TryAdd(assembly, attribute.KeyWord.Split(' ').Select(s => new Regex($"({s})+")).ToList());
-            }
-
-            //接口 -> 实现
-            //机器人自身接口剔除
-            assemblyType.RemoveAll(w => w.Name.Contains("IRobotInterface"));
-            foreach (var method in assemblyType)
-            {
-                //转换为接口对应实现
-                var service = method.Name.Replace("I", "").Replace("Interface", "Service");
-                InterfaceToServicesDic.TryAdd(method.Name, service);
             }
         }
 

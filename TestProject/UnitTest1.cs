@@ -125,7 +125,7 @@ namespace TestProject
                 {
                     var t = item.ParameterType.Name;
                 }
-                GlobalSettings.AllMethods.TryAdd(assembly2.DeclaringType.Name, assembly2);
+                //GlobalSettings.AllMethods.TryAdd(assembly2.DeclaringType.Name, assembly2);
             }
             var regex = new Regex(@"^[]");
             //var methodInfo = GlobalSettings.Methods.FirstOrDefault(f => Regex.IsMatch("Ç©µ½",f.Key.KeyWord));

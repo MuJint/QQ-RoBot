@@ -4,6 +4,7 @@ using Robot.Common.Interface;
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
 using Sora.Entities;
+using Sora.Entities.Info;
 using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
@@ -29,6 +30,7 @@ namespace QQ.RoBot
         readonly IHsoInterface _hsoInterface;
         readonly ILogsInterface _logs;
         readonly UserConfig userConfig = GlobalSettings.AppSetting.UserConfig;
+        readonly IServiceProvider _serviceProvider;
 
         public RobotService(ISignUserServices userServices,
             ISignLogsServices logsServices,
@@ -36,7 +38,8 @@ namespace QQ.RoBot
             ISpeakerServices speakerServices,
             ILianInterface lianService,
             IHsoInterface hsoInterface,
-            ILogsInterface logs)
+            ILogsInterface logs,
+            IServiceProvider serviceProvider)
         {
             _userServices = userServices;
             _logsServices = logsServices;
@@ -45,6 +48,7 @@ namespace QQ.RoBot
             _lianService = lianService;
             _hsoInterface = hsoInterface;
             _logs = logs;
+            _serviceProvider = serviceProvider;
         }
 
 
@@ -63,7 +67,7 @@ namespace QQ.RoBot
                 switch (eventArgs.SubType)
                 {
                     case Sora.Enumeration.EventParamsType.MemberChangeType.Leave:
-                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]退群了。江湖路远，有缘再会");
+                        await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]血肉苦弱，机械飞升。");
                         break;
                     case Sora.Enumeration.EventParamsType.MemberChangeType.Kick:
                         await eventArgs.SourceGroup.SendGroupMessage($"[{userInfo.userInfo.Nick}]被[{@operator.userInfo.Nick}]强行请离了。江湖路远，有缘再会");
@@ -124,7 +128,7 @@ namespace QQ.RoBot
                             ?.FirstOrDefault();
             if (methodInfo.HasValue is false || methodInfo.Value.Key is null)
                 return;
-            _logs.Info($"{methodInfo.GetType()}", $"反射已匹配到方法【{methodInfo.Value.Key}】");
+            _logs.Info($"{methodInfo.Value.Key.GetType()}", $"反射已匹配到方法【{methodInfo.Value.Key}】");
 
             //获取函数的Attribute
             var methodInfoAttribute = methodInfo.Value.Key.GetCustomAttribute(typeof(KeyWordAttribute));
@@ -132,16 +136,14 @@ namespace QQ.RoBot
             {
                 if(keyWordAttribute.FullMatch)
                 {
-                    var keyWords = keyWordAttribute.KeyWord.Split(" ").ToList();
+                    var keyWords = keyWordAttribute.KeyWord.Split(' ').ToList();
                     if (keyWords.Contains(groupMessage.Message.RawText) is false)
                         return;
                 }
             }
 
-            //根据接口获取对应的注入服务
-            var dicService = GlobalSettings.InterfaceToServicesDic.FirstOrDefault(w => w.Key == GlobalSettings.AllMethods.FirstOrDefault(f => f.Key == methodInfo.Value.Key).Value);
-            //匹配服务
-            var service = GetInvokeService(dicService.Value);
+            //获取服务
+            var service = _serviceProvider.GetService(methodInfo.Value.Key.DeclaringType);
             var methodParameters = new List<object>() { };
             //组装函数的入参
             foreach (var parameter in methodInfo.Value.Key.GetParameters())
@@ -335,6 +337,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         private async ValueTask TriggerCute(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             if (new Random().Next(1, 100) is 66)
             {
                 var user = _userServices.QueryById(q => q.QNumber == eventArgs.SenderInfo.UserId.ObjToString());
@@ -344,7 +347,7 @@ namespace QQ.RoBot
                     var msg = new MessageBody()
                     {
                         SoraSegment.At(eventArgs.SenderInfo.UserId),
-                        SoraSegment.Text($"未找到{userConfig.ConfigModel.NickName}任何记录，奖励下发失败~"),
+                        SoraSegment.Text($"未找到{memberInfo.Nick}任何记录，奖励下发失败~"),
                     };
                     await eventArgs.Reply(msg);
                 }
@@ -363,7 +366,7 @@ namespace QQ.RoBot
                     var msg = new MessageBody()
                     {
                         SoraSegment.At(eventArgs.SenderInfo.UserId),
-                        $"看{userConfig.ConfigModel.NickName}这么可爱就奖励{userConfig.ConfigModel.NickName}{rank}分~",
+                        $"看{memberInfo.Nick}这么可爱就奖励{memberInfo.Nick}{rank}分~",
                     };
                     await eventArgs.Reply(msg);
                 }
@@ -378,6 +381,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         private async ValueTask TriggerSpecial(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             var deTrigger = new Random().Next(1, 5000) is 666;
             var trigger = new Random().Next(1, 5000) is 444;
             var rank = new Random().Next(7, 12);
@@ -392,12 +396,12 @@ namespace QQ.RoBot
                     _userServices.Update(item);
                 });
                 strSb.Append($"[江湖传言]\r\n");
-                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}[{eventArgs.SenderInfo.Nick}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
-                strSb.Append($"就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分");
+                strSb.Append($"恭喜{memberInfo.Nick}[{eventArgs.SenderInfo.Nick}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
+                strSb.Append($"就你有手？奖励所有{memberInfo.Nick}负{rank}分");
                 _logsServices.Insert(new SignLogs()
                 {
                     CmdType = CmdType.SpecialPointsDeducted,
-                    LogContent = $"[{eventArgs.SenderInfo.Nick}]就你有手？奖励所有{userConfig.ConfigModel.NickName}负{rank}分",
+                    LogContent = $"[{eventArgs.SenderInfo.Nick}]就你有手？奖励所有{memberInfo.Nick}负{rank}分",
                     Uid = eventArgs.LoginUid.ObjToString(),
                     ModifyRank = rank
                 });
@@ -412,12 +416,12 @@ namespace QQ.RoBot
                     _userServices.Update(item);
                 });
                 strSb.Append($"[江湖传言]\r\n");
-                strSb.Append($"恭喜{userConfig.ConfigModel.NickName}[{userConfig.ConfigModel.BotName}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
-                strSb.Append($"普天同庆！！！奖励所有{userConfig.ConfigModel.NickName}{rank}分");
+                strSb.Append($"恭喜{memberInfo.Nick}[{userConfig.ConfigModel.BotName}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
+                strSb.Append($"普天同庆！！！奖励所有{memberInfo.Nick}{rank}分");
                 _logsServices.Insert(new SignLogs()
                 {
                     CmdType = CmdType.SpecialBonusPoints,
-                    LogContent = $"普天同庆！！！奖励所有{userConfig.ConfigModel.NickName}{rank}分",
+                    LogContent = $"普天同庆！！！奖励所有{memberInfo.Nick}{rank}分",
                     Uid = eventArgs.LoginUid.ObjToString(),
                     ModifyRank = rank
                 });
@@ -469,16 +473,11 @@ namespace QQ.RoBot
         }
 
         /// <summary>
-        /// 获取服务
+        /// 获取群成员信息
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="eventArgs"></param>
         /// <returns></returns>
-        private object GetInvokeService(object obj) => obj switch
-        {
-            "LianService" => _lianService,
-            "HsoService" => _hsoInterface,
-            _ => _lianService,
-        };
+        private async Task<GroupMemberInfo> GetMemberInfo(GroupMessageEventArgs eventArgs) => (await eventArgs.SourceGroup.SoraApi.GetGroupMemberInfo(eventArgs.SourceGroup.Id, eventArgs.SenderInfo.UserId)).memberInfo;
         #endregion
 
         #region Identity

@@ -5,6 +5,7 @@ using Robot.Common;
 using Robot.Framework.Interface;
 using Robot.Framework.Models;
 using Sora.Entities;
+using Sora.Entities.Info;
 using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
@@ -53,6 +54,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask SignIn(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             var isSign = RequestUsers(eventArgs.SenderInfo.UserId);
             int randRank = new Random().Next(2, 5);
             if (isSign != null)
@@ -63,10 +65,10 @@ namespace QQ.RoBot
                     if (TriggerPunish)
                     {
                         await eventArgs.SourceGroup.EnableGroupMemberMute(eventArgs.Sender.Id, 3 * 60);
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}不要重复签到yo~惊不惊喜，意不意外？", true);
+                        await SendMessageGroup(eventArgs, $"{memberInfo.Nick}不要重复签到yo~惊不惊喜，意不意外？", true);
                     }
                     else
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}不要重复签到鸭，不然{userConfig.ConfigModel.BotName}会打飞你的头嗷~", true);
+                        await SendMessageGroup(eventArgs, $"{memberInfo.Nick}不要重复签到鸭，不然{userConfig.ConfigModel.BotName}会打飞你的头嗷~", true);
                 }
                 else
                 {
@@ -81,7 +83,7 @@ namespace QQ.RoBot
                         Uid = eventArgs.SenderInfo.UserId.ObjToString(),
                         ModifyRank = randRank
                     });
-                    await SendMessageGroup(eventArgs, $"恭喜{userConfig.ConfigModel.NickName}签到成功，奖励{randRank}分{userConfig.ConfigModel.Tail}", true);
+                    await SendMessageGroup(eventArgs, $"恭喜{memberInfo.Nick}签到成功，奖励{randRank}分{userConfig.ConfigModel.Tail}", true);
                 }
             }
             else
@@ -100,7 +102,7 @@ namespace QQ.RoBot
                     Uid = eventArgs.SenderInfo.UserId.ObjToString(),
                     ModifyRank = randRank
                 });
-                await SendMessageGroup(eventArgs, $"恭喜{userConfig.ConfigModel.NickName}签到成功，奖励{randRank}分{userConfig.ConfigModel.Tail}", true);
+                await SendMessageGroup(eventArgs, $"恭喜{memberInfo.Nick}签到成功，奖励{randRank}分{userConfig.ConfigModel.Tail}", true);
             }
         }
         #endregion
@@ -113,9 +115,10 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask SearchRank(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             var isSign = _signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
             if (isSign != null)
-                await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}当前有{isSign.Rank}分，继续努力吧~", true);
+                await SendMessageGroup(eventArgs, $"{memberInfo.Nick}当前有{isSign.Rank}分，继续努力吧~", true);
             else
                 await SendMessageGroup(eventArgs, $"没有找到任何记录噢~请先对{userConfig.ConfigModel.BotName}说签到吧", true);
         }
@@ -129,6 +132,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Fenlai(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             int randRank = new Random().Next(2, 5);
             if (new Random().Next(1, 100) is 6)
             {
@@ -147,7 +151,7 @@ namespace QQ.RoBot
                         ModifyRank = randRank,
                         Uid = eventArgs.Sender.Id.ObjToString()
                     });
-                    await SendMessageGroup(eventArgs, $"看{userConfig.ConfigModel.NickName}这么可爱，就送{userConfig.ConfigModel.NickName}{randRank}分吧~", true);
+                    await SendMessageGroup(eventArgs, $"看{memberInfo.Nick}这么可爱，就送{memberInfo.Nick}{randRank}分吧~", true);
                 }
             }
             else
@@ -303,16 +307,17 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Morning(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             if (DateTime.Now.Hour > 7 && DateTime.Now.Hour < 9)
             {
                 var mornLogs = _signLogsServices.Query(t => t.LogContent.Contains("[早安]") && t.LastModifyTime.Day == DateTime.Now.Day && t.LastModifyTime.Year == DateTime.Now.Year && t.LastModifyTime.Month == DateTime.Now.Month) ?? new List<SignLogs>();
                 if (mornLogs.Count >= 5)
-                    await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}早上好啊~{userConfig.ConfigModel.Tail}", true);
+                    await SendMessageGroup(eventArgs, $"{memberInfo.Nick}早上好啊~{userConfig.ConfigModel.Tail}", true);
                 else
                 {
                     if (mornLogs.Any(t => t.Uid.Equals(eventArgs.Sender.Id.ObjToString())))
                     {
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}早起的虫儿被鸟吃~", true);
+                        await SendMessageGroup(eventArgs, $"{memberInfo.Nick}早起的虫儿被鸟吃~", true);
                         return;
                     }
                     else
@@ -328,7 +333,7 @@ namespace QQ.RoBot
                             ModifyRank = 2,
                             Uid = eventArgs.Sender.Id.ObjToString()
                         });
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}是第{mornLogs.Count + 1}个说早安的人噢~爱你，奖励2分", true);
+                        await SendMessageGroup(eventArgs, $"{memberInfo.Nick}是第{mornLogs.Count + 1}个说早安的人噢~爱你，奖励2分", true);
                     }
                 }
             }
@@ -343,16 +348,17 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Night(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             if (DateTime.Now.Hour > 19 && DateTime.Now.Hour < 24)
             {
                 var nightLogs = _signLogsServices.Query(t => t.LogContent.Contains("[晚安]") && t.LastModifyTime.Day == DateTime.Now.Day && t.LastModifyTime.Year == DateTime.Now.Year && t.LastModifyTime.Month == DateTime.Now.Month) ?? new List<SignLogs>();
                 if (nightLogs.Count >= 5)
-                    await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}晚安~美梦美梦zzzzzzzzz", true);
+                    await SendMessageGroup(eventArgs, $"{memberInfo.Nick}晚安~美梦美梦zzzzzzzzz", true);
                 else
                 {
                     if (nightLogs.Any(t => t.Uid.Equals(eventArgs.Sender.Id.ObjToString())))
                     {
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}不是已经睡了嘛？？？？你有问题", true);
+                        await SendMessageGroup(eventArgs, $"{memberInfo.Nick}不是已经睡了嘛？？？？你有问题", true);
                         return;
                     }
                     else
@@ -368,7 +374,7 @@ namespace QQ.RoBot
                             ModifyRank = 2,
                             Uid = eventArgs.Sender.Id.ObjToString()
                         });
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}是第{nightLogs.Count + 1}个早睡的人噢~美梦美梦，奖励2分", true);
+                        await SendMessageGroup(eventArgs, $"{memberInfo.Nick}是第{nightLogs.Count + 1}个早睡的人噢~美梦美梦，奖励2分", true);
                     }
                 }
             }
@@ -384,6 +390,7 @@ namespace QQ.RoBot
         public async ValueTask BonusPoint(GroupMessageEventArgs eventArgs)
         {
             //加分[CQ:at,qq=503745803] 5
+            var memberInfo = await GetMemberInfo(eventArgs);
             try
             {
                 if (eventArgs.SenderInfo.Role == Sora.Enumeration.EventParamsType.MemberRoleType.Owner || eventArgs.SenderInfo.Role == Sora.Enumeration.EventParamsType.MemberRoleType.Admin || eventArgs.Sender.Id == 1069430666)
@@ -405,7 +412,7 @@ namespace QQ.RoBot
                             Uid = obj.ObjToString(),
                             LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]加分{rank}"
                         });
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.BotName}已经成功为{userConfig.ConfigModel.NickName}[{objUser.NickName}]加分", true);
+                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.BotName}已经成功为{memberInfo.Nick}[{objUser.NickName}]加分", true);
                     }
                     else
                         await SendMessageGroup(eventArgs, $"[{userConfig.ConfigModel.BotName}]操作失败，检索不到该成员或分数错误", true);
@@ -428,6 +435,7 @@ namespace QQ.RoBot
         public async ValueTask DeductPoint(GroupMessageEventArgs eventArgs)
         {
             //扣分[CQ:at,qq=503745803] 5
+            var memberInfo = await GetMemberInfo(eventArgs);
             try
             {
                 if (eventArgs.SenderInfo.Role == Sora.Enumeration.EventParamsType.MemberRoleType.Owner || eventArgs.SenderInfo.Role == Sora.Enumeration.EventParamsType.MemberRoleType.Admin || eventArgs.Sender.Id == 1069430666)
@@ -449,7 +457,7 @@ namespace QQ.RoBot
                             Uid = obj.ObjToString(),
                             LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]扣分{rank}"
                         });
-                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.BotName}已经成功扣除{userConfig.ConfigModel.NickName}[{objUser.NickName}]{rank}分", true);
+                        await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.BotName}已经成功扣除{memberInfo.Nick}[{objUser.NickName}]{rank}分", true);
                     }
                     else
                         await SendMessageGroup(eventArgs, $"[{userConfig.ConfigModel.BotName}]操作失败，检索不到该成员或分数错误", true);
@@ -586,6 +594,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Raffle(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             if (userConfig.ModuleSwitch.Raffle is not true)
             {
                 await SendMessageGroup(eventArgs, $"管理员已关闭[抽奖]功能", true);
@@ -605,7 +614,7 @@ namespace QQ.RoBot
                     Uid = eventArgs.Sender.Id.ObjToString(),
                     LogContent = $"管理员[{eventArgs.SenderInfo.Nick}]加分{rank}"
                 });
-                await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}大概就是上天的亲儿子吧，奖励{rank}分", true);
+                await SendMessageGroup(eventArgs, $"{memberInfo.Nick}大概就是上天的亲儿子吧，奖励{rank}分", true);
             }
             else
             {
@@ -628,6 +637,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Rob(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             //打劫[CQ:at,qq=503745803]
             try
             {
@@ -665,7 +675,7 @@ namespace QQ.RoBot
                                 Uid = robUser.QNumber,
                                 LogContent = $"[抢劫]指令丢失{rank}分"
                             });
-                            await SendMessageGroup(eventArgs, $"路遇[{deRobUser.NickName}]神功初成，{userConfig.ConfigModel.NickName}被一顿暴揍，丢失{rank}分", true);
+                            await SendMessageGroup(eventArgs, $"路遇[{deRobUser.NickName}]神功初成，{memberInfo.Nick}被一顿暴揍，丢失{rank}分", true);
                             break;
                         case 1:
                             robUser.Rank += rank;
@@ -686,16 +696,16 @@ namespace QQ.RoBot
                                 Uid = deRobUser.QNumber,
                                 LogContent = $"[抢劫]指令丢失{rank}分"
                             });
-                            await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}一顿王八拳之下[{deRobUser.NickName}]抱头求饶，成功抢走{rank}分", true);
+                            await SendMessageGroup(eventArgs, $"{memberInfo.Nick}一顿王八拳之下[{deRobUser.NickName}]抱头求饶，成功抢走{rank}分", true);
                             break;
                         case 2:
                             robUser.Rank -= rank;
                             RequestSignAsync(robUser, true);
                             await eventArgs.SourceGroup.EnableGroupMemberMute(eventArgs.Sender.Id, 5 * 60);
-                            await SendMessageGroup(eventArgs, $"煌煌天威，视我[追命]为何物？\r\n{userConfig.ConfigModel.NickName}锒铛入狱", true);
+                            await SendMessageGroup(eventArgs, $"煌煌天威，视我[追命]为何物？\r\n{memberInfo.Nick}锒铛入狱", true);
                             break;
                         default:
-                            await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}刚出门就踩到了狗屎，溜了溜了", true);
+                            await SendMessageGroup(eventArgs, $"{memberInfo.Nick}刚出门就踩到了狗屎，溜了溜了", true);
                             break;
                     }
                 }
@@ -718,6 +728,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Rescur(GroupMessageEventArgs eventArgs)
         {
+            var memberInfo = await GetMemberInfo(eventArgs);
             //救援[CQ:at,qq=503745803]
             try
             {
@@ -735,11 +746,11 @@ namespace QQ.RoBot
                     {
                         case 1:
                             await eventArgs.SourceGroup.DisableGroupMemberMute(objQ);
-                            await SendMessageGroup(eventArgs, $"{userConfig.ConfigModel.NickName}艺高人胆大，成功救出好友", true);
+                            await SendMessageGroup(eventArgs, $"{memberInfo.Nick}艺高人胆大，成功救出好友", true);
                             break;
                         case 2:
                             await eventArgs.SourceGroup.EnableGroupMemberMute(eventArgs.SourceGroup.Id, 5 * 60);
-                            await SendMessageGroup(eventArgs, $"这天太冷了，{userConfig.ConfigModel.NickName}一声哈欠惊动捕快[冷血]，锒铛入狱", true);
+                            await SendMessageGroup(eventArgs, $"这天太冷了，{memberInfo.Nick}一声哈欠惊动捕快[冷血]，锒铛入狱", true);
                             break;
                         default:
                             await SendMessageGroup(eventArgs, $"大冬天的，床上它不香吗？睡觉睡觉", true);
@@ -1012,6 +1023,12 @@ namespace QQ.RoBot
         /// <returns></returns>
         private List<SignUser> RequestListUsers() => _signUserServices.Query(t => t.Status == Status.Valid);
 
+        /// <summary>
+        /// 获取群成员信息
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <returns></returns>
+        private async Task<GroupMemberInfo> GetMemberInfo(GroupMessageEventArgs eventArgs) => (await eventArgs.SourceGroup.SoraApi.GetGroupMemberInfo(eventArgs.SourceGroup.Id, eventArgs.SenderInfo.UserId)).memberInfo;
         #endregion
     }
 }
