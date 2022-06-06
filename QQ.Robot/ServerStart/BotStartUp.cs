@@ -18,15 +18,25 @@ namespace QQ.RoBot
                 var config = builder.Configuration;
                 config.Bind(GlobalSettings.AppSetting);
                 var s = GlobalSettings.AppSetting;
+
+                //日志操作
                 services.AddScoped<ILogsInterface, LogsHelper>();
+
+                //数据库操作
                 services.AddScoped<ILianChatServices, LianChatServices>();
                 services.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>();
                 services.AddScoped<ISignLogsServices, SignLogsServices>();
                 services.AddScoped<ISignUserServices, SignUserServices>();
                 services.AddScoped<ISpeakerServices, SpeakerServices>();
+                services.AddScoped<IUndercoverServices, UndercoverServices>();
+                services.AddScoped<IUndercoverLexiconServices, UndercoverLexiconServices>();
+                services.AddScoped<IUndercoverUserServices, UndercoverUserServices>();
+
+                //功能实现
                 services.AddScoped<IRobotInterface, RobotService>();
                 services.AddScoped<ILianInterface, LianService>();
                 services.AddScoped<IHsoInterface, HsoService>();
+                services.AddScoped<IUndercoverInterface, UndercoverService>();
                 services.AddHostedService<IWorker>();
             })
             .ConfigureHostConfiguration(builder => 

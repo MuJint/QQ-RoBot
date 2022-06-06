@@ -19,7 +19,7 @@ namespace QQ.RoBot
         /// <summary>
         /// 获取所有复读机的信息
         /// </summary>
-        public static Dictionary<long, List<string>> GetDic
+        public static Dictionary<long, List<string>> ReReadDic
         {
             get
             {
@@ -34,6 +34,11 @@ namespace QQ.RoBot
         /// AI接口调用次数限制
         /// </summary>
         public static (DateTime, int) AIRequest { get; set; } = (DateTime.Now, 0);
+
+        /// <summary>
+        /// 谁是卧底投票结果
+        /// </summary>
+        public static List<TpResults> TpResult = new();
 
         /// <summary>
         /// 所有反射加载方法
@@ -68,6 +73,20 @@ namespace QQ.RoBot
                 //正则匹配字典 SignIn -> [(签到)+]  
                 KeyWordRegexs.TryAdd(assembly, attribute.KeyWord.Split(' ').Select(s => new Regex($"({s})+")).ToList());
             }
+        }
+
+        public class TpResults
+        {
+            public int RoomId { get; set; }
+            /// <summary>
+            /// 投票人
+            /// </summary>
+            public long TpUid { get; set; }
+            /// <summary>
+            /// 被票对象
+            /// </summary>
+            public long Uid { get; set; }
+            public int Num { get; set; } = 1;
         }
 
         /// <summary>

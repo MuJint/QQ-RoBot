@@ -40,6 +40,18 @@ namespace TestProject
         }
 
         [TestMethod]
+        public void TestInsert()
+        {
+            signUserServices.InsertR(new SignUser()
+            {
+                GroupId = "1",
+                NickName = "2",
+                QNumber = "2",
+                Rank = 1,
+            });
+        }
+
+        [TestMethod]
         public void UTCounterByJieba()
         {
             var s = "在数学和计算机科学之中，算法（algorithm）为任何良定义的具体计算步骤的一个序列，常用于计算、数据处理和自动推理。精确而言，算法是一个表示为有限长列表的有效方法。算法应包含清晰定义的指令用于计算函数。";
@@ -60,7 +72,6 @@ namespace TestProject
             //var images = WordCloudGen.Draw(@"C:\Users\v-jinlv\Desktop\background.jpg", wordKeys, ints);
             images.Save($"D:\\{Guid.NewGuid()}.png", ImageFormat.Png);
         }
-
 
         [TestMethod]
         public void UTGroupWC()

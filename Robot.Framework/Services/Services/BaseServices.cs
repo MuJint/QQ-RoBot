@@ -24,6 +24,11 @@ namespace Robot.Framework.Services
             return _baseRepository.Insert(entity);
         }
 
+        public int InsertR(TEntity entity)
+        {
+            return _baseRepository.InsertR(entity);
+        }
+
         public List<TEntity> Query(Expression<Func<TEntity, bool>> expression)
         {
             return _baseRepository.Query(expression);

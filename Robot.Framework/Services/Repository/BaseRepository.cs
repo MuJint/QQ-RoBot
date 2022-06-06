@@ -56,5 +56,11 @@ namespace Robot.Framework.Interface
             var table = _db.GetCollection<TEntity>();
             return table.Find(expression).ToList();
         }
+
+        public int InsertR(TEntity entity)
+        {
+            var table = _db.GetCollection<TEntity>();
+            return table.Insert(entity);
+        }
     }
 }

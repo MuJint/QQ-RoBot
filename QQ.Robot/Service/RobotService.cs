@@ -29,6 +29,7 @@ namespace QQ.RoBot
         readonly ILianInterface _lianService;
         readonly IHsoInterface _hsoInterface;
         readonly ILogsInterface _logs;
+        readonly IUndercoverInterface _undercoverInterface;
         readonly UserConfig userConfig = GlobalSettings.AppSetting.UserConfig;
         readonly IServiceProvider _serviceProvider;
 
@@ -39,7 +40,8 @@ namespace QQ.RoBot
             ILianInterface lianService,
             IHsoInterface hsoInterface,
             ILogsInterface logs,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IUndercoverInterface undercoverInterface)
         {
             _userServices = userServices;
             _logsServices = logsServices;
@@ -49,6 +51,7 @@ namespace QQ.RoBot
             _hsoInterface = hsoInterface;
             _logs = logs;
             _serviceProvider = serviceProvider;
+            _undercoverInterface = undercoverInterface;
         }
 
 
@@ -123,30 +126,44 @@ namespace QQ.RoBot
             #region 反射利用特性分发
 
             //从内存中拉取符合匹配函数
-            var methodInfo = GlobalSettings.KeyWordRegexs
-                            .Where(w => w.Value.Any(regex => regex.IsMatch(groupMessage.Message.RawText)))
-                            ?.FirstOrDefault();
-            if (methodInfo.HasValue is false || methodInfo.Value.Key is null)
+            var methodInfoList = GlobalSettings.KeyWordRegexs
+                            .Where(w => w.Value.Any(regex => regex.IsMatch(groupMessage.Message.RawText))).ToList();
+            //匹配到多种结果，优先返回近似较高的一类，否则返回第一个匹配值
+            var methodInfo = methodInfoList.FirstOrDefault();
+            if (methodInfoList.Count > 1)
+            {
+                try
+                {
+                    foreach (var keyValue in methodInfoList)
+                    {
+                        var wordAttribute = keyValue.Key.GetCustomAttribute(typeof(KeyWordAttribute)) as KeyWordAttribute;
+                        if (groupMessage.Message.RawText.StartsWith(wordAttribute.KeyWord))
+                        {
+                            methodInfo = keyValue;
+                            break;
+                        }
+                    }
+                }
+                catch { }
+            }
+            if (methodInfo.Key is null || methodInfo.Value is null)
                 return;
-            _logs.Info($"{methodInfo.Value.Key.GetType()}", $"反射已匹配到方法【{methodInfo.Value.Key}】");
 
             //获取函数的Attribute
-            var methodInfoAttribute = methodInfo.Value.Key.GetCustomAttribute(typeof(KeyWordAttribute));
-            if (methodInfoAttribute is KeyWordAttribute keyWordAttribute)
+            var keyWordAttribute = methodInfo.Key.GetCustomAttribute(typeof(KeyWordAttribute)) as KeyWordAttribute;
+            if (keyWordAttribute.FullMatch)
             {
-                if(keyWordAttribute.FullMatch)
-                {
-                    var keyWords = keyWordAttribute.KeyWord.Split(' ').ToList();
-                    if (keyWords.Contains(groupMessage.Message.RawText) is false)
-                        return;
-                }
+                var keyWords = keyWordAttribute.KeyWord.Split(' ').ToList();
+                if (keyWords.Contains(groupMessage.Message.RawText) is false)
+                    return;
             }
 
+            _logs.Info($"{methodInfo.Key.GetType()}", $"反射已匹配到方法【{keyWordAttribute.KeyWord}】");
             //获取服务
-            var service = _serviceProvider.GetService(methodInfo.Value.Key.DeclaringType);
+            var service = _serviceProvider.GetService(methodInfo.Key.DeclaringType);
             var methodParameters = new List<object>() { };
             //组装函数的入参
-            foreach (var parameter in methodInfo.Value.Key.GetParameters())
+            foreach (var parameter in methodInfo.Key.GetParameters())
             {
                 if (parameter.ParameterType.Name == nameof(Object))
                     methodParameters.Add(sender);
@@ -154,7 +171,7 @@ namespace QQ.RoBot
                     methodParameters.Add(groupMessage);
             }
             //调用方法
-            methodInfo.Value.Key.Invoke(service, methodParameters.ToArray());
+            methodInfo.Key.Invoke(service, methodParameters.ToArray());
             #endregion
         }
 
@@ -310,7 +327,7 @@ namespace QQ.RoBot
                 await eventArgs.Repeat();
             else
             {
-                var dicCache = GlobalSettings.GetDic;
+                var dicCache = GlobalSettings.ReReadDic;
                 if (dicCache.ContainsKey(eventArgs.SourceGroup.Id))
                 {
                     dicCache.TryGetValue(eventArgs.SourceGroup.Id, out var dicResult);

@@ -12,6 +12,7 @@ namespace Robot.Framework.Interface
         bool DeleteById(object objId);
         bool DeleteById(Expression<Func<TEntity, bool>> expression);
         bool Insert(TEntity entity);
+        int InsertR(TEntity entity);
         bool Update(TEntity entity);
     }
 }
