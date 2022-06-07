@@ -3,13 +3,14 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Robot.Common.Interface;
+using System.IO;
 
 namespace Robot.Common.Helper
 {
     /// <summary>
     /// log services
     /// </summary>
-    public class LogsHelper: ILogsInterface
+    public class LogsHelper : ILogsInterface
     {
         #region Property
 
@@ -122,6 +123,7 @@ namespace Robot.Common.Helper
                 Console.WriteLine($"[行号]{lineNumber}");
                 Console.WriteLine($"[路径]{filePath}\r\n");
                 ChangeConsoleColor(ConsoleColor.White, _consoleColor);
+                WriteLogToFile(ex, logs, logLevel, memberName, lineNumber, filePath);
             }
         }
 
@@ -134,7 +136,7 @@ namespace Robot.Common.Helper
         /// <param name="memberName"></param>
         /// <param name="lineNumber"></param>
         /// <param name="filePath"></param>
-        public void Error(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Debug, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
+        public void Error(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Error, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
         {
             if (LogLevel > logLevel) return;
             lock (_logLock)
@@ -149,6 +151,7 @@ namespace Robot.Common.Helper
                 Console.WriteLine($"[行号]{lineNumber}");
                 Console.WriteLine($"[路径]{filePath}\r\n");
                 ChangeConsoleColor(ConsoleColor.White, _consoleColor);
+                WriteLogToFile(ex, logs, logLevel, memberName, lineNumber, filePath);
             }
         }
 
@@ -176,6 +179,7 @@ namespace Robot.Common.Helper
                 Console.WriteLine($"[行号]{lineNumber}");
                 Console.WriteLine($"[路径]{filePath}\r\n");
                 ChangeConsoleColor(ConsoleColor.White, _consoleColor);
+                WriteLogToFile(ex, logs, logLevel, memberName, lineNumber, filePath);
             }
         }
 
@@ -204,10 +208,36 @@ namespace Robot.Common.Helper
         /// </summary>
         /// <param name="fColor"></param>
         /// <param name="bColor"></param>
-        private void ChangeConsoleColor(ConsoleColor fColor, ConsoleColor bColor)
+        private static void ChangeConsoleColor(ConsoleColor fColor, ConsoleColor bColor)
         {
             Console.ForegroundColor = fColor;
             Console.BackgroundColor = bColor;
+        }
+
+        /// <summary>
+        /// 写入log到文件夹
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="logs"></param>
+        /// <param name="logLevel"></param>
+        /// <param name="memberName"></param>
+        /// <param name="lineNumber"></param>
+        /// <param name="filePath"></param>
+        private static void WriteLogToFile(Exception ex, string logs, EnumLogLevel logLevel = EnumLogLevel.Error, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
+        {
+            var logPath = $"{AppDomain.CurrentDomain.BaseDirectory}\\Logs";
+            if (Directory.Exists(logPath) is false)
+                Directory.CreateDirectory(logPath);
+            logPath = Path.Combine(logPath, $"{DateTime.Now:yyyyMMdd}.log");
+            if (File.Exists(logPath) is false)
+            {
+                using var streamLog = new FileStream(logPath, FileMode.CreateNew);
+            }
+            using var stream = new FileStream(logPath, FileMode.Append);
+            var writer = new StreamWriter(stream);
+            writer.Write($"时间:[{DateTime.Now}]\t\n日志等级:[{logLevel}]\t\n异常:{ex}\t\n日志:{logs}\t\n调用方法:[{memberName}]\t\n行号:[{lineNumber}]\t\n文件路径:[{filePath}]\r\r");
+            writer.Flush();
+            writer.Close();
         }
         #endregion
     }

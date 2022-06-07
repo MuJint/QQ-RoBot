@@ -103,9 +103,9 @@ namespace QQ.RoBot
                 return;
 
             await IsAI(groupMessage);
-            await Reread(groupMessage);
-            await TriggerCute(groupMessage);
-            await TriggerSpecial(groupMessage);
+            //await Reread(groupMessage);
+            //await TriggerCute(groupMessage);
+            //await TriggerSpecial(groupMessage);
             await SpeakerStorage(groupMessage);
 
             #region 正则匹配关键字Switch分发
@@ -158,7 +158,7 @@ namespace QQ.RoBot
                     return;
             }
 
-            _logs.Info($"{methodInfo.Key.GetType()}", $"反射已匹配到方法【{keyWordAttribute.KeyWord}】");
+            _logs.Info($"{methodInfo.Key.DeclaringType.FullName}", $"反射已匹配到方法【{keyWordAttribute.KeyWord}】");
             //获取服务
             var service = _serviceProvider.GetService(methodInfo.Key.DeclaringType);
             var methodParameters = new List<object>() { };

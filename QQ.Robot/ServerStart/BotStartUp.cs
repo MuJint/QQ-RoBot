@@ -5,6 +5,7 @@ using Robot.Common.Helper;
 using Robot.Common.Interface;
 using Robot.Framework.Interface;
 using Robot.Framework.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace QQ.RoBot
@@ -13,38 +14,54 @@ namespace QQ.RoBot
     {
         static async Task Main()
         {
-            Host.CreateDefaultBuilder().ConfigureServices((builder, services) =>
+            try
             {
-                var config = builder.Configuration;
-                config.Bind(GlobalSettings.AppSetting);
-                var s = GlobalSettings.AppSetting;
+                Host.CreateDefaultBuilder()
+                    .ConfigureHostConfiguration(builder =>
+                    {
+                        builder.AddJsonFile("appsettings.json");
+                    })
+                    .ConfigureServices((builder, services) =>
+                    {
+                        var config = builder.Configuration;
+                        config.Bind(GlobalSettings.AppSetting);
+                        var s = GlobalSettings.AppSetting;
 
-                //日志操作
-                services.AddScoped<ILogsInterface, LogsHelper>();
+                        //日志操作
+                        services.AddScoped<ILogsInterface, LogsHelper>();
 
-                //数据库操作
-                services.AddScoped<ILianChatServices, LianChatServices>();
-                services.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>();
-                services.AddScoped<ISignLogsServices, SignLogsServices>();
-                services.AddScoped<ISignUserServices, SignUserServices>();
-                services.AddScoped<ISpeakerServices, SpeakerServices>();
-                services.AddScoped<IUndercoverServices, UndercoverServices>();
-                services.AddScoped<IUndercoverLexiconServices, UndercoverLexiconServices>();
-                services.AddScoped<IUndercoverUserServices, UndercoverUserServices>();
+                        //数据库操作
+                        services.AddScoped<ILianChatServices, LianChatServices>();
+                        services.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>();
+                        services.AddScoped<ISignLogsServices, SignLogsServices>();
+                        services.AddScoped<ISignUserServices, SignUserServices>();
+                        services.AddScoped<ISpeakerServices, SpeakerServices>();
+                        services.AddScoped<IUndercoverServices, UndercoverServices>();
+                        services.AddScoped<IUndercoverLexiconServices, UndercoverLexiconServices>();
+                        services.AddScoped<IUndercoverUserServices, UndercoverUserServices>();
 
-                //功能实现
-                services.AddScoped<IRobotInterface, RobotService>();
-                services.AddScoped<ILianInterface, LianService>();
-                services.AddScoped<IHsoInterface, HsoService>();
-                services.AddScoped<IUndercoverInterface, UndercoverService>();
-                services.AddHostedService<IWorker>();
-            })
-            .ConfigureHostConfiguration(builder => 
+                        //功能实现
+                        services.AddScoped<IRobotInterface, RobotService>();
+                        services.AddScoped<ILianInterface, LianService>();
+                        services.AddScoped<IHsoInterface, HsoService>();
+                        services.AddScoped<IUndercoverInterface, UndercoverService>();
+                        services.AddHostedService<IWorker>();
+
+                    })
+                    .ConfigureAppConfiguration((builder, app) =>
+                    {
+                    })
+                    .ConfigureLogging((builder, logging) =>
+                    {
+                    })
+                .UseConsoleLifetime()
+                .Build()
+                .Run();
+            }
+            catch (Exception ex)
             {
-                builder.AddJsonFile("appsettings.json");
-            })
-            .Build()
-            .Run();
+                new LogsHelper().Error(ex, "程序崩溃");
+            }
 
             await Task.Delay(1);
         }

@@ -15,16 +15,17 @@ namespace QQ.RoBot
     /// <summary>
     /// 工作类
     /// </summary>
-    public class IWorker : IHostedService
+    public class IWorker : IHostedService, IDisposable
     {
-        private readonly ILogsInterface _logs;
-        private readonly IRobotInterface _robot;
-        private readonly IHostLifetime _lifetime;
-        private readonly IConfiguration _configuration;
+        readonly ILogsInterface _logs;
+        readonly IRobotInterface _robot;
+        readonly IHostLifetime _lifetime;
+        readonly IConfiguration _configuration;
+        private bool disposedValue;
 
-        public IWorker(IHostLifetime lifetime, 
-            ILogsInterface logs, 
-            IRobotInterface robot, 
+        public IWorker(IHostLifetime lifetime,
+            ILogsInterface logs,
+            IRobotInterface robot,
             IConfiguration configuration)
         {
             _lifetime = lifetime;
@@ -35,14 +36,14 @@ namespace QQ.RoBot
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _logs.Info("START","start applictin");
-            _logs.Info("START","start websocket");
+            _logs.Warn(new Exception(), "start applictin");
+            _logs.Warn(new Exception(), "start websocket");
             await StartWebSocket();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logs.Info("EXIT", "exit appliction");
+            _logs.Warn(new Exception(), "exit appliction");
             return Task.CompletedTask;
         }
 
@@ -97,6 +98,35 @@ namespace QQ.RoBot
 
             await server.StartService();
             await Task.Delay(-1);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: 释放托管状态(托管对象)
+                }
+
+                // TODO: 释放未托管的资源(未托管的对象)并重写终结器
+                // TODO: 将大型字段设置为 null
+                disposedValue = true;
+            }
+        }
+
+        // TODO: 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+        ~IWorker()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

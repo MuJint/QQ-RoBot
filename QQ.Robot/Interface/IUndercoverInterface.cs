@@ -22,14 +22,14 @@ namespace QQ.RoBot
         /// </summary>
         /// <param name="eventArgs"></param>
         /// <returns></returns>
-        [KeyWord("jrwd")]
+        [KeyWord("加入卧底")]
         ValueTask JoinGame(GroupMessageEventArgs eventArgs);
         /// <summary>
         /// 谁是卧底房间列表
         /// </summary>
         /// <param name="eventArgs"></param>
         /// <returns></returns>
-        [KeyWord("sswd", true)]
+        [KeyWord("房间列表", true)]
         ValueTask RoomList(GroupMessageEventArgs eventArgs);
         /// <summary>
         /// 开始游戏
@@ -50,21 +50,21 @@ namespace QQ.RoBot
         /// </summary>
         /// <param name="eventArgs"></param>
         /// <returns></returns>
-        [KeyWord("jsfj")]
+        [KeyWord("解散房间")]
         ValueTask DissolveRoom(GroupMessageEventArgs eventArgs);
         /// <summary>
         /// 发起投票
         /// </summary>
         /// <param name="eventArgs"></param>
         /// <returns></returns>
-        [KeyWord("fqtp", true)]
+        [KeyWord("发起投票", true)]
         ValueTask Fqtp(GroupMessageEventArgs eventArgs);
         /// <summary>
         /// 投票
         /// </summary>
         /// <param name="eventArgs"></param>
         /// <returns></returns>
-        [KeyWord("tpy")]
+        [KeyWord("卧底投票")]
         ValueTask Vote(GroupMessageEventArgs eventArgs);
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// 谁是卧底玩家
     /// </summary>
-    public class UndercoverUser
+    public class UndercoverUser : BaseModel
     {
         /// <summary>
         /// 房间号

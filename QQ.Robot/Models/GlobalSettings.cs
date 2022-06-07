@@ -77,6 +77,9 @@ namespace QQ.RoBot
 
         public class TpResults
         {
+            /// <summary>
+            /// 房间ID
+            /// </summary>
             public int RoomId { get; set; }
             /// <summary>
             /// 投票人
