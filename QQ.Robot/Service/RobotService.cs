@@ -63,6 +63,8 @@ namespace QQ.RoBot
 
         public async ValueTask GroupMemberChangeParse(object sender, GroupMemberChangeEventArgs eventArgs)
         {
+            if (!IsListenGroup(eventArgs.SourceGroup.Id))
+                return;
             var userInfo = await eventArgs.ChangedUser.GetUserInfo();
             try
             {
@@ -177,6 +179,8 @@ namespace QQ.RoBot
 
         public async ValueTask GroupPokeEventParse(object sender, GroupPokeEventArgs eventArgs)
         {
+            if (!IsListenGroup(eventArgs.SourceGroup.Id))
+                return;
             if (eventArgs.TargetUser == eventArgs.LoginUid &&
                    !CheckInCD.IsInCD(eventArgs.SourceGroup, eventArgs.SendUser))
             {
@@ -194,6 +198,8 @@ namespace QQ.RoBot
 
         public async ValueTask GroupRecallParse(object sender, GroupRecallEventArgs groupMessage)
         {
+            if (!IsListenGroup(groupMessage.SourceGroup.Id))
+                return;
             try
             {
                 var r = new Random().Next(5, 9);
