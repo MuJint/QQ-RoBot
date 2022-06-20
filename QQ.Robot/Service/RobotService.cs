@@ -22,10 +22,10 @@ namespace QQ.RoBot
     /// </summary>
     public class RobotService : IRobotInterface
     {
-        readonly ISignUserServices _userServices;
-        readonly ISignLogsServices _logsServices;
-        readonly ILianKeyWordsServices _keyWordServices;
-        readonly ISpeakerServices _speakerServices;
+        readonly IBaseRepository<SignUser> _userRepository;
+        readonly IBaseRepository<SignLogs> _logsRepository;
+        readonly IBaseRepository<LianKeyWords> _keyWordRepository;
+        readonly IBaseRepository<SpeakerList> _speakerRepository;
         readonly ILianInterface _lianService;
         readonly IHsoInterface _hsoInterface;
         readonly ILogsInterface _logs;
@@ -33,20 +33,20 @@ namespace QQ.RoBot
         readonly UserConfig userConfig = GlobalSettings.AppSetting.UserConfig;
         readonly IServiceProvider _serviceProvider;
 
-        public RobotService(ISignUserServices userServices,
-            ISignLogsServices logsServices,
-            ILianKeyWordsServices keyWordServices,
-            ISpeakerServices speakerServices,
+        public RobotService(IBaseRepository<SignUser> userServices,
+            IBaseRepository<SignLogs> logsServices,
+            IBaseRepository<LianKeyWords> keyWordServices,
+            IBaseRepository<SpeakerList> speakerServices,
             ILianInterface lianService,
             IHsoInterface hsoInterface,
             ILogsInterface logs,
             IServiceProvider serviceProvider,
             IUndercoverInterface undercoverInterface)
         {
-            _userServices = userServices;
-            _logsServices = logsServices;
-            _keyWordServices = keyWordServices;
-            _speakerServices = speakerServices;
+            _userRepository = userServices;
+            _logsRepository = logsServices;
+            _keyWordRepository = keyWordServices;
+            _speakerRepository = speakerServices;
             _lianService = lianService;
             _hsoInterface = hsoInterface;
             _logs = logs;
@@ -205,14 +205,14 @@ namespace QQ.RoBot
                 var r = new Random().Next(5, 9);
                 if (r is 6)
                 {
-                    var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
-                    var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
+                    var msg = _speakerRepository.Query(s => s.MsgId == groupMessage.MessageId).First();
+                    var user = _userRepository.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
                     await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
                 }
                 else if (userConfig.ModuleSwitch.Recal)
                 {
-                    var msg = _speakerServices.Query(s => s.MsgId == groupMessage.MessageId).First();
-                    var user = _userServices.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
+                    var msg = _speakerRepository.Query(s => s.MsgId == groupMessage.MessageId).First();
+                    var user = _userRepository.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
                     await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
                 }
                 else
@@ -239,8 +239,8 @@ namespace QQ.RoBot
         public async ValueTask PrivateMessageParse(object sender, PrivateMessageEventArgs eventArgs)
         {
             //人工智障
-            var all = _keyWordServices.Query(t => t.ID > 0);
-            var result = _keyWordServices.Query(t => t.Keys.Contains(eventArgs.Message.RawText)) ?? new List<LianKeyWords>();
+            var all = _keyWordRepository.Query(t => t.ID > 0);
+            var result = _keyWordRepository.Query(t => t.Keys.Contains(eventArgs.Message.RawText)) ?? new List<LianKeyWords>();
             if (result.Count > 0 && result != null)
             {
                 var strSb = new StringBuilder();
@@ -363,7 +363,7 @@ namespace QQ.RoBot
             var memberInfo = await GetMemberInfo(eventArgs);
             if (new Random().Next(1, 100) is 66)
             {
-                var user = _userServices.QueryById(q => q.QNumber == eventArgs.SenderInfo.UserId.ObjToString());
+                var user = _userRepository.QueryById(q => q.QNumber == eventArgs.SenderInfo.UserId.ObjToString());
                 var rank = new Random().Next(1, 10);
                 if (user == null)
                 {
@@ -378,8 +378,8 @@ namespace QQ.RoBot
                 {
                     user.Rank += rank;
                     user.LastModifyTime = DateTime.Now;
-                    _userServices.Update(user);
-                    _logsServices.Insert(new SignLogs()
+                    _userRepository.Update(user);
+                    _logsRepository.Insert(new SignLogs()
                     {
                         CmdType = CmdType.BonusPoints,
                         LogContent = $"[可爱]指令赠送{rank}分",
@@ -409,19 +409,19 @@ namespace QQ.RoBot
             var trigger = new Random().Next(1, 5000) is 444;
             var rank = new Random().Next(7, 12);
             var strSb = new StringBuilder();
-            var uList = _userServices.Query(s => s.Status == Status.Valid);
+            var uList = _userRepository.Query(s => s.Status == Status.Valid);
             if (deTrigger)
             {
                 uList.ForEach((item) =>
                 {
                     item.Rank -= rank;
                     item.LastModifyTime = DateTime.Now;
-                    _userServices.Update(item);
+                    _userRepository.Update(item);
                 });
                 strSb.Append($"[江湖传言]\r\n");
                 strSb.Append($"恭喜{memberInfo.Nick}[{eventArgs.SenderInfo.Nick}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
                 strSb.Append($"就你有手？奖励所有{memberInfo.Nick}负{rank}分");
-                _logsServices.Insert(new SignLogs()
+                _logsRepository.Insert(new SignLogs()
                 {
                     CmdType = CmdType.SpecialPointsDeducted,
                     LogContent = $"[{eventArgs.SenderInfo.Nick}]就你有手？奖励所有{memberInfo.Nick}负{rank}分",
@@ -436,12 +436,12 @@ namespace QQ.RoBot
                 {
                     item.Rank += rank;
                     item.LastModifyTime = DateTime.Now;
-                    _userServices.Update(item);
+                    _userRepository.Update(item);
                 });
                 strSb.Append($"[江湖传言]\r\n");
                 strSb.Append($"恭喜{memberInfo.Nick}[{userConfig.ConfigModel.BotName}]通过挖宝拾取道具：陨焰之盒 × 1\r\n");
                 strSb.Append($"普天同庆！！！奖励所有{memberInfo.Nick}{rank}分");
-                _logsServices.Insert(new SignLogs()
+                _logsRepository.Insert(new SignLogs()
                 {
                     CmdType = CmdType.SpecialBonusPoints,
                     LogContent = $"普天同庆！！！奖励所有{memberInfo.Nick}{rank}分",
@@ -473,7 +473,7 @@ namespace QQ.RoBot
             {
                 if (eventArgs.Message.RawText.StartsWith("[CQ:image,file="))
                 {
-                    _speakerServices.Insert(new SpeakerList()
+                    _speakerRepository.Insert(new SpeakerList()
                     {
                         GroupId = eventArgs.SourceGroup.Id,
                         RawText = eventArgs.Message.RawText.Replace("[CQ:image,file=", "").Replace("]", ""),
@@ -484,7 +484,7 @@ namespace QQ.RoBot
                 }
                 else
                 {
-                    _speakerServices.Insert(new SpeakerList()
+                    _speakerRepository.Insert(new SpeakerList()
                     {
                         GroupId = eventArgs.SourceGroup.Id,
                         RawText = eventArgs.Message.RawText,

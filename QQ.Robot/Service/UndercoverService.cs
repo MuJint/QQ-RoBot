@@ -18,17 +18,17 @@ namespace QQ.RoBot
     /// </summary>
     public class UndercoverService : IUndercoverInterface
     {
-        readonly IUndercoverServices _undercoverServices;
-        readonly IUndercoverUserServices _undercoverUserServices;
-        readonly IUndercoverLexiconServices _undercoverLexiconServices;
+        readonly IBaseRepository<UndercoverRoom> _undercoverRepository;
+        readonly IBaseRepository<UndercoverUser> _undercoverUserRepository;
+        readonly IBaseRepository<UndercoverLexicon> _undercoverLexiconRepository;
 
-        public UndercoverService(IUndercoverServices undercoverServices,
-            IUndercoverUserServices undercoverUserServices,
-            IUndercoverLexiconServices undercoverLexiconServices)
+        public UndercoverService(IBaseRepository<UndercoverRoom> undercoverServices,
+            IBaseRepository<UndercoverUser> undercoverUserServices,
+            IBaseRepository<UndercoverLexicon> undercoverLexiconServices)
         {
-            _undercoverServices = undercoverServices;
-            _undercoverUserServices = undercoverUserServices;
-            _undercoverLexiconServices = undercoverLexiconServices;
+            _undercoverRepository = undercoverServices;
+            _undercoverUserRepository = undercoverUserServices;
+            _undercoverLexiconRepository = undercoverLexiconServices;
         }
 
         /// <summary>
@@ -44,28 +44,28 @@ namespace QQ.RoBot
             if (roomId <= 0)
                 await SendMessageGroup(eventArgs, "加入房间失败.请输入正确的房间号", true, true);
             //查找房间
-            var room = _undercoverServices.Query(w => w.Status == Status.Valid && w.GroupId == eventArgs.SourceGroup.Id && w.ID == roomId).FirstOrDefault();
+            var room = _undercoverRepository.Query(w => w.Status == Status.Valid && w.GroupId == eventArgs.SourceGroup.Id && w.ID == roomId).FirstOrDefault();
             if (room is null)
                 await SendMessageGroup(eventArgs, "加入房间失败.未找到房间信息", true, true);
             if(room.IsStart)
                 await SendMessageGroup(eventArgs, "房间已开始游戏", true, true);
             //验证用户
-            var undercoverUsers = _undercoverUserServices.Query(w => w.Uid == eventArgs.Sender.Id);
+            var undercoverUsers = _undercoverUserRepository.Query(w => w.Uid == eventArgs.Sender.Id);
             var roomIds = undercoverUsers.Select(s => s.RoomId).ToList();
-            var rooms = _undercoverServices.Query(w => roomIds.Contains(w.ID) && w.Status == Status.Valid);
+            var rooms = _undercoverRepository.Query(w => roomIds.Contains(w.ID) && w.Status == Status.Valid);
             if (rooms.Any(a => a.ID == roomId))
                 await SendMessageGroup(eventArgs, "您已加入.", true, true);
             if (rooms.Count >= 1)
                 await SendMessageGroup(eventArgs, "您已加入其它房间.", true, true);
             //加入房间
-            _undercoverUserServices.Insert(new UndercoverUser()
+            _undercoverUserRepository.Insert(new UndercoverUser()
             {
                 RoomId = roomId,
                 Uid = eventArgs.Sender.Id,
                 Nick = eventArgs.SenderInfo.Nick
             });
             //校验是否可以自动开始游戏
-            var users = _undercoverUserServices.Query(w => w.RoomId == roomId);
+            var users = _undercoverUserRepository.Query(w => w.RoomId == roomId);
             if (users.Count >= 7)
             {
                 //
@@ -85,19 +85,19 @@ namespace QQ.RoBot
         /// <exception cref="NotImplementedException"></exception>
         public async ValueTask StartGame(GroupMessageEventArgs eventArgs, int roomId)
         {
-            var room = _undercoverServices.Query(w => w.ID == roomId).FirstOrDefault();
-            var users = _undercoverUserServices.Query(w => w.RoomId == roomId);
+            var room = _undercoverRepository.Query(w => w.ID == roomId).FirstOrDefault();
+            var users = _undercoverUserRepository.Query(w => w.RoomId == roomId);
             var uids = users.Select(s => s.Uid).ToList();
 
             //词库
             //var lexicons = _undercoverLexiconServices.Query(w => !uids.Contains(w.Uid));
-            var lexicons = _undercoverLexiconServices.Query(w => w.Status == Status.Valid);
+            var lexicons = _undercoverLexiconRepository.Query(w => w.Status == Status.Valid);
             var lexicon = lexicons[new Random().Next(0, lexicons.Count)];
             var undercoverUser = users[new Random().Next(0, users.Count)];
 
             room.UndercoverLexiconId = lexicon.ID;
             room.IsStart = true;
-            _undercoverServices.Update(room);
+            _undercoverRepository.Update(room);
 
             var strBuilder = new StringBuilder();
             strBuilder.Append($"【{roomId}】号房玩家列表：\r\n");
@@ -111,7 +111,7 @@ namespace QQ.RoBot
                     await SendTemporaryMessage(eventArgs, user.Uid, room.GroupId, $"您的词语是：【{lexicon.UndercoverWord}】");
                     user.IsUndercover = true;
                     //设置卧底
-                    _undercoverUserServices.Update(user);
+                    _undercoverUserRepository.Update(user);
                 }
                 else
                     await SendTemporaryMessage(eventArgs, user.Uid, room.GroupId, $"您的词语是：【{lexicon.Word}】");
@@ -146,22 +146,22 @@ namespace QQ.RoBot
                 await SendMessageGroup(eventArgs, $"本轮游戏平民胜利😊✌️");
 
             //关闭房间
-            var room = _undercoverServices.Query(w => w.CreateUid == eventArgs.Sender.Id && w.IsStart && w.Status == Status.Valid).FirstOrDefault();
+            var room = _undercoverRepository.Query(w => w.CreateUid == eventArgs.Sender.Id && w.IsStart && w.Status == Status.Valid).FirstOrDefault();
             room.Status = Status.InValid;
             room.IsStart = false;
-            _undercoverServices.Update(room);
+            _undercoverRepository.Update(room);
 
             //发送感谢词
-            var lexicon = _undercoverLexiconServices.Query(w => w.ID == room.UndercoverLexiconId).FirstOrDefault();
+            var lexicon = _undercoverLexiconRepository.Query(w => w.ID == room.UndercoverLexiconId).FirstOrDefault();
             await SendMessageGroup(eventArgs, $"感谢【{lexicon.Nick}】提供的词库\r\n本轮关键词【{lexicon.Word}】卧底关键词【{lexicon.UndercoverWord}】");
-            var users = _undercoverUserServices.Query(w => w.RoomId == room.ID);
+            var users = _undercoverUserRepository.Query(w => w.RoomId == room.ID);
 
             foreach(var user in users)
             {
                 //解除禁言
                 await eventArgs.SoraApi.DisableGroupMemberMute(eventArgs.SourceGroup.Id, user.Uid);
                 //清掉用户记录
-                _undercoverUserServices.DeleteById(user.ID);
+                _undercoverUserRepository.DeleteById(user.ID);
             }
             //移除投票结果
             GlobalSettings.TpResult.RemoveAll(w => w.RoomId == room.ID);
@@ -176,7 +176,7 @@ namespace QQ.RoBot
         public async ValueTask Undercover(GroupMessageEventArgs eventArgs)
         {
             //查询当前是否有未开始的房间
-            var rooms = _undercoverServices.Query(w => w.GroupId == eventArgs.SourceGroup.Id && w.Status == Status.Valid && w.IsStart == false);
+            var rooms = _undercoverRepository.Query(w => w.GroupId == eventArgs.SourceGroup.Id && w.Status == Status.Valid && w.IsStart == false);
             var strContent = string.Empty;
             strContent = $"谁是卧底：\r\n标准七人局：一人卧底，六人平民.每轮按顺序发言票推出一人，平票则下一轮发言\r\n若卧底被票出，平民胜利.若场上剩余三人包含卧底，卧底胜利\r\n【房间列表】可查看当前群聊房间列表\r\n【解散房间1】可解散1号房间\r\n【加入卧底1】加入1号房间\r\n投票带上前缀【投票】，例如【投票1】\r\n可私聊机器人：（前者平民关键词，后者卧底关键词）添加谁是卧底#桃子#梨子\r\n";
             await SendMessageGroup(eventArgs, strContent);
@@ -185,14 +185,14 @@ namespace QQ.RoBot
             else
             {
                 //词库
-                var undercoverLexicons = _undercoverLexiconServices.Query(w => w.Status == Status.Valid);
+                var undercoverLexicons = _undercoverLexiconRepository.Query(w => w.Status == Status.Valid);
                 if (undercoverLexicons.Count <= 0)
                     await InitalizeLexicon();
-                undercoverLexicons = _undercoverLexiconServices.Query(w => w.Status == Status.Valid);
+                undercoverLexicons = _undercoverLexiconRepository.Query(w => w.Status == Status.Valid);
                 //undercoverLexicons = undercoverLexicons.Where(w => w.Uid != eventArgs.Sender.Id).ToList();
                 //创建房间
                 var lexicon = undercoverLexicons[new Random().Next(0, undercoverLexicons.Count)];
-                var roomId = _undercoverServices.InsertR(new UndercoverRoom()
+                var roomId = _undercoverRepository.InsertR(new UndercoverRoom()
                 {
                     CreateUid = eventArgs.Sender.Id,
                     GroupId = eventArgs.SourceGroup.Id,
@@ -212,7 +212,7 @@ namespace QQ.RoBot
         /// <exception cref="NotImplementedException"></exception>
         public async ValueTask RoomList(GroupMessageEventArgs eventArgs)
         {
-            var rooms = _undercoverServices.Query(w => w.GroupId == eventArgs.SourceGroup.Id && w.Status == Status.Valid && w.IsStart == false);
+            var rooms = _undercoverRepository.Query(w => w.GroupId == eventArgs.SourceGroup.Id && w.Status == Status.Valid && w.IsStart == false);
             if (rooms.Count <= 0)
                 await SendMessageGroup(eventArgs, "暂时没有等待开始的房间", false, true);
             var strBuilder = new StringBuilder();
@@ -235,14 +235,14 @@ namespace QQ.RoBot
         {
             //解散房间1
             _ = int.TryParse(eventArgs.Message.RawText.Split("解散房间")[1], out var roomId);
-            var room = _undercoverServices.Query(w => w.ID == roomId && w.Status == Status.Valid).FirstOrDefault();
+            var room = _undercoverRepository.Query(w => w.ID == roomId && w.Status == Status.Valid).FirstOrDefault();
             if (room is null)
                 await SendMessageGroup(eventArgs, "未找到房间信息", true, true);
             if(room.CreateUid!=eventArgs.SenderInfo.UserId || room.IsStart)
                 await SendMessageGroup(eventArgs, "您无权解散该房间", true, true);
             room.IsStart = false;
             room.Status = Status.InValid;
-            _undercoverServices.Update(room);
+            _undercoverRepository.Update(room);
             await SendMessageGroup(eventArgs, "房间已解散", true);
         }
 
@@ -254,7 +254,7 @@ namespace QQ.RoBot
         /// <exception cref="NotImplementedException"></exception>
         public async ValueTask Fqtp(GroupMessageEventArgs eventArgs)
         {
-            var room = _undercoverServices.Query(w => w.CreateUid == eventArgs.Sender.Id && w.IsStart && w.GroupId == eventArgs.SourceGroup.Id && w.Status == Status.Valid).FirstOrDefault();
+            var room = _undercoverRepository.Query(w => w.CreateUid == eventArgs.Sender.Id && w.IsStart && w.GroupId == eventArgs.SourceGroup.Id && w.Status == Status.Valid).FirstOrDefault();
             if (room is null)
                 await SendMessageGroup(eventArgs, "您不是房主，无权发起投票.", true, true);
             await SendMessageGroup(eventArgs, "请开始投票，30秒之后结束投票并公布结果");
@@ -266,12 +266,12 @@ namespace QQ.RoBot
                     await SendMessageGroup(eventArgs, "本轮平票，请开始下轮发言", false, true);
                 //票数最高
                 var uid = result.GroupBy(g => g.Uid).OrderByDescending(o => o.Count()).FirstOrDefault().Key;
-                var users = _undercoverUserServices.Query(w => w.RoomId == room.ID);
+                var users = _undercoverUserRepository.Query(w => w.RoomId == room.ID);
                 var updateUser = users.FirstOrDefault(f => f.Uid == uid);
                 if (users.Count(w => w.IsOut == false) > 3 && updateUser.IsUndercover is false)
                 {
                     updateUser.IsOut = true;
-                    _undercoverUserServices.Update(updateUser);
+                    _undercoverUserRepository.Update(updateUser);
                     //禁言票出人员
                     await eventArgs.SoraApi.EnableGroupMemberMute(eventArgs.SourceGroup.Id, uid, 1000 * 60 * 10);
                     await SendMessageGroup(eventArgs, new MessageBody()
@@ -306,9 +306,9 @@ namespace QQ.RoBot
         {
             //投票1
             _ = int.TryParse(eventArgs.Message.RawText.Split("投票")[1], out var uIndx);
-            var users = _undercoverUserServices.Query(w => w.Uid == eventArgs.Sender.Id);
+            var users = _undercoverUserRepository.Query(w => w.Uid == eventArgs.Sender.Id);
             var roomIds = users.Select(s => s.RoomId).ToList();
-            var room = _undercoverServices.Query(w => roomIds.Contains(w.ID) && w.IsStart && w.Status == Status.Valid).FirstOrDefault();
+            var room = _undercoverRepository.Query(w => roomIds.Contains(w.ID) && w.IsStart && w.Status == Status.Valid).FirstOrDefault();
             if (room is null)
                 await SendMessageGroup(eventArgs, $"投票失败，未找到有效房间信息", true, true);
             //只取最后一次投票结果
@@ -369,7 +369,7 @@ namespace QQ.RoBot
             };
             lexicon.ForEach(f =>
             {
-                _undercoverLexiconServices.Insert(new UndercoverLexicon()
+                _undercoverLexiconRepository.Insert(new UndercoverLexicon()
                 {
                     UndercoverWord = f.Item1,
                     Word = f.Item2

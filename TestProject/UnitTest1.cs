@@ -23,32 +23,53 @@ namespace TestProject
     [TestClass]
     public class UnitTest1 : BaseUt
     {
-        readonly ISignUserServices signUserServices;
-        readonly ISignLogsServices signLogsServices;
-        readonly ILianChatServices lianChatServices;
-        readonly ILianKeyWordsServices lianKeyWordsServices;
-        readonly ISpeakerServices speakerServices;
+        readonly IBaseRepository<SignLogs> _signLogsRepository;
+        readonly IBaseRepository<SignUser> _signUserRepository;
+        readonly IBaseRepository<LianChat> _lianChatRepository;
+        readonly IBaseRepository<LianKeyWords> _lianKeyWordsRepository;
+        readonly IBaseRepository<SpeakerList> _speakerRepository;
 
+        //readonly IBaseRepository<SignUser> _signUserServices;
 
         public UnitTest1()
         {
-            signUserServices = GetInstance<ISignUserServices>();
-            signLogsServices = GetInstance<ISignLogsServices>();
-            lianChatServices = GetInstance<ILianChatServices>();
-            lianKeyWordsServices = GetInstance<ILianKeyWordsServices>();
-            speakerServices = GetInstance<ISpeakerServices>();
+            //signUserServices = GetInstance<ISignUserServices>();
+            //signLogsServices = GetInstance<ISignLogsServices>();
+            //lianChatServices = GetInstance<ILianChatServices>();
+            //lianKeyWordsServices = GetInstance<ILianKeyWordsServices>();
+            //speakerServices = GetInstance<ISpeakerServices>();
+            //_signUserServices = signUserServices;
         }
 
         [TestMethod]
         public void TestInsert()
         {
-            signUserServices.InsertR(new SignUser()
+            try
             {
-                GroupId = "1",
-                NickName = "2",
-                QNumber = "2",
-                Rank = 1,
-            });
+                var s = GetInstance<IBaseRepository<SignUser>>();
+
+                s.InsertR(new SignUser()
+                {
+                    GroupId = "1",
+                    NickName = "2",
+                    QNumber = "2",
+                    Rank = 1,
+                });
+
+
+                _signUserRepository.InsertR(new SignUser()
+                {
+                    GroupId = "1",
+                    NickName = "2",
+                    QNumber = "2",
+                    Rank = 1,
+                });
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         [TestMethod]
@@ -79,7 +100,7 @@ namespace TestProject
             try
             {
                 // && s.GroupId == 566040141
-                var speakerLists = speakerServices.Query(s => s.Uid == 1069430666);
+                var speakerLists = _speakerRepository.Query(s => s.Uid == 1069430666);
                 if (speakerLists.Any())
                 {
                     var builder = string.Join(",", speakerLists.Select(s => s.RawText))
@@ -270,11 +291,11 @@ namespace TestProject
                 //        Content = item.Chats
                 //    });
                 //}
-                var t = lianKeyWordsServices.Query(t => t.Status == Status.Valid);
-                var t1 = signUserServices.Query(t => t.Status == Status.Valid);
-                var t2 = lianChatServices.Query(t => t.Status == Status.Valid);
-                var t3 = signUserServices.Query(t => t.QNumber.Equals("1069430666"));
-                signLogsServices.DeleteById(t => t.ID > 0);
+                //var t = lianKeyWordsServices.Query(t => t.Status == Status.Valid);
+                //var t1 = signUserServices.Query(t => t.Status == Status.Valid);
+                //var t2 = lianChatServices.Query(t => t.Status == Status.Valid);
+                //var t3 = signUserServices.Query(t => t.QNumber.Equals("1069430666"));
+                //signLogsServices.DeleteById(t => t.ID > 0);
                 // await signLogsServices.DeleteById(2);
                 //var t = await signLogsServices.Query(t => t.ID > 0);
             }

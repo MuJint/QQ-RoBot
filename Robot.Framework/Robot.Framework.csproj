@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
+    <Folder Include="Interface\IServices\" />
+    <Folder Include="Services\Services\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -31,14 +31,7 @@ namespace QQ.RoBot
                         services.AddScoped<ILogsInterface, LogsHelper>();
 
                         //数据库操作
-                        services.AddScoped<ILianChatServices, LianChatServices>();
-                        services.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>();
-                        services.AddScoped<ISignLogsServices, SignLogsServices>();
-                        services.AddScoped<ISignUserServices, SignUserServices>();
-                        services.AddScoped<ISpeakerServices, SpeakerServices>();
-                        services.AddScoped<IUndercoverServices, UndercoverServices>();
-                        services.AddScoped<IUndercoverLexiconServices, UndercoverLexiconServices>();
-                        services.AddScoped<IUndercoverUserServices, UndercoverUserServices>();
+                        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
                         //功能实现
                         services.AddScoped<IRobotInterface, RobotService>();
@@ -62,7 +55,7 @@ namespace QQ.RoBot
             {
                 new LogsHelper().Error(ex, "程序崩溃");
             }
-
+            //Bubble sort algorithm
             await Task.Delay(1);
         }
     }

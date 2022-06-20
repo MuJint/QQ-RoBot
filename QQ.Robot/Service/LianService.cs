@@ -25,24 +25,24 @@ namespace QQ.RoBot
     /// </summary>
     public class LianService :  ILianInterface
     {
-        readonly ISignUserServices _signUserServices;
-        readonly ISignLogsServices _signLogsServices;
-        readonly ILianChatServices _lianChatServices;
-        readonly ILianKeyWordsServices _lianKeyWordsServices;
-        readonly ISpeakerServices _speakerServices;
+        readonly IBaseRepository<SignLogs> _signLogsRepository;
+        readonly IBaseRepository<SignUser> _signUserRepository;
+        readonly IBaseRepository<LianChat> _lianChatRepository;
+        readonly IBaseRepository<LianKeyWords> _lianKeyWordsRepository;
+        readonly IBaseRepository<SpeakerList> _speakerRepository;
         readonly UserConfig userConfig = GlobalSettings.AppSetting.UserConfig;
 
-        public LianService(ISignUserServices signUserServices, 
-            ISignLogsServices signLogsServices, 
-            ILianChatServices lianChatServices, 
-            ILianKeyWordsServices lianKeyWordsServices, 
-            ISpeakerServices speakerServices)
+        public LianService(IBaseRepository<SignUser> signUserRepository,
+            IBaseRepository<LianChat> lianChatRepository,
+            IBaseRepository<LianKeyWords> lianKeyWordsRepository,
+            IBaseRepository<SpeakerList> speakerRepository,
+            IBaseRepository<SignLogs> signLogsRepository)
         {
-            _signUserServices = signUserServices;
-            _signLogsServices = signLogsServices;
-            _lianChatServices = lianChatServices;
-            _lianKeyWordsServices = lianKeyWordsServices;
-            _speakerServices = speakerServices;
+            _signUserRepository = signUserRepository;
+            _lianChatRepository = lianChatRepository;
+            _lianKeyWordsRepository = lianKeyWordsRepository;
+            _speakerRepository = speakerRepository;
+            _signLogsRepository = signLogsRepository;
         }
 
 
@@ -59,7 +59,7 @@ namespace QQ.RoBot
             int randRank = new Random().Next(2, 5);
             if (isSign != null)
             {
-                var signLog = (_signLogsServices.Query(t => t.CmdType == CmdType.SignIn && t.Uid.Equals(eventArgs.SenderInfo.UserId.ObjToString()))).OrderByDescending(t => t.LastModifyTime)?.FirstOrDefault() ?? new SignLogs();
+                var signLog = (_signLogsRepository.Query(t => t.CmdType == CmdType.SignIn && t.Uid.Equals(eventArgs.SenderInfo.UserId.ObjToString()))).OrderByDescending(t => t.LastModifyTime)?.FirstOrDefault() ?? new SignLogs();
                 if (signLog.LastModifyTime.DayOfYear == DateTime.Now.DayOfYear && signLog.ModifyRank > 0)
                 {
                     if (TriggerPunish)
@@ -116,7 +116,7 @@ namespace QQ.RoBot
         public async ValueTask SearchRank(GroupMessageEventArgs eventArgs)
         {
             var memberInfo = await GetMemberInfo(eventArgs);
-            var isSign = _signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
+            var isSign = _signUserRepository.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
             if (isSign != null)
                 await SendMessageGroup(eventArgs, $"{memberInfo.Nick}当前有{isSign.Rank}分，继续努力吧~", true);
             else
@@ -136,7 +136,7 @@ namespace QQ.RoBot
             int randRank = new Random().Next(2, 5);
             if (new Random().Next(1, 100) is 6)
             {
-                var isSign = _signUserServices.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
+                var isSign = _signUserRepository.QueryById(t => t.QNumber.Equals(eventArgs.SenderInfo.UserId.ObjToString()));
                 if (isSign != null)
                     await SendMessageGroup(eventArgs, $"没有找到任何记录噢~请先对{userConfig.ConfigModel.BotName}说签到吧", true);
                 else
@@ -206,7 +206,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask SpecialEvent(GroupMessageEventArgs eventArgs)
         {
-            var uLogs = (_signLogsServices.Query(t => t.CmdType == CmdType.SpecialBonusPoints || t.CmdType == CmdType.SpecialPointsDeducted))?.OrderByDescending(t => t.CreateTime).Take(10);
+            var uLogs = (_signLogsRepository.Query(t => t.CmdType == CmdType.SpecialBonusPoints || t.CmdType == CmdType.SpecialPointsDeducted))?.OrderByDescending(t => t.CreateTime).Take(10);
             if (!uLogs.Any() || uLogs == null)
                 return;
             var strSb = new StringBuilder();
@@ -227,7 +227,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask LogsRecord(GroupMessageEventArgs eventArgs)
         {
-            var uLogs = (_signLogsServices.Query(t => t.Uid.Equals(eventArgs.Sender.Id.ObjToString())))?.OrderByDescending(t => t.CreateTime).Skip(0).Take(15);
+            var uLogs = (_signLogsRepository.Query(t => t.Uid.Equals(eventArgs.Sender.Id.ObjToString())))?.OrderByDescending(t => t.CreateTime).Skip(0).Take(15);
             if (!uLogs.Any() || uLogs == null)
                 return;
             var strSb = new StringBuilder();
@@ -310,7 +310,7 @@ namespace QQ.RoBot
             var memberInfo = await GetMemberInfo(eventArgs);
             if (DateTime.Now.Hour > 7 && DateTime.Now.Hour < 9)
             {
-                var mornLogs = _signLogsServices.Query(t => t.LogContent.Contains("[早安]") && t.LastModifyTime.Day == DateTime.Now.Day && t.LastModifyTime.Year == DateTime.Now.Year && t.LastModifyTime.Month == DateTime.Now.Month) ?? new List<SignLogs>();
+                var mornLogs = _signLogsRepository.Query(t => t.LogContent.Contains("[早安]") && t.LastModifyTime.Day == DateTime.Now.Day && t.LastModifyTime.Year == DateTime.Now.Year && t.LastModifyTime.Month == DateTime.Now.Month) ?? new List<SignLogs>();
                 if (mornLogs.Count >= 5)
                     await SendMessageGroup(eventArgs, $"{memberInfo.Nick}早上好啊~{userConfig.ConfigModel.Tail}", true);
                 else
@@ -351,7 +351,7 @@ namespace QQ.RoBot
             var memberInfo = await GetMemberInfo(eventArgs);
             if (DateTime.Now.Hour > 19 && DateTime.Now.Hour < 24)
             {
-                var nightLogs = _signLogsServices.Query(t => t.LogContent.Contains("[晚安]") && t.LastModifyTime.Day == DateTime.Now.Day && t.LastModifyTime.Year == DateTime.Now.Year && t.LastModifyTime.Month == DateTime.Now.Month) ?? new List<SignLogs>();
+                var nightLogs = _signLogsRepository.Query(t => t.LogContent.Contains("[晚安]") && t.LastModifyTime.Day == DateTime.Now.Day && t.LastModifyTime.Year == DateTime.Now.Year && t.LastModifyTime.Month == DateTime.Now.Month) ?? new List<SignLogs>();
                 if (nightLogs.Count >= 5)
                     await SendMessageGroup(eventArgs, $"{memberInfo.Nick}晚安~美梦美梦zzzzzzzzz", true);
                 else
@@ -775,7 +775,7 @@ namespace QQ.RoBot
         /// <returns></returns>
         public async ValueTask Lian(GroupMessageEventArgs eventArgs)
         {
-            var chatList = _lianChatServices.Query(t => t.Status == Status.Valid) ?? new List<LianChat>();
+            var chatList = _lianChatRepository.Query(t => t.Status == Status.Valid) ?? new List<LianChat>();
             if (chatList == null || chatList.Count <= 0)
             {
                 await SendMessageGroup(eventArgs, $"你康康我啊？我就那么不受待见吗");
@@ -804,7 +804,7 @@ namespace QQ.RoBot
                     {
                         var keys = eventArgs.Message.RawText.Split("添加数据密码#")[1].Split("#")[0].ObjToString();
                         var name = eventArgs.Message.RawText.Split("添加数据密码#")[1].Split("#")[1].ObjToString();
-                        _lianKeyWordsServices.Insert(new LianKeyWords()
+                        _lianKeyWordsRepository.Insert(new LianKeyWords()
                         {
                             Keys = keys,
                             Words = name
@@ -837,7 +837,7 @@ namespace QQ.RoBot
                 else
                 {
                     var content = eventArgs.Message.RawText.Split("添加词库#")[1].ObjToString();
-                    _lianChatServices.Insert(new LianChat()
+                    _lianChatRepository.Insert(new LianChat()
                     {
                         Content = content
                     });
@@ -871,7 +871,7 @@ namespace QQ.RoBot
             try
             {
                 //排除掉图片、带CQ码的
-                var speakerLists = _speakerServices.Query(s => s.Uid == eventArgs.Sender.Id && !s.RawText.Contains("image") && !s.RawText.Contains("CQ"));
+                var speakerLists = _speakerRepository.Query(s => s.Uid == eventArgs.Sender.Id && !s.RawText.Contains("image") && !s.RawText.Contains("CQ"));
                 if (speakerLists.Any())
                 {
                     var builder = string.Join(",", speakerLists.Select(s => s.RawText));
@@ -911,7 +911,7 @@ namespace QQ.RoBot
         public async ValueTask NonsenseKing(GroupMessageEventArgs eventArgs)
         {
             await SendMessageGroup(eventArgs, "请稍等，正在执行耗时操作");
-            var speakerList = _speakerServices
+            var speakerList = _speakerRepository
                 .Query(q => q.GroupId == eventArgs.SourceGroup.Id && q.CreateTime.Month == DateTime.Now.Month && q.CreateTime.Year == DateTime.Now.Year)
                 .GroupBy(g => new { g.Uid })
                 .Select(s => new
@@ -927,7 +927,7 @@ namespace QQ.RoBot
                 strSb.Append($"----------发言榜----------\r\n");
                 foreach (var item in speakerList)
                 {
-                    var nick = _signUserServices.Query(q => q.QNumber == item.Uid.ObjToString());
+                    var nick = _signUserRepository.Query(q => q.QNumber == item.Uid.ObjToString());
                     strSb.Append($"{nick.First().NickName}       {item.Count}条\r\n");
                 }
                 strSb.Append($"\r\n截止到目前：{DateTime.Now:yyyy-MM-dd}");
@@ -987,10 +987,10 @@ namespace QQ.RoBot
         {
             if (isUpdate)
             {
-                return _signLogsServices.Update(signLogs);
+                return _signLogsRepository.Update(signLogs);
             }
             else
-                return _signLogsServices.Insert(signLogs);
+                return _signLogsRepository.Insert(signLogs);
         }
 
         /// <summary>
@@ -1003,10 +1003,10 @@ namespace QQ.RoBot
         {
             if (isUpdate)
             {
-                return _signUserServices.Update(signUser);
+                return _signUserRepository.Update(signUser);
             }
             else
-                return _signUserServices.Insert(signUser);
+                return _signUserRepository.Insert(signUser);
         }
 
 
@@ -1015,13 +1015,13 @@ namespace QQ.RoBot
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        private SignUser RequestUsers(long uid) => _signUserServices.QueryById(t => t.QNumber.Equals(uid.ObjToString()));
+        private SignUser RequestUsers(long uid) => _signUserRepository.QueryById(t => t.QNumber.Equals(uid.ObjToString()));
 
         /// <summary>
         /// 用户列表请求
         /// </summary>
         /// <returns></returns>
-        private List<SignUser> RequestListUsers() => _signUserServices.Query(t => t.Status == Status.Valid);
+        private List<SignUser> RequestListUsers() => _signUserRepository.Query(t => t.Status == Status.Valid);
 
         /// <summary>
         /// 获取群成员信息
