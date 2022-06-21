@@ -1,5 +1,4 @@
 ﻿using LiteDB;
-using Robot.Framework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +8,12 @@ namespace Robot.Framework.Interface
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
     {
-        internal LiteDatabase _db;
-        public BaseRepository()
+        private LiteDatabase _db;
+        readonly IUnitWork _unitWork;
+        public BaseRepository(IUnitWork unitWork)
         {
-            _db = UnitWork.GetDbClient;
+            _unitWork = unitWork;
+            _db = _unitWork.GetDbClient();
         }
 
         public TEntity QueryById(object objId)

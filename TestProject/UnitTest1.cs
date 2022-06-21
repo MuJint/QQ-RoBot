@@ -42,6 +42,44 @@ namespace TestProject
         }
 
         [TestMethod]
+        public void TestTransaction()
+        {
+
+            var unitwork = GetInstance<IUnitWork>();
+            try
+            {
+                var signLogs = GetInstance<IBaseRepository<SignLogs>>();
+                var signUser = GetInstance<IBaseRepository<SignUser>>();
+                unitwork.Begintran();
+                signLogs.Insert(new SignLogs()
+                {
+                    Uid = "123",
+                    CmdType = CmdType.SignIn,
+                    LogContent = "",
+                    ModifyRank = 2
+                });
+                signUser.Insert(new SignUser()
+                {
+                    GroupId = "1",
+                    NickName = "2",
+                    QNumber = "3",
+                    Rank = 1,
+
+                });
+                    
+                unitwork.Commit();
+
+                var t = signLogs.Query(w => w.Uid == "123").FirstOrDefault();
+                Assert.IsTrue(t != null);
+            }
+            catch (Exception ex)
+            {
+                unitwork.Rollback();
+                throw;
+            }
+        }
+
+        [TestMethod]
         public void TestInsert()
         {
             try

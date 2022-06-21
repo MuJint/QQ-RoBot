@@ -7,6 +7,7 @@ namespace TestProject
     public class BaseUt
     {
         readonly ServiceProvider provider = new ServiceCollection()
+                .AddSingleton<IUnitWork, UnitWork>()
                 .AddScoped(typeof(IBaseRepository<>),typeof(BaseRepository<>))
                 //.AddScoped<ILianChatServices, LianChatServices>()
                 //.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>()

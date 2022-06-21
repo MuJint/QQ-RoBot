@@ -1,24 +1,53 @@
 ﻿using LiteDB;
+using Robot.Framework.Interface;
 using System;
 
 namespace Robot.Framework.Services
 {
-    public class UnitWork
+    public class UnitWork : IUnitWork
     {
-        static LiteDatabase _liteDatabase = null;
-        static readonly object _lock = new();
+        readonly LiteDatabase _liteDatabase;
 
-        #region Func
-        public static LiteDatabase GetDbClient
+        public UnitWork()
         {
-            get
+            _liteDatabase = new LiteDatabase($"{Environment.CurrentDirectory}\\Main.db");
+        }
+
+        public void Begintran()
+        {
+            lock (this)
             {
-                lock (_lock)
+                GetDbClient().BeginTrans();
+            }
+        }
+
+        public void Commit()
+        {
+            lock (this)
+            {
+                try
                 {
-                    return _liteDatabase ??= new LiteDatabase($"{Environment.CurrentDirectory}\\Main.db");
+                    GetDbClient().Commit();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    GetDbClient().Rollback();
                 }
             }
         }
-        #endregion
+
+        public LiteDatabase GetDbClient()
+        {
+            return _liteDatabase ?? new LiteDatabase($"{Environment.CurrentDirectory}\\Main.db");
+        }
+
+        public void Rollback()
+        {
+            lock (this)
+            {
+                GetDbClient().Rollback();
+            }
+        }
     }
 }

@@ -31,6 +31,7 @@ namespace QQ.RoBot
                         services.AddScoped<ILogsInterface, LogsHelper>();
 
                         //数据库操作
+                        services.AddSingleton<IUnitWork, UnitWork>();
                         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
                         //功能实现
