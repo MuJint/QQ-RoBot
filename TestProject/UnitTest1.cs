@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
@@ -41,10 +42,21 @@ namespace TestProject
             //_signUserServices = signUserServices;
         }
 
+        /// <summary>
+        /// 测试Mixin模式
+        /// </summary>
+        [TestMethod]
+        public async Task TestMixin()
+        {
+            await TestMethods.Run();
+        }
+
+        /// <summary>
+        /// 测试Litedb事务
+        /// </summary>
         [TestMethod]
         public void TestTransaction()
         {
-
             var unitwork = GetInstance<IUnitWork>();
             try
             {
@@ -320,8 +332,8 @@ namespace TestProject
         {
             try
             {
-                //var readResults = OperateExcel.ExcelToDataTable(@"C:\Users\changqing\Desktop\chats.xlsx", "sheet1", true);
-                //var listResults = OperateExcel.ToDataList<Input>(readResults);
+                var readResults = OperateExcel.ExcelToDataTable(@"C:\Users\changqing\Desktop\chats.xlsx", "sheet1", true);
+                var listResults = OperateExcel.ToDataList<Input>(readResults);
                 //foreach (var item in listResults)
                 //{
                 //    await lianChatServices.Insert(new Qiushui.Lian.Bot.Models.LianChat()
@@ -334,7 +346,7 @@ namespace TestProject
                 //var t2 = lianChatServices.Query(t => t.Status == Status.Valid);
                 //var t3 = signUserServices.Query(t => t.QNumber.Equals("1069430666"));
                 //signLogsServices.DeleteById(t => t.ID > 0);
-                // await signLogsServices.DeleteById(2);
+                //await signLogsServices.DeleteById(2);
                 //var t = await signLogsServices.Query(t => t.ID > 0);
             }
             catch (Exception c)
