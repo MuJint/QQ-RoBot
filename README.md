@@ -11,6 +11,7 @@ QQ.RoBot是一个基于onebot标准的机器人/当然目前只写了部分我�
 * 来点色图
 * 人工智障对话
 * 莲Bot（基于天刀整容交流团一系列命令）
+* 谁是卧底（2022.6新增，注意需要添加机器人为QQ好友）
 * 其它娱乐功能
 
 # 未来计划
@@ -171,6 +172,7 @@ QQ.RoBot是一个基于onebot标准的机器人/当然目前只写了部分我�
 
   <details>
   <summary>客户端</summary>
+
   * 打开`Client`文件夹中`QQ.RoBot.exe`运行，如出现闪退，请参考上文。
   * 打开根目录文件夹中的配置文件`appsettings.json`
   * 更改`appsettings.json`配置，请注意此处的`Port`应与上文的`【WebSocket监听地址】`端口一致
@@ -179,6 +181,7 @@ QQ.RoBot是一个基于onebot标准的机器人/当然目前只写了部分我�
 
   <details>
   <summary>AI对话</summary>
+  
   * 注意如需使用人工智障对话，请配置`AiPath`的请求URL，同时启用`appsettings.json`的`IsAi`
     > 请注意：在2022年更新之后已停止使用ChattrtBot。改用第三方AI接口
   * 人工智障使用，打开`AI`文件夹，安装`Python`环境，安装开源包`ChatterBot`，在当前文件夹中创建如下Python文件
