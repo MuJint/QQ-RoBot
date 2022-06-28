@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robot.Framework", "src\Robo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "test\TestProject\TestProject.csproj", "{394CCE69-A0B2-4193-B41E-D4181787B327}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordCloudCsharp", "..\WordCloud\src\WordCloudCsharp\WordCloudCsharp.csproj", "{653494FC-2F86-47F5-AF3F-65F306116F29}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{394CCE69-A0B2-4193-B41E-D4181787B327}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{394CCE69-A0B2-4193-B41E-D4181787B327}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{394CCE69-A0B2-4193-B41E-D4181787B327}.Release|Any CPU.Build.0 = Release|Any CPU
-		{653494FC-2F86-47F5-AF3F-65F306116F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{653494FC-2F86-47F5-AF3F-65F306116F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{653494FC-2F86-47F5-AF3F-65F306116F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{653494FC-2F86-47F5-AF3F-65F306116F29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
