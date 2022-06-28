@@ -10,12 +10,13 @@ using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
-using System.DrawingCore.Imaging;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WordCloudCsharp;
 
 namespace QQ.RoBot
 {
@@ -30,19 +31,22 @@ namespace QQ.RoBot
         readonly IBaseRepository<LianChat> _lianChatRepository;
         readonly IBaseRepository<LianKeyWords> _lianKeyWordsRepository;
         readonly IBaseRepository<SpeakerList> _speakerRepository;
+        readonly IWordcloud _wordcloud;
         readonly UserConfig userConfig = GlobalSettings.AppSetting.UserConfig;
 
         public LianService(IBaseRepository<SignUser> signUserRepository,
             IBaseRepository<LianChat> lianChatRepository,
             IBaseRepository<LianKeyWords> lianKeyWordsRepository,
             IBaseRepository<SpeakerList> speakerRepository,
-            IBaseRepository<SignLogs> signLogsRepository)
+            IBaseRepository<SignLogs> signLogsRepository,
+            IWordcloud wordcloud)
         {
             _signUserRepository = signUserRepository;
             _lianChatRepository = lianChatRepository;
             _lianKeyWordsRepository = lianKeyWordsRepository;
             _speakerRepository = speakerRepository;
             _signLogsRepository = signLogsRepository;
+            _wordcloud = wordcloud;
         }
 
 
@@ -880,12 +884,10 @@ namespace QQ.RoBot
                     var seg = new JiebaSegmenter();
                     var freqs = new Counter<string>(seg.Cut(builder));
                     var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
-                    var WordCloudGen = new WordCloudSharp.WordCloud(300, 300, true, fontname: "simsun");
-                    var images = WordCloudGen
-                        .Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
+                    var imgStream = _wordcloud.GetWordCloud(300, 300, true, fontname: "simsun").Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
                     //linux环境下路径需替换为/，windows下的环境为\\
                     var imgName = $"{Environment.CurrentDirectory}/Images/{Guid.NewGuid()}.png";
-                    images.Save(imgName, ImageFormat.Png);
+                    imgStream.Save(imgName, ImageFormat.Png);
                     var msg = new MessageBody
                     {
                         SoraSegment.At(eventArgs.Sender.Id),

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Robot.Framework.Interface;
 using Robot.Framework.Services;
+using WordCloudCsharp;
 
 namespace TestProject
 {
@@ -8,6 +9,7 @@ namespace TestProject
     {
         readonly ServiceProvider provider = new ServiceCollection()
                 .AddSingleton<IUnitWork, UnitWork>()
+                .AddSingleton<IWordcloud, WordcloudSrv>()
                 .AddScoped(typeof(IBaseRepository<>),typeof(BaseRepository<>))
                 //.AddScoped<ILianChatServices, LianChatServices>()
                 //.AddScoped<ILianKeyWordsServices, LianKeyWordsServices>()

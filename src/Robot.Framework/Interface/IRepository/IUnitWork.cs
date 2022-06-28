@@ -1,8 +1,9 @@
 ﻿using LiteDB;
+using System;
 
 namespace Robot.Framework.Interface
 {
-    public interface IUnitWork
+    public interface IUnitWork : IDisposable
     {
         /// <summary>
         /// 获取Litedb链接

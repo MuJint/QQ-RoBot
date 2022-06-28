@@ -7,7 +7,7 @@ using Robot.Framework.Interface;
 using Robot.Framework.Models;
 using System;
 using System.Collections.Generic;
-using System.DrawingCore.Imaging;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WordCloudCsharp;
 using Xunit.Sdk;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
@@ -29,6 +30,7 @@ namespace TestProject
         readonly IBaseRepository<LianChat> _lianChatRepository;
         readonly IBaseRepository<LianKeyWords> _lianKeyWordsRepository;
         readonly IBaseRepository<SpeakerList> _speakerRepository;
+        readonly IWordcloud _wordcloud;
 
         //readonly IBaseRepository<SignUser> _signUserServices;
 
@@ -51,13 +53,54 @@ namespace TestProject
             await TestMethods.Run();
         }
 
+        [TestMethod]
+        public void TestGroupByTime()
+        {
+            var s = new List<TestP>()
+            {
+               new TestP()
+               {
+                    Id = 1,
+                    DateTime = new DateTime(2022,6,23,15,30,06)
+               },
+               new TestP()
+               {
+                    Id = 1,
+                    DateTime = new DateTime(2022,6,23,15,30,06)
+               },
+               new TestP()
+               {
+                    Id = 1,
+                    DateTime = DateTime.Now
+               },
+               new TestP()
+               {
+                    Id = 1,
+                    DateTime = new DateTime(2022,6,23,15,30,06).AddDays(-1)
+               },
+               new TestP()
+               {
+                    Id = 1,
+                    DateTime = new DateTime(2022,6,23,15,30,06).AddDays(-2)
+               },
+            };
+
+            var result = s.GroupBy(g => g.DateTime);
+        }
+
+        public class TestP
+        {
+            public int Id { get; set; }
+            public DateTime DateTime { get; set; }
+        }
+
         /// <summary>
         /// 测试Litedb事务
         /// </summary>
         [TestMethod]
         public void TestTransaction()
         {
-            var unitwork = GetInstance<IUnitWork>();
+            using var unitwork = GetInstance<IUnitWork>();
             try
             {
                 var signLogs = GetInstance<IBaseRepository<SignLogs>>();
@@ -87,6 +130,7 @@ namespace TestProject
             catch (Exception ex)
             {
                 unitwork.Rollback();
+                unitwork.Dispose();
                 throw;
             }
         }
@@ -122,6 +166,9 @@ namespace TestProject
             }
         }
 
+        /// <summary>
+        /// 词云。依赖注入
+        /// </summary>
         [TestMethod]
         public void UTCounterByJieba()
         {
@@ -137,13 +184,16 @@ namespace TestProject
                 ints.Add(pair.Value);
                 Console.WriteLine($"{pair.Key}: {pair.Value}");
             }
-            var WordCloudGen = new WordCloudSharp.WordCloud(300, 300, true);
-            //var images = WordCloudGen.Draw(wordKeys, ints);
-            var images = WordCloudGen.Draw(wordKeys, ints);
-            //var images = WordCloudGen.Draw(@"C:\Users\v-jinlv\Desktop\background.jpg", wordKeys, ints);
+
+            var service = GetInstance<IWordcloud>();
+
+            var images = service.GetWordCloud(300, 300, true).Draw(wordKeys, ints);
             images.Save($"D:\\{Guid.NewGuid()}.png", ImageFormat.Png);
         }
 
+        /// <summary>
+        /// 词云。自带单例
+        /// </summary>
         [TestMethod]
         public void UTGroupWC()
         {
@@ -158,9 +208,9 @@ namespace TestProject
                     var seg = new JiebaSegmenter();
                     var freqs = new Counter<string>(seg.Cut(builder));
                     var filterFreqs = freqs.Count >= 20 ? freqs?.MostCommon(20) : freqs?.MostCommon(freqs.Count - 1);
-                    var WordCloudGen = new WordCloudSharp.WordCloud(300, 300, true);
-                    var images = WordCloudGen
-                        .Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
+
+                    //单例
+                    var images = ISingletion<WordcloudSrv>.Instance.GetWordCloud(300, 300, true).Draw(filterFreqs.Select(s => s.Key).ToList(), filterFreqs.Select(s => s.Value).ToList());
                     var imgName = $"{Environment.CurrentDirectory}\\Images\\{Guid.NewGuid()}.png";
                     images.Save(imgName, ImageFormat.Png);
                     //delete img

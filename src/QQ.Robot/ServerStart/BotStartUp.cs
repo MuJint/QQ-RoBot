@@ -7,6 +7,7 @@ using Robot.Framework.Interface;
 using Robot.Framework.Services;
 using System;
 using System.Threading.Tasks;
+using WordCloudCsharp;
 
 namespace QQ.RoBot
 {
@@ -33,6 +34,9 @@ namespace QQ.RoBot
                         //数据库操作
                         services.AddSingleton<IUnitWork, UnitWork>();
                         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
+                        //词云
+                        services.AddSingleton<IWordcloud, WordcloudSrv>();
 
                         //功能实现
                         services.AddScoped<IRobotInterface, RobotService>();

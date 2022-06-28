@@ -4,7 +4,7 @@ using System;
 
 namespace Robot.Framework.Services
 {
-    public class UnitWork : IUnitWork, IDisposable
+    public class UnitWork : IUnitWork
     {
         private LiteDatabase _liteDatabase;
         private bool disposedValue;
@@ -60,6 +60,7 @@ namespace Robot.Framework.Services
                 if (disposing)
                 {
                     // TODO: 释放托管状态(托管对象)
+                    _liteDatabase.Dispose();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并重写终结器
