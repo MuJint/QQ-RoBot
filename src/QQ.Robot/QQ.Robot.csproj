@@ -46,10 +46,10 @@
 		<PackageReference Include="jieba.NET" Version="0.42.2" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Sora" Version="1.0.0-rc.56" />
+		<PackageReference Include="WordCloudCsharp" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\WordCloud\src\WordCloudCsharp\WordCloudCsharp.csproj" />
 		<ProjectReference Include="..\Robot.Common\Robot.Common.csproj" />
 		<ProjectReference Include="..\Robot.Framework\Robot.Framework.csproj" />
 	</ItemGroup>
