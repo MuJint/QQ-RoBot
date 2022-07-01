@@ -1,4 +1,6 @@
-﻿namespace Robot.Framework.Models
+﻿using System.Collections.Generic;
+
+namespace Robot.Framework.Models
 {
     /// <summary>
     /// 记录表
@@ -9,11 +11,32 @@
         public long MsgId { get; set; }
         public long GroupId { get; set; }
         public string RawText { get; set; }
-        public MsgType MsgType { get; set; } = MsgType.Txt;
+
+        /// <summary>
+        /// 消息段
+        /// </summary>
+        public ICollection<SpeakerMessageBody> MessageBodies { get; set; } = new HashSet<SpeakerMessageBody>();
     }
+
+    public class SpeakerMessageBody
+    {
+        public string Json { get; set; }
+        public string Text { get; set; }
+        public MsgType MsgType { get; set; } = MsgType.Txt;
+        /// <summary>
+        /// IMG / VOICE ==
+        /// </summary>
+        public string Operator { get; set; }
+    }
+
     public enum MsgType
     {
-        Img = 1,
-        Txt = 2
+        Img,
+        Txt,
+        Face,
+        Record,
+        Video,
+        Music,
+        At,
     }
 }

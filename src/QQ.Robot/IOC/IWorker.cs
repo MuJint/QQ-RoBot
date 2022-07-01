@@ -59,7 +59,7 @@ namespace QQ.RoBot
             //初始化配置文件
             _logs.Info("Bot初始化", "初始化服务器全局配置...");
 
-            _logs.SetLogLevel(EnumLogLevel.Information);
+            _logs.SetLogLevel(EnumLogLevel.Debug);
 
             //初始化字符编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

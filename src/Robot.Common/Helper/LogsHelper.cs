@@ -30,7 +30,7 @@ namespace Robot.Common.Helper
         /// <param name="memberName"></param>
         /// <param name="lineNumber"></param>
         /// <param name="filePath"></param>
-        public void Debug(Exception ex = null, string logs = null, EnumLogLevel logLevel = EnumLogLevel.Debug, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
+        public void Debug(Exception ex = null, string logs = "", EnumLogLevel logLevel = EnumLogLevel.Debug, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = "")
         {
             if (LogLevel > logLevel) return;
             lock (_logLock)
@@ -40,7 +40,7 @@ namespace Robot.Common.Helper
                 ChangeConsoleColor(ConsoleColor.Black, ConsoleColor.White);
                 Console.Write(@" [Debug] ");
                 ChangeConsoleColor(ConsoleColor.White, _consoleColor);
-                Console.WriteLine($"[{ex.GetType()}]{logs}");
+                Console.WriteLine($"[{ex?.GetType() ?? typeof(LogsHelper)}]{logs}");
                 Console.WriteLine($"[调用方法]{memberName}");
                 Console.WriteLine($"[行号]{lineNumber}");
                 Console.WriteLine($"[路径]{filePath}\r\n");

@@ -28,13 +28,13 @@ namespace Robot.Framework.Interface
             return table.FindOne(expression);
         }
 
-        public bool DeleteById(object objId)
+        public bool DeleteById(int objId)
         {
             var table = _db.GetCollection<TEntity>();
             return table.Delete((BsonValue)objId);
         }
 
-        public bool DeleteById(Expression<Func<TEntity, bool>> expression)
+        public bool Delete(Expression<Func<TEntity, bool>> expression)
         {
             var table = _db.GetCollection<TEntity>();
             return table.DeleteMany(expression) > 0;

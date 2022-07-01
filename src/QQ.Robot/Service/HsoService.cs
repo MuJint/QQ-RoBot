@@ -1,13 +1,12 @@
-﻿using Newtonsoft.Json;
-using Robot.Common;
+﻿using Robot.Common;
 using Robot.Common.Interface;
 using Sora.Entities;
 using Sora.Entities.Segment;
 using Sora.EventArgs.SoraEvent;
 using System;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 
@@ -59,20 +58,10 @@ namespace QQ.RoBot
                 _logs.Info("NET", "尝试获取色图");
                 string serverUrl;
                 //源切换
-                serverUrl = "https://api.lolicon.app/setu/";
-                //if (new Random().Next(1, 100) > 50)
-                //{
-                //    serverUrl = "https://api.lolicon.app/setu/";
-                //    apiKey = hso.LoliconApiKey ?? string.Empty;
-                //}
-                //else
-                //{
-                //    serverUrl = "https://yanghanwen.xyz/tu/setu.php";
-                //    apiKey = string.Empty;
-                //}
+                serverUrl = "https://api.lolicon.app/setu/v2";
                 //向服务器发送请求
                 var json = await HttpHelper.HttpGetAsync($"{serverUrl}");
-                var result = JsonConvert.DeserializeObject<HsoResult>(json);
+                var result = JsonSerializer.Deserialize<HsoResult>(json);
                 if (result != null && result.Code == 0)
                 {
                     await group.SendGroupMessage(GetResult(result));

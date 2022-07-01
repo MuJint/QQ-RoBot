@@ -6,6 +6,8 @@ using Robot.Framework.Models;
 using Sora.Entities;
 using Sora.Entities.Info;
 using Sora.Entities.Segment;
+using Sora.Entities.Segment.DataModel;
+using Sora.Enumeration;
 using Sora.EventArgs.SoraEvent;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Text.Json;
 
 namespace QQ.RoBot
 {
@@ -202,18 +205,46 @@ namespace QQ.RoBot
                 return;
             try
             {
-                var r = new Random().Next(5, 9);
-                if (r is 6)
+                if (userConfig.ModuleSwitch.Recal)
                 {
-                    var msg = _speakerRepository.Query(s => s.MsgId == groupMessage.MessageId).First();
-                    var user = _userRepository.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
-                    await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
-                }
-                else if (userConfig.ModuleSwitch.Recal)
-                {
-                    var msg = _speakerRepository.Query(s => s.MsgId == groupMessage.MessageId).First();
-                    var user = _userRepository.Query(s => s.QNumber == groupMessage.MessageSender.Id.ObjToString()).First();
-                    await groupMessage.SourceGroup.SendGroupMessage($"[有人撤回了消息，但我要说]\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{user.NickName}]\r\n[ID：{user.QNumber}]\r\n以下消息正文\r\n{msg.RawText}");
+                    var msg = _speakerRepository.Query(s => s.MsgId == groupMessage.MessageId).FirstOrDefault();
+                    //user
+                    var (apiStatus, memberInfo) = await groupMessage.SourceGroup.GetGroupMemberInfo(groupMessage.MessageSender.Id);
+                    var messageBody = new MessageBody()
+                    {
+                        $"有人撤回了消息，但我要说\r\n[时间：{msg.CreateTime:HH:mm:ss}]\r\n[昵称：{memberInfo.Nick}]\r\n[QQ：{groupMessage.MessageSender.Id}]\r\n消息正文\r\n",
+                    };
+                    foreach (var body in msg.MessageBodies)
+                    {
+                        switch (body.MsgType)
+                        {
+                            case MsgType.Img:
+                                messageBody.Add(SoraSegment.Image(body.Operator));
+                                break;
+                            case MsgType.Txt:
+                                messageBody.Add(SoraSegment.Text(body.Text));
+                                break;
+                            case MsgType.Video:
+                                messageBody.Add(SoraSegment.Video(body.Operator));
+                                break;
+                            case MsgType.Record:
+                                messageBody.Add(SoraSegment.Record(body.Operator));
+                                break;
+                            case MsgType.Face:
+                                messageBody.Add(SoraSegment.Face(body.Operator.ObjToInt()));
+                                break;
+                            case MsgType.At:
+                                messageBody.Add(SoraSegment.At(body.Operator.ObjToInt()));
+                                break;
+                            default:
+                                break;
+                        }
+                        _logs.Debug(new Exception(), logs: $"消息段：[Json:{body.Json}]");
+                    }
+
+                    //删除源消息
+                    _speakerRepository.Delete(t => t.ID == msg.ID);
+                    await groupMessage.SourceGroup.SendGroupMessage(messageBody);
                 }
                 else
                     await groupMessage.SourceGroup.SendGroupMessage($"怀孕了就说啊，撤回干嘛，大家都会负责的");
@@ -471,27 +502,102 @@ namespace QQ.RoBot
             //[CQ:image,file=bc99f5e35895cf9a48edd43a682527a4.image]
             await Task.Run(() =>
             {
-                if (eventArgs.Message.RawText.StartsWith("[CQ:image,file="))
+                var speaker = new SpeakerList()
                 {
-                    _speakerRepository.Insert(new SpeakerList()
-                    {
-                        GroupId = eventArgs.SourceGroup.Id,
-                        RawText = eventArgs.Message.RawText.Replace("[CQ:image,file=", "").Replace("]", ""),
-                        MsgId = eventArgs.Message.MessageId,
-                        Uid = eventArgs.Sender.Id,
-                        MsgType = MsgType.Img
-                    });
-                }
-                else
+                    GroupId = eventArgs.SourceGroup.Id,
+                    RawText = eventArgs.Message.RawText,
+                    MsgId = eventArgs.Message.MessageId,
+                    Uid = eventArgs.Sender.Id,
+                };
+                var messageBody = eventArgs.Message.MessageBody.ToList();
+                foreach (var message in messageBody)
                 {
-                    _speakerRepository.Insert(new SpeakerList()
+                    switch (message.MessageType)
                     {
-                        GroupId = eventArgs.SourceGroup.Id,
-                        RawText = eventArgs.Message.RawText,
-                        MsgId = eventArgs.Message.MessageId,
-                        Uid = eventArgs.Sender.Id
-                    });
+                        case SegmentType.Unknown:
+                            break;
+                        case SegmentType.Ignore:
+                            break;
+                        case SegmentType.Text:
+                            var textSegment = message.Data as TextSegment;
+                            speaker.MessageBodies.Add(new SpeakerMessageBody()
+                            {
+                                MsgType = MsgType.Txt,
+                                Text = textSegment.Content,
+                                Json = JsonSerializer.Serialize(textSegment)
+                            });
+                            break;
+                        case SegmentType.Face:
+                            break;
+                        case SegmentType.Image:
+                            var imageSegment = message.Data as ImageSegment;
+                            speaker.MessageBodies.Add(new SpeakerMessageBody()
+                            {
+                                Operator = imageSegment.Url,
+                                MsgType = MsgType.Img,
+                                Json = JsonSerializer.Serialize(imageSegment)
+                            });
+                            break;
+                        case SegmentType.Record:
+                            var recordSegment = message.Data as RecordSegment;
+                            speaker.MessageBodies.Add(new SpeakerMessageBody()
+                            {
+                                Operator = recordSegment.Url,
+                                MsgType = MsgType.Img,
+                                Json = JsonSerializer.Serialize(recordSegment)
+                            });
+                            break;
+                        case SegmentType.Video:
+                            var videoSegment = message.Data as VideoSegment;
+                            speaker.MessageBodies.Add(new SpeakerMessageBody()
+                            {
+                                Operator = videoSegment.Url,
+                                MsgType = MsgType.Img,
+                                Json = JsonSerializer.Serialize(videoSegment)
+                            });
+                            break;
+                        case SegmentType.Music:
+                            //var musicSegment = message.Data as MusicSegment;
+                            //speaker.MessageBodies.Add(new SpeakerMessageBody()
+                            //{
+                            //    Obj = musicSegment.,
+                            //    MsgType = MsgType.Img,
+                            //    Json = JsonSerializer.Serialize(musicSegment)
+                            //});
+                            break;
+                        case SegmentType.At:
+                            var atSegment = message.Data as AtSegment;
+                            speaker.MessageBodies.Add(new SpeakerMessageBody()
+                            {
+                                Operator = atSegment.Target,
+                                MsgType = MsgType.Img,
+                                Json = JsonSerializer.Serialize(atSegment)
+                            });
+                            break;
+                        case SegmentType.Share:
+                            break;
+                        case SegmentType.Reply:
+                            break;
+                        case SegmentType.Forward:
+                            break;
+                        case SegmentType.Poke:
+                            break;
+                        case SegmentType.Xml:
+                            break;
+                        case SegmentType.Json:
+                            break;
+                        case SegmentType.RedBag:
+                            break;
+                        case SegmentType.CardImage:
+                            break;
+                        case SegmentType.TTS:
+                            break;
+                        default:
+                            break;
+                    }
                 }
+
+                _speakerRepository.Insert(speaker);
             });
         }
 
