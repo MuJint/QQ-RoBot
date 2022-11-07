@@ -34,6 +34,24 @@ namespace TestProject
 
         //readonly IBaseRepository<SignUser> _signUserServices;
 
+        [TestMethod]
+        public void TestForeach()
+        {
+            var list = Enumerable.Range(0, 1000).ToList();
+            for (int i = 0, len = 10000, offset = 10; i < len; i += offset)
+            {
+                list.ForEach(itme =>
+                {
+                    if (itme % 1000 == 0)
+                    {
+                        Console.WriteLine($"当前{itme}。中断foreach");
+                        return;
+                    }
+                });
+                Console.WriteLine($"第{i}次for循环。");
+            }
+        }
+
         public UnitTest1()
         {
             //signUserServices = GetInstance<ISignUserServices>();
